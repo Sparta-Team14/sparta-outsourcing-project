@@ -21,4 +21,5 @@ public class BaseEntity {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updated_at; // 수정일
+
 }
