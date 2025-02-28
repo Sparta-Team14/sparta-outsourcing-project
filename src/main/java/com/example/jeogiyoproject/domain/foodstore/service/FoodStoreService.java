@@ -15,7 +15,13 @@ public class FoodStoreService {
 
     @Transactional
     public FoodStoreResponseDto save(FoodStoreSaveRequestDto dto) {
-        FoodStore foodStore = new FoodStore();
+        FoodStore foodStore = new FoodStore(
+                dto.getTitle(),
+                dto.getAddress(),
+                dto.getMinPrice(),
+                dto.getOpenAt(),
+                dto.getCloseAt()
+        );
 
         foodStoreRepository.save(foodStore);
         return new FoodStoreResponseDto(

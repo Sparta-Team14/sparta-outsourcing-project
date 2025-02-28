@@ -20,9 +20,9 @@ public class FoodStore extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Account account;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    private Account account;
 
     @Column(nullable = false)
     private String title;
@@ -34,23 +34,21 @@ public class FoodStore extends BaseEntity {
     private Integer minPrice;
 
     @Column(nullable = false)
-    private LocalDateTime openAt;
+    private LocalTime openAt;
 
     @Column(nullable = false)
-    private LocalDateTime closeAt;
+    private LocalTime closeAt;
 
     @Column
     private LocalDateTime deletedAt;
 
     public FoodStore(
-            Account account,
             String title,
             String address,
             Integer minPrice,
-            LocalDateTime openAt,
-            LocalDateTime closeAt
+            LocalTime openAt,
+            LocalTime closeAt
     ) {
-        this.account = account;
         this.title = title;
         this.address = address;
         this.minPrice = minPrice;

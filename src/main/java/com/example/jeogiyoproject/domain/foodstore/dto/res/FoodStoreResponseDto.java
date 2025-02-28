@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 public class FoodStoreResponseDto {
@@ -12,8 +13,8 @@ public class FoodStoreResponseDto {
     private final String title;
     private final String address;
     private final Integer minPrice;
-    private final LocalDateTime openAt;
-    private final LocalDateTime closeAt;
+    private final LocalTime openAt;
+    private final LocalTime closeAt;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
@@ -23,8 +24,8 @@ public class FoodStoreResponseDto {
             String title,
             String address,
             Integer minPrice,
-            LocalDateTime openAt,
-            LocalDateTime closeAt,
+            LocalTime openAt,
+            LocalTime closeAt,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
