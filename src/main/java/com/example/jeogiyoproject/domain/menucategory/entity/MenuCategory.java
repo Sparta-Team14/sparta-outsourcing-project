@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.category.entity;
+package com.example.jeogiyoproject.domain.menucategory.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "category")
 @NoArgsConstructor
-public class Caregory {
+public class MenuCategory {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 카테고리 번호
