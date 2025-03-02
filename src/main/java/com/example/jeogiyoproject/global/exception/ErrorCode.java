@@ -12,6 +12,7 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다."),
 
     // Auth
+    ROLE_IS_WRONG(HttpStatus.BAD_REQUEST, "권한을 잘못 입력하셨습니다."),
 
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴 ID입니다."),
