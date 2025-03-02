@@ -4,6 +4,8 @@ import com.example.jeogiyoproject.domain.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
 
@@ -20,10 +22,22 @@ public class FoodStore extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String address; // 주소
     @Column
-    private Integer min_price; // 최소주문금액
+    private Integer minPrice; // 최소주문금액
     @Column
-    private LocalDateTime open_at; // 오픈시간
+    private LocalDateTime openAt; // 오픈시간
     @Column
-    private LocalDateTime close_at; // 마감시간
+    private LocalDateTime closeAt; // 마감시간
 
+    @Column
+    private Long userId;
+
+    public FoodStore(Long id, String title, String address, Integer minPrice, LocalDateTime openAt, LocalDateTime closeAt, Long userId) {
+        this.id = id;
+        this.title = title;
+        this.address = address;
+        this.minPrice = minPrice;
+        this.openAt = openAt;
+        this.closeAt = closeAt;
+        this.userId = userId;
+    }
 }
