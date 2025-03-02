@@ -1,6 +1,5 @@
 package com.example.jeogiyoproject.domain.foodstore.entity;
 
-import com.example.jeogiyoproject.domain.account.entity.Account;
 import com.example.jeogiyoproject.domain.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.example.jeogiyoproject.domain.order.service;
 
-import com.example.jeogiyoproject.domain.account.entity.Account;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
@@ -43,7 +43,7 @@ public class OrderService {
     @Transactional
     public CreateOrderResponseDto createOrder(Long foodstoreId, CreateOrderRequestDto dto) {
         // TODO 유저 데이터 -> account?
-        Account user = new Account();
+        User user = new User();
 
         // e1: 존재하지 않는 가게 조회 시
         FoodStore foodStore = findFoodStore(foodstoreId);
@@ -94,7 +94,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<FindOrdersResponseDto> findAllOrders(Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
         // TODO 유저 데이터
-        Account user = new Account();
+        User user = new User();
 
         // e1: 해당 가게의 사장이 아닌 경우
         validFoodstoreOwner(foodstoreId, user);
@@ -113,7 +113,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderResponseDto findOrder(Long foodstoreId, Long orderId) {
         // TODO 유저 데이터
-        Account user = new Account();
+        User user = new User();
 
         // e1: 해당 가게의 사장이 아닌 경우
         validFoodstoreOwner(foodstoreId, user);
@@ -129,7 +129,7 @@ public class OrderService {
     @Transactional
     public String changeStatus(Long foodstoreId, Long orderId, ChangeStatusRequestDto dto) {
         // TODO 유저 데이터
-        Account user = new Account();
+        User user = new User();
 
         // e1: 해당 가게의 사장이 아닌 경우
         validFoodstoreOwner(foodstoreId, user);
@@ -178,7 +178,7 @@ public class OrderService {
         return true;
     }
 
-    private void validFoodstoreOwner(Long foodstoreId, Account user) {
+    private void validFoodstoreOwner(Long foodstoreId, User user) {
         FoodStore foodStore = findFoodStore(foodstoreId);
         // TODO 해당 가게의 사장이 아닌 경우
         /*
