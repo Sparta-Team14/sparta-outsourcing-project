@@ -6,6 +6,8 @@ import com.example.jeogiyoproject.domain.menu.entity.Menu;
 import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
 import com.example.jeogiyoproject.domain.menu.repository.MenuCategoryRepository;
 import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
+import com.example.jeogiyoproject.global.exception.CustomException;
+import com.example.jeogiyoproject.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +19,10 @@ public class MenuService {
 
     public MenuResponseDto createMenu(Long userId, Long categoryId, MenuRequestDto requestDto) {
         MenuCategory category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NullPointerException("해당 카테고리가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
         // category.getFoodStore().getUserId() 와 userId를 비교, 해당 가게의 사장인지 확인
         Menu menu = new Menu(category,requestDto.getName(),requestDto.getInfo(),requestDto.getPrice());
         menuRepository.save(menu);
-        return MenuResponseDto.fromEntity(menu);
+        return MenuResponseDto.fromMenu(menu);
     }
 }
