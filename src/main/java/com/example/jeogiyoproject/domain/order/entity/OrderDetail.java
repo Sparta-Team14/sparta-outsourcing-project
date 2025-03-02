@@ -23,11 +23,11 @@ public class OrderDetail {
     private Menu menu;
 
     @Column
-    private Integer amount; //수량
+    private Integer quantity; //수량
 
-    public OrderDetail(Order order, Menu menu, Integer amount) {
+    public OrderDetail(Order order, Menu menu, Integer quantity) {
         this.order = order;
         this.menu = menu;
-        this.amount = amount;
+        this.quantity = quantity;
     }
 }
