@@ -13,5 +13,9 @@ public class UserController {
 
     private final UserService userService;
 
+    @DeleteMapping("/users/{id}")
+    public void deleteUser(@PathVariable Long id) { // 회원탈퇴
+        userService.deleteUser(id);
+    }
 
 }
