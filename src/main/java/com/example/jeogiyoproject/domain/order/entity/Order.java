@@ -1,6 +1,6 @@
 package com.example.jeogiyoproject.domain.order.entity;
 
-import com.example.jeogiyoproject.domain.account.entity.Account;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.base.BaseEntity;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.order.enums.Status;
@@ -30,7 +30,7 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Account user; // Account?
+    private User user; // Account?
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.WAIT;
@@ -41,7 +41,7 @@ public class Order extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    public Order(FoodStore foodStore, Account user, Integer totalPrice, String request) {
+    public Order(FoodStore foodStore, User user, Integer totalPrice, String request) {
         this.foodStore = foodStore;
         this.user = user;
         this.totalPrice = totalPrice;

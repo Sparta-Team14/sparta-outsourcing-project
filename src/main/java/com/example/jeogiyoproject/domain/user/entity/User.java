@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.account.entity;
+package com.example.jeogiyoproject.domain.user.entity;
 
 import com.example.jeogiyoproject.domain.base.BaseEntity;
 import jakarta.persistence.*;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-public class Account extends BaseEntity {
+public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 회원번호
@@ -19,10 +19,9 @@ public class Account extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String password; // 비밀번호
     @Column(length = 15, nullable = false)
-    private String userName; // 이름
+    private String name; // 이름
     @Column(columnDefinition = "TEXT", nullable = false)
     private String address; // 주소
     @Column(length = 5, nullable = false)
     private String role; // 역할
-
 }

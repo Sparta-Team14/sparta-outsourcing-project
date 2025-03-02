@@ -4,18 +4,37 @@ import com.example.jeogiyoproject.domain.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Table(name = "menu")
 public class Menu extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 메뉴 번호
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(length = 100)
-    private String name; // 메뉴명
-    @Column(length = 100)
-    private String Field; // 메뉴소개
+    @ManyToOne
+    @JoinColumn(name="menu_category_id")
+    private MenuCategory menuCategory;
+
     @Column
-    private Integer price; // 가격
+    private String name;
+
+    @Column
+    private String info;
+
+    @Column
+    private Integer price;
+
+    @Column
+    private LocalDateTime deletedAt;
+
+    public Menu(MenuCategory menuCategory, String name, String info, Integer price) {
+        this.menuCategory = menuCategory;
+        this.name = name;
+        this.info = info;
+        this.price = price;
+    }
 }
