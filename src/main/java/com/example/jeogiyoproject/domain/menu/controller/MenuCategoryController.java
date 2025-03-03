@@ -34,4 +34,10 @@ public class MenuCategoryController {
         Long userId = 1L;
         return ResponseEntity.ok(menuCategoryService.deleteCategory(userId,categoryId));
     }
+    @PutMapping("/menu-categories/{categoryId}/restore")
+    private ResponseEntity<MenuCategoryResponseDto> restoreCategory(@PathVariable Long categoryId){
+        // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
+        Long userId = 1L;
+        return ResponseEntity.ok(menuCategoryService.restoreCategory(userId,categoryId));
+    }
 }

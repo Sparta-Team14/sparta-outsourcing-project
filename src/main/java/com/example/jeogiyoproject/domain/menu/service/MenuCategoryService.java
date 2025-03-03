@@ -59,6 +59,7 @@ public class MenuCategoryService {
         return MenuCategoryResponseDto.fromMenuCategory(category);
     }
 
+    @Transactional
     public MenuCategoryResponseDto deleteCategory(Long userId, Long categoryId) {
         MenuCategory category = menuCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
@@ -72,6 +73,24 @@ public class MenuCategoryService {
             throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
         }
         category.setDeletedAt();
+        menuCategoryRepository.flush();
+        return MenuCategoryResponseDto.fromMenuCategory(category);
+    }
+
+    @Transactional
+    public MenuCategoryResponseDto restoreCategory(Long userId, Long categoryId) {
+        MenuCategory category = menuCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+//        foodstore Entity에 userId 추가되면 수정 예정
+//        if(!category.getFoodStore().getUser().getId().equals(userId)){
+//            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
+//        }
+
+        Long foodStoreOwnerId = 1L;
+        if(!foodStoreOwnerId.equals(userId)){
+            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
+        }
+        category.restore();
         menuCategoryRepository.flush();
         return MenuCategoryResponseDto.fromMenuCategory(category);
     }

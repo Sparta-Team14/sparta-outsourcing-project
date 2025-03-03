@@ -18,7 +18,7 @@ public class Menu extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="menu_category_id")
     private MenuCategory menuCategory;
 
@@ -55,5 +55,9 @@ public class Menu extends BaseEntity {
 
     public void setDeletedAt(){
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void restore(){
+        this.deletedAt = null;
     }
 }

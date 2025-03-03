@@ -42,4 +42,8 @@ public class MenuCategory extends BaseEntity {
     public void setDeletedAt(){
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void restore(){
+        this.deletedAt = null;
+    }
 }

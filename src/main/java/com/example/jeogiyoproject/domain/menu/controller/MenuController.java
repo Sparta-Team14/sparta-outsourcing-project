@@ -11,27 +11,37 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/menus")
 public class MenuController {
     private final MenuService menuService;
 
-    @PostMapping("/menu-categories/{categoryId}/menus")
-    private ResponseEntity<MenuResponseDto> createMenu(@RequestBody MenuRequestDto requestDto,
-                                                       @PathVariable Long categoryId){
+    @PostMapping
+    private ResponseEntity<MenuResponseDto> createMenu(@RequestBody MenuRequestDto requestDto){
         // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
         Long userId = 1L;
-        return new ResponseEntity<>(menuService.createMenu(userId,categoryId, requestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(menuService.createMenu(userId,requestDto), HttpStatus.CREATED);
     }
-    @PutMapping("/menus/{menuId}")
+    @PutMapping("/{menuId}")
     private ResponseEntity<MenuResponseDto> updateMenu(@RequestBody MenuUpdateRequestDto requestDto,
                                                        @PathVariable Long menuId){
         // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
         Long userId = 1L;
         return ResponseEntity.ok(menuService.updateService(userId,menuId,requestDto));
     }
-    @DeleteMapping("/menus/{menuId}")
+    @DeleteMapping("/{menuId}")
     private ResponseEntity<MenuResponseDto> deleteMenu(@PathVariable Long menuId){
         // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
         Long userId = 1L;
         return ResponseEntity.ok(menuService.deleteMenu(userId,menuId));
+    }
+    @PutMapping("/{menuId}/restore")
+    private ResponseEntity<MenuResponseDto> restoreMenu(@PathVariable Long menuId){
+        // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
+        Long userId = 1L;
+        return ResponseEntity.ok(menuService.restoreMenu(userId, menuId));
+    }
+    @GetMapping("/{menuId}")
+    private ResponseEntity<MenuResponseDto> findMenu(@PathVariable Long menuId){
+        return ResponseEntity.ok(menuService.findMenu(menuId));
     }
 }
