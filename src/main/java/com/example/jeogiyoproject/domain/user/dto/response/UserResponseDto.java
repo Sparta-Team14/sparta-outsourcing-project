@@ -1,8 +1,6 @@
-package com.example.jeogiyoproject.domain.account.dto.response;
+package com.example.jeogiyoproject.domain.user.dto.response;
 
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class UserResponseDto {

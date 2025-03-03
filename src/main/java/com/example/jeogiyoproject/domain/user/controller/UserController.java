@@ -1,10 +1,10 @@
-package com.example.jeogiyoproject.domain.account.controller;
+package com.example.jeogiyoproject.domain.user.controller;
 
-import com.example.jeogiyoproject.domain.account.dto.request.RoleUpdateRequestDto;
-import com.example.jeogiyoproject.domain.account.dto.request.UserUpdateRequestDto;
-import com.example.jeogiyoproject.domain.account.dto.response.UserResponseDto;
-import com.example.jeogiyoproject.domain.account.dto.response.UserUpdateResponseDto;
-import com.example.jeogiyoproject.domain.account.service.UserService;
+import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
+import com.example.jeogiyoproject.domain.user.dto.response.UserUpdateResponseDto;
+import com.example.jeogiyoproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,9 @@
-package com.example.jeogiyoproject.domain.account.service;
+package com.example.jeogiyoproject.domain.user.service;
 
-import com.example.jeogiyoproject.domain.account.dto.request.SignUpRequestDto;
-import com.example.jeogiyoproject.domain.account.dto.response.SignUpResponseDto;
-import com.example.jeogiyoproject.domain.account.entity.User;
-import com.example.jeogiyoproject.domain.account.repository.UserRepository;
+import com.example.jeogiyoproject.domain.user.dto.request.SignUpRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.response.SignUpResponseDto;
+import com.example.jeogiyoproject.domain.user.entity.User;
+import com.example.jeogiyoproject.domain.user.repository.UserRepository;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
