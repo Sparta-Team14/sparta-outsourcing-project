@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.menu.dto.menu;
+package com.example.jeogiyoproject.domain.menu.dto.menu.response;
 
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
 import lombok.Builder;

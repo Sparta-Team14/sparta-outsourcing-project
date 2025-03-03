@@ -1,13 +1,17 @@
 package com.example.jeogiyoproject.domain.menu.controller;
 
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuRequestDto;
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuResponseDto;
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuUpdateRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuListRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuUpdateRequestDto;
 import com.example.jeogiyoproject.domain.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,5 +47,9 @@ public class MenuController {
     @GetMapping("/{menuId}")
     private ResponseEntity<MenuResponseDto> findMenu(@PathVariable Long menuId){
         return ResponseEntity.ok(menuService.findMenu(menuId));
+    }
+    @GetMapping
+    private ResponseEntity<List<MenuCategoryListResponseDto>> findMenuList(@RequestBody MenuListRequestDto requestDto){
+        return ResponseEntity.ok(menuService.findMenuList(requestDto.getFoodstoreId()));
     }
 }

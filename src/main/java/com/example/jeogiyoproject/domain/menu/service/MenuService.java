@@ -1,8 +1,10 @@
 package com.example.jeogiyoproject.domain.menu.service;
 
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuRequestDto;
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuResponseDto;
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuUpdateRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuBasicDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuUpdateRequestDto;
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
 import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
 import com.example.jeogiyoproject.domain.menu.repository.MenuCategoryRepository;
@@ -12,6 +14,8 @@ import com.example.jeogiyoproject.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -77,5 +81,20 @@ public class MenuService {
         }
 
         return MenuResponseDto.fromMenu(menu);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuCategoryListResponseDto> findMenuList(Long foodstoreId) {
+        List<MenuCategoryListResponseDto> categories = menuRepository.findCategoriesAndMenusByFoodStoreId(foodstoreId);
+
+        for (MenuCategoryListResponseDto categoryDto : categories) {
+            List<Menu> menus = menuRepository.findMenusByMenuCategoryIdAndDeletedAtIsNull(categoryDto.getCategoryId());
+
+            for (Menu menu : menus) {
+                MenuBasicDto menuDto = new MenuBasicDto(menu.getId(), menu.getName(), menu.getInfo(), menu.getPrice());
+                categoryDto.addMenu(menuDto);
+            }
+        }
+        return categories;
     }
 }

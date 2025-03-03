@@ -1,13 +1,16 @@
 package com.example.jeogiyoproject.domain.menu.controller;
 
-import com.example.jeogiyoproject.domain.menu.dto.category.MenuCategoryRequestDto;
-import com.example.jeogiyoproject.domain.menu.dto.category.MenuCategoryResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.request.MenuCategoryRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryBasicDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryDeletedBasicDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryResponseDto;
 import com.example.jeogiyoproject.domain.menu.service.MenuCategoryService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,5 +42,16 @@ public class MenuCategoryController {
         // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
         Long userId = 1L;
         return ResponseEntity.ok(menuCategoryService.restoreCategory(userId,categoryId));
+    }
+    @GetMapping("/foodstores/{foodstoreId}/menu-categories")
+    private ResponseEntity<List<MenuCategoryBasicDto>> findCategoryList(@PathVariable Long foodstoreId){
+        return ResponseEntity.ok(menuCategoryService.findCategoryList(foodstoreId));
+    }
+
+    @GetMapping("/foodstores/{foodstoreId}/menu-categories/deleted")
+    private ResponseEntity<List<MenuCategoryDeletedBasicDto>> findDeletedCategoryList(@PathVariable Long foodstoreId){
+        // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
+        Long userId = 1L;
+        return ResponseEntity.ok(menuCategoryService.findDeletedCategoryList(userId, foodstoreId));
     }
 }

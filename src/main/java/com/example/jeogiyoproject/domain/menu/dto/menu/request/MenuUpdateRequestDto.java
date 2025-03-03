@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.menu.dto.menu;
+package com.example.jeogiyoproject.domain.menu.dto.menu.request;
 
 import lombok.Getter;
 

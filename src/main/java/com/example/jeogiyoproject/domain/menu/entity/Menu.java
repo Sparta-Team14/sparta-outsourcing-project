@@ -1,7 +1,7 @@
 package com.example.jeogiyoproject.domain.menu.entity;
 
 import com.example.jeogiyoproject.domain.base.BaseEntity;
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuUpdateRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
