@@ -1,6 +1,7 @@
 package com.example.jeogiyoproject.domain.order.service;
 
-import com.example.jeogiyoproject.domain.account.entity.User;
+import com.example.jeogiyoproject.domain.user.entity.User;
+
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
