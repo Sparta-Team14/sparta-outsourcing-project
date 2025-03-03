@@ -1,6 +1,9 @@
 package com.example.jeogiyoproject.domain.account.service;
 
+import com.example.jeogiyoproject.domain.account.dto.request.RoleUpdateRequestDto;
+import com.example.jeogiyoproject.domain.account.dto.request.UserUpdateRequestDto;
 import com.example.jeogiyoproject.domain.account.dto.response.UserResponseDto;
+import com.example.jeogiyoproject.domain.account.dto.response.UserUpdateResponseDto;
 import com.example.jeogiyoproject.domain.account.entity.User;
 import com.example.jeogiyoproject.domain.account.repository.UserRepository;
 import com.example.jeogiyoproject.global.exception.CustomException;
@@ -29,5 +32,21 @@ public class UserService {
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
         return new UserResponseDto(user.getName(), user.getAddress(), user.getRole());
+    }
+
+    @Transactional
+    public UserUpdateResponseDto update(Long id, UserUpdateRequestDto userUpdateRequestDto) { // 비밀번호 및 이메일 변경
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
+        );
+        user.update(userUpdateRequestDto.getPassword(), userUpdateRequestDto.getAddress());
+        return new UserUpdateResponseDto(user.getId(), user.getName(), user.getEmail(), user.getAddress());
+    }
+
+    public void updateRole(Long id, RoleUpdateRequestDto roleUpdateRequestDto) { // 회원 역할 수정
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
+        );
+        user.updaterole(roleUpdateRequestDto.getRole());
     }
 }
