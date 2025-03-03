@@ -6,6 +6,7 @@ import com.example.jeogiyoproject.domain.account.dto.response.UserResponseDto;
 import com.example.jeogiyoproject.domain.account.dto.response.UserUpdateResponseDto;
 import com.example.jeogiyoproject.domain.account.entity.User;
 import com.example.jeogiyoproject.domain.account.repository.UserRepository;
+import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void deleteUser(Long id) { // 회원 탈퇴
@@ -39,14 +41,21 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
-        user.update(userUpdateRequestDto.getPassword(), userUpdateRequestDto.getAddress());
+        if (!passwordEncoder.matches(userUpdateRequestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
+        }
+        user.update(userUpdateRequestDto.getNewPassword(), userUpdateRequestDto.getAddress());
         return new UserUpdateResponseDto(user.getId(), user.getName(), user.getEmail(), user.getAddress());
     }
 
+    @Transactional
     public void updateRole(Long id, RoleUpdateRequestDto roleUpdateRequestDto) { // 회원 역할 수정
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
+        if (!passwordEncoder.matches(roleUpdateRequestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
+        }
         user.updaterole(roleUpdateRequestDto.getRole());
     }
 }

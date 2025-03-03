@@ -26,12 +26,12 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}/profiles")
-    public ResponseEntity<UserUpdateResponseDto> update(@PathVariable Long id, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+    public ResponseEntity<UserUpdateResponseDto> update(@PathVariable Long id, @RequestBody UserUpdateRequestDto userUpdateRequestDto) { // 비밀번호 및 주소 변경
         return ResponseEntity.ok(userService.update(id, userUpdateRequestDto));
     }
 
     @PatchMapping("/users/{id}/profiles/role")
-    public void updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) {
+    public void updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) { // 역할 변경
         userService.updateRole(id, roleUpdateRequestDto);
     }
 
