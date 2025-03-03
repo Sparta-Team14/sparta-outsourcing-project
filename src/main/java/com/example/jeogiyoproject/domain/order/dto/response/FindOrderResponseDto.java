@@ -2,12 +2,14 @@ package com.example.jeogiyoproject.domain.order.dto.response;
 
 import com.example.jeogiyoproject.domain.order.entity.Order;
 import com.example.jeogiyoproject.domain.order.entity.OrderDetail;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Builder
 public class FindOrderResponseDto {
     private final Long orderId;
     private final String address;
@@ -26,20 +28,20 @@ public class FindOrderResponseDto {
     public static FindOrderResponseDto fromOrderAndOrderDetail(Order order, List<OrderDetail> orderDetails) {
         List<OrderMenuResponseDto> items = new ArrayList<>();
         for (OrderDetail orderDetail : orderDetails) {
-            new OrderMenuResponseDto(
-                    orderDetail.getMenu().getId(),
-                    orderDetail.getMenu().getName(),
-                    orderDetail.getQuantity(),
-                    orderDetail.getQuantity() * orderDetail.getMenu().getPrice()
-            );
+            items.add(OrderMenuResponseDto.builder()
+                    .menuId(orderDetail.getMenu().getId())
+                    .menuName(orderDetail.getMenu().getName())
+                    .quantity(orderDetail.getQuantity())
+                    .price(orderDetail.getQuantity() * orderDetail.getMenu().getPrice())
+                    .build());
         }
-        return new FindOrderResponseDto(
-                order.getId(),
-                order.getUser().getAddress(),
-                order.getTotalPrice(),
-                order.getTotalQuantity(),
-                items
-        );
+        return FindOrderResponseDto.builder()
+                .orderId(order.getId())
+                .address(order.getUser().getAddress())
+                .totalPrice(order.getTotalPrice())
+                .totalQuantity(order.getTotalQuantity())
+                .items(items)
+                .build();
     }
 }
 
