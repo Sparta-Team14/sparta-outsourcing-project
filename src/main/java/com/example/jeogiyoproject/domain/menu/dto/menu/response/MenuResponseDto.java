@@ -1,8 +1,6 @@
-package com.example.jeogiyoproject.domain.menu.dto.menu;
+package com.example.jeogiyoproject.domain.menu.dto.menu.response;
 
-import com.example.jeogiyoproject.domain.menu.dto.category.MenuCategoryResponseDto;
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
-import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -20,7 +18,7 @@ public class MenuResponseDto {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
-    public static MenuResponseDto fromEntity(Menu menu){
+    public static MenuResponseDto fromMenu(Menu menu){
         return MenuResponseDto.builder()
                 .categoryId(menu.getMenuCategory().getId())
                 .menuId(menu.getId())

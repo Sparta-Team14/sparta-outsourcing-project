@@ -1,27 +1,55 @@
 package com.example.jeogiyoproject.domain.menu.controller;
 
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuRequestDto;
-import com.example.jeogiyoproject.domain.menu.dto.menu.MenuResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuListRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuRequestDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuUpdateRequestDto;
 import com.example.jeogiyoproject.domain.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/menus")
 public class MenuController {
     private final MenuService menuService;
 
-    @PostMapping("/menu-categories/{id}/menus")
-    private ResponseEntity<MenuResponseDto> createMenu(@RequestBody MenuRequestDto requestDto,
-                                                       @PathVariable(name = "id") Long categoryId){
+    @PostMapping
+    private ResponseEntity<MenuResponseDto> createMenu(@RequestBody MenuRequestDto requestDto){
         // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
         Long userId = 1L;
-        return new ResponseEntity<>(menuService.createMenu(userId,categoryId, requestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(menuService.createMenu(userId,requestDto), HttpStatus.CREATED);
     }
-
+    @PutMapping("/{menuId}")
+    private ResponseEntity<MenuResponseDto> updateMenu(@RequestBody MenuUpdateRequestDto requestDto,
+                                                       @PathVariable Long menuId){
+        // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
+        Long userId = 1L;
+        return ResponseEntity.ok(menuService.updateService(userId,menuId,requestDto));
+    }
+    @DeleteMapping("/{menuId}")
+    private ResponseEntity<MenuResponseDto> deleteMenu(@PathVariable Long menuId){
+        // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
+        Long userId = 1L;
+        return ResponseEntity.ok(menuService.deleteMenu(userId,menuId));
+    }
+    @PutMapping("/{menuId}/restore")
+    private ResponseEntity<MenuResponseDto> restoreMenu(@PathVariable Long menuId){
+        // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
+        Long userId = 1L;
+        return ResponseEntity.ok(menuService.restoreMenu(userId, menuId));
+    }
+    @GetMapping("/{menuId}")
+    private ResponseEntity<MenuResponseDto> findMenu(@PathVariable Long menuId){
+        return ResponseEntity.ok(menuService.findMenu(menuId));
+    }
+    @GetMapping
+    private ResponseEntity<List<MenuCategoryListResponseDto>> findMenuList(@RequestBody MenuListRequestDto requestDto){
+        return ResponseEntity.ok(menuService.findMenuList(requestDto.getFoodstoreId()));
+    }
 }
