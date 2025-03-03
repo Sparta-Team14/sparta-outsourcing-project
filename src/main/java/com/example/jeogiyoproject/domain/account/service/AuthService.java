@@ -4,6 +4,7 @@ import com.example.jeogiyoproject.domain.account.dto.request.SignUpRequestDto;
 import com.example.jeogiyoproject.domain.account.dto.response.SignUpResponseDto;
 import com.example.jeogiyoproject.domain.account.entity.User;
 import com.example.jeogiyoproject.domain.account.repository.UserRepository;
+import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public SignUpResponseDto save(SignUpRequestDto requestDto) { // 회원가입
@@ -22,7 +24,8 @@ public class AuthService {
         if (!requestDto.getRole().equals("OWNER") && !requestDto.getRole().equals("USER")) {
             throw new CustomException(ErrorCode.ROLE_IS_WRONG);
         }
-        User user = new User(requestDto.getEmail(),requestDto.getPassword(), requestDto.getName(), requestDto.getAddress(), requestDto.getRole());
+        String password = passwordEncoder.encode(requestDto.getPassword());
+        User user = new User(requestDto.getEmail(), password, requestDto.getName(), requestDto.getAddress(), requestDto.getRole());
         userRepository.save(user);
 
         return new SignUpResponseDto(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
