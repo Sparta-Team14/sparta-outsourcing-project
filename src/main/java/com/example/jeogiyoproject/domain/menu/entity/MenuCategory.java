@@ -27,14 +27,19 @@ public class MenuCategory extends BaseEntity {
     @JoinColumn(name = "foodstore_id")
     private FoodStore foodStore;
 
-    @OneToMany(mappedBy = "menuCategory",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Menu> menus = new ArrayList<>();
-
     @Column
     private LocalDateTime deletedAt;
 
     public MenuCategory(String name, FoodStore foodStore) {
         this.name = name;
         this.foodStore = foodStore;
+    }
+
+    public void updateName(String name){
+        this.name = name;
+    }
+
+    public void setDeletedAt(){
+        this.deletedAt = LocalDateTime.now();
     }
 }
