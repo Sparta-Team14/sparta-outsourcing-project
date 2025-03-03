@@ -14,18 +14,20 @@ public enum ErrorCode {
     // Auth
 
     // Menu
+    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴번호 입니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 카테고리 ID입니다."),
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴 ID입니다."),
     MENU_DELETED(HttpStatus.NOT_FOUND,"삭제된 메뉴입니다."),
+
     // FoodStore
-    FOODSTORE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 가게 ID입니다."),
+    FOODSTORE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 가게번호 입니다."),
 
     // Order
-    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문 ID입니다."),
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문번호 입니다."),
     ORDER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 주문 요청입니다."),
     NOT_FOODSTORE_OWNER(HttpStatus.FORBIDDEN, "해당 매장의 사장이 아닙니다."),
     CHANGE_STATUS_ERROR(HttpStatus.BAD_REQUEST, "상태를 변경할 수 없습니다."),
-
+    NOT_ORDER_USER_ID(HttpStatus.FORBIDDEN, "주문한 회원번호가 아닙니다."),
 
     UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 

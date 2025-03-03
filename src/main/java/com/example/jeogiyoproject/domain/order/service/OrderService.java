@@ -1,21 +1,17 @@
 package com.example.jeogiyoproject.domain.order.service;
 
-import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
-import com.example.jeogiyoproject.domain.order.dto.request.ChangeStatusRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.CreateOrderRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.FindOrdersRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.OrderMenuRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.response.CreateOrderResponseDto;
-import com.example.jeogiyoproject.domain.order.dto.response.FindOrdersResponseDto;
-import com.example.jeogiyoproject.domain.order.dto.response.OrderResponseDto;
+import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
+import com.example.jeogiyoproject.domain.order.dto.request.*;
+import com.example.jeogiyoproject.domain.order.dto.response.*;
 import com.example.jeogiyoproject.domain.order.entity.Order;
 import com.example.jeogiyoproject.domain.order.entity.OrderDetail;
 import com.example.jeogiyoproject.domain.order.enums.Status;
 import com.example.jeogiyoproject.domain.order.repository.OrderDetailRepository;
 import com.example.jeogiyoproject.domain.order.repository.OrderRepository;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -38,11 +34,11 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final FoodStoreRepository foodStoreRepository;
-//    private final MenuRepository menuRepository;
+    private final MenuRepository menuRepository;
 
     @Transactional
     public CreateOrderResponseDto createOrder(Long foodstoreId, CreateOrderRequestDto dto) {
-        // TODO 유저 데이터 -> account?
+        // TODO 유저 데이터
         User user = new User();
 
         // e1: 존재하지 않는 가게 조회 시
@@ -57,23 +53,27 @@ public class OrderService {
 
         // e3: 메뉴 유효성 검증
         int totalPrice = 0;
+        int totalQuantity = 0;
         Map<Menu, Integer> menuMap = new HashMap<>();
-        for (OrderMenuRequestDto menuRequest : dto.getMenus()) {
-/*
-            // TODO menu 구현 후 검증
+        for (OrderMenuRequestDto menuRequest : dto.getItems()) {
+
             // e3-1: 존재하지 않는 메뉴 주문 시
             Menu menu = menuRepository.findById(menuRequest.getMenuId())
                     .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND,
                             "메뉴번호:" + menuRequest.getMenuId()));
 
+            // TODO menu -> foodstore 추가
             // e3-2: 주문 메뉴가 해당 가게의 메뉴가 아닌 경우
+            /*
             if (!foodstoreId.equals(menu.getFoodStore().getId())) {
                 throw new CustomException(ErrorCode.ORDER_BAD_REQUEST,
                         "해당 가게의 메뉴가 아닙니다. 메뉴번호: " + menuRequest.getMenuId());
             }
-            totalPrice += menu.getPrice() * menuRequest.getAmount();
-            menuMap.put(menu, menuRequest.getAmount());
             */
+            totalPrice += menu.getPrice() * menuRequest.getQuantity();
+            totalQuantity += menuRequest.getQuantity();
+            menuMap.put(menu, menuRequest.getQuantity());
+
         }
 
         // e4: 최소 금액을 만족하지 못한 경우
@@ -82,10 +82,10 @@ public class OrderService {
                     "최소 주문금액 미만. 최소 주문금액: " + foodStore.getMinPrice());
         }
 
-        Order order = new Order(foodStore, user, totalPrice, dto.getRequest());
+        Order order = new Order(foodStore, user, totalPrice, totalQuantity, dto.getRequest());
         Order saveOrder = orderRepository.save(order);
-        menuMap.forEach((menu, amount) -> {
-            orderDetailRepository.save(new OrderDetail(saveOrder, menu, amount));
+        menuMap.forEach((menu, quantity) -> {
+            orderDetailRepository.save(new OrderDetail(saveOrder, menu, quantity));
         });
 
         return CreateOrderResponseDto.fromOrder(saveOrder);
@@ -105,13 +105,13 @@ public class OrderService {
         if (endAt != null) {
             endAt = endAt.plusDays(1);
         }
-        Page<Order> orders = orderRepository.findAllByCreatedAtDesc(pageable, status, dto.getStartAt(), endAt);
+        Page<Order> orders = orderRepository.findAllByCreatedAtDesc(pageable, status.name(), dto.getStartAt(), endAt);
 
         return orders.map(FindOrdersResponseDto::fromOrder);
     }
 
     @Transactional(readOnly = true)
-    public OrderResponseDto findOrder(Long foodstoreId, Long orderId) {
+    public FindOrderResponseDto findOrder(Long foodstoreId, Long orderId) {
         // TODO 유저 데이터
         User user = new User();
 
@@ -123,7 +123,7 @@ public class OrderService {
 
         List<OrderDetail> orderDetail = orderDetailRepository.findAllByOrderId(orderId);
 
-        return OrderResponseDto.fromOrderAndOrderDetail(order, orderDetail);
+        return FindOrderResponseDto.fromOrderAndOrderDetail(order, orderDetail);
     }
 
     @Transactional
@@ -153,12 +153,67 @@ public class OrderService {
         return "주문 상태가 변경되었습니다. 주문번호: " + orderId + ", 상태: " + status;
     }
 
-    public Page<FindOrdersResponseDto> findOrdersByUser(FindOrdersRequestDto dto) {
-        return null;
+    @Transactional(readOnly = true)
+    public Page<OrderHistoryResponseDto> findOrdersByUser(int page, int size, OrderHistoryRequestDto dto) {
+        // TODO 유저 데이터
+        User user = new User();
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Status status = Status.of(dto.getStatus());
+        LocalDate endAt = dto.getEndAt();
+        if (endAt != null) {
+            endAt = endAt.plusDays(1);
+        }
+
+        Page<Order> orders = orderRepository.findAllByUserId(pageable,
+                user.getId(),
+                dto.getFoodstoreTitle(),
+                status.name(),
+                dto.getStartAt(),
+                endAt
+        );
+
+        return orders.map(OrderHistoryResponseDto::fromOrder);
     }
 
+    @Transactional(readOnly = true)
+    public FindOrderByUserResponseDto findOrderByUser(Long orderId) {
+        // TODO 유저 데이터
+        User user = new User();
+
+        // e1: 주문이 존재하지 않는 경우
+        Order order = findOrder(orderId);
+
+        // e2: 해당 주문의 주문자가 아닌 경우
+        validOrderUser(user, order);
+
+        List<OrderDetail> orderDetail = orderDetailRepository.findAllByOrderId(orderId);
+
+        return FindOrderByUserResponseDto.fromOrderAndOrderDetail(order, orderDetail);
+    }
+
+    @Transactional
     public String cancelOrder(Long orderId) {
-        return null;
+        // TODO 유저 데이터
+        User user = new User();
+
+        // e1: 주문이 존재하지 않는 경우
+        Order order = findOrder(orderId);
+
+        // e2: 해당 주문의 주문자가 아닌 경우
+        validOrderUser(user, order);
+
+        // e3: 주문 상태가 대기가 아닌 경우
+        if (order.getStatus() != Status.WAIT) {
+            throw new CustomException(ErrorCode.CHANGE_STATUS_ERROR, "주문 상태: " + order.getStatus());
+        }
+
+        // 주문 상태 변경
+        order.updateStatus(Status.CANCELED);
+        // 주문 삭제
+        orderRepository.deleteById(orderId);
+
+        return "주문이 취소되었습니다. 주문번호: " + orderId;
     }
 
     private FoodStore findFoodStore(Long foodstoreId) {
@@ -169,29 +224,28 @@ public class OrderService {
 
     private boolean isNotOperatingTime(LocalTime openAt, LocalTime closeAt) {
         LocalTime now = LocalTime.now();
-        if (!now.isAfter(openAt)) {
-            return false;
-        }
-        if (!now.isBefore(closeAt)) {
-            return false;
-        }
-        return true;
+        return !(now.isAfter(openAt) && now.isBefore(closeAt));
     }
 
     private void validFoodstoreOwner(Long foodstoreId, User user) {
         FoodStore foodStore = findFoodStore(foodstoreId);
         // TODO 해당 가게의 사장이 아닌 경우
         /*
-        if (foodStore.getAccount().getId() != user.getId()) {
+        if (foodStore.getUser().getId() != user.getId()) {
            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "userId: " + user.getId());
         }
         */
     }
 
     private Order findOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+        return orderRepository.findById(orderId)
                 .orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND,
                         "주문번호:" + orderId));
-        return order;
+    }
+
+    private void validOrderUser(User user, Order order) {
+        if (!user.getId().equals(order.getUser().getId())) {
+            throw new CustomException(ErrorCode.NOT_ORDER_USER_ID, "회원번호: " + user.getId());
+        }
     }
 }

@@ -30,21 +30,24 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user; // Account?
+    private User user;
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.WAIT;
 
     private Integer totalPrice;
 
+    private Integer totalQuantity;
+
     private String request;
 
     private LocalDateTime deletedAt;
 
-    public Order(FoodStore foodStore, User user, Integer totalPrice, String request) {
+    public Order(FoodStore foodStore, User user, Integer totalPrice, Integer totalQuantity, String request) {
         this.foodStore = foodStore;
         this.user = user;
         this.totalPrice = totalPrice;
+        this.totalQuantity = totalQuantity;
         this.request = request;
     }
 
