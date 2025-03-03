@@ -3,12 +3,11 @@ package com.example.jeogiyoproject.domain.foodstore.dto.req;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
 @AllArgsConstructor
-public class FoodStoreSaveRequestDto {
+public class FoodStoreRequestDto {
     private String title;
     private String address;
     private Integer minPrice;

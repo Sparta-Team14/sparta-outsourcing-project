@@ -3,9 +3,8 @@ package com.example.jeogiyoproject.domain.order.controller;
 import com.example.jeogiyoproject.domain.order.dto.request.ChangeStatusRequestDto;
 import com.example.jeogiyoproject.domain.order.dto.request.CreateOrderRequestDto;
 import com.example.jeogiyoproject.domain.order.dto.request.FindOrdersRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.response.CreateOrderResponseDto;
-import com.example.jeogiyoproject.domain.order.dto.response.FindOrdersResponseDto;
-import com.example.jeogiyoproject.domain.order.dto.response.OrderResponseDto;
+import com.example.jeogiyoproject.domain.order.dto.request.OrderHistoryRequestDto;
+import com.example.jeogiyoproject.domain.order.dto.response.*;
 import com.example.jeogiyoproject.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,8 +38,8 @@ public class OrderController {
     // 주문 조회
     // TODO 사장님 권한
     @GetMapping("/foodstores/{foodstoreId}/orders/{orderId}")
-    public ResponseEntity<OrderResponseDto> findOrder(@PathVariable Long foodstoreId,
-                                                      @PathVariable Long orderId) {
+    public ResponseEntity<FindOrderResponseDto> findOrder(@PathVariable Long foodstoreId,
+                                                          @PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.findOrder(foodstoreId, orderId));
     }
 
@@ -56,10 +55,18 @@ public class OrderController {
     // 주문이력 확인(사용자)
     // TODO 사용자 권한
     @GetMapping("/orders")
-    public ResponseEntity<Page<FindOrdersResponseDto>> findOrdersByUser(@RequestBody(required = false) FindOrdersRequestDto dto) {
-        return ResponseEntity.ok(orderService.findOrdersByUser(dto));
+    public ResponseEntity<Page<OrderHistoryResponseDto>> findOrdersByUser(@RequestParam(defaultValue = "1") int page,
+                                                                          @RequestParam(defaultValue = "10") int size,
+                                                                          @RequestBody OrderHistoryRequestDto dto) {
+        return ResponseEntity.ok(orderService.findOrdersByUser(page, size, dto));
     }
 
+    // 주문이력 단건 조회(사용자)
+    // TODO 사용자 권한
+    @GetMapping("/orders/{orderId}")
+    public ResponseEntity<FindOrderByUserResponseDto> findOrderByUser(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.findOrderByUser(orderId));
+    }
 
     // 주문 취소(사용자)
     // TODO 사용자 권한
@@ -67,4 +74,6 @@ public class OrderController {
     public ResponseEntity<String> cancelOrder(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.cancelOrder(orderId));
     }
+
+
 }

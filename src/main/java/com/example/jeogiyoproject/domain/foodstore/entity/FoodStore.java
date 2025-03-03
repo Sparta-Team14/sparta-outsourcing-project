@@ -1,6 +1,8 @@
 package com.example.jeogiyoproject.domain.foodstore.entity;
 
 import com.example.jeogiyoproject.domain.base.BaseEntity;
+import com.example.jeogiyoproject.domain.menu.entity.Menu;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +23,11 @@ public class FoodStore extends BaseEntity {
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")
-//    private Account account;
+//    private User user;
+//
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "menu_id")
+//    private Menu menu;
 
     @Column(nullable = false)
     private String title;
@@ -53,5 +59,29 @@ public class FoodStore extends BaseEntity {
         this.minPrice = minPrice;
         this.openAt = openAt;
         this.closeAt = closeAt;
+    }
+
+    public void update(
+            String title,
+            String address,
+            Integer minPrice,
+            LocalTime openAt,
+            LocalTime closeAt
+    ) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (address != null) {
+            this.address = address;
+        }
+        if (minPrice != null) {
+            this.minPrice = minPrice;
+        }
+        if (openAt != null) {
+            this.openAt = openAt;
+        }
+        if (closeAt != null) {
+            this.closeAt = closeAt;
+        }
     }
 }

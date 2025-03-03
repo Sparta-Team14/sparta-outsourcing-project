@@ -6,5 +6,5 @@ import lombok.Getter;
 public class OrderMenuRequestDto {
 
     private Long menuId;
-    private Integer amount;
+    private Integer quantity;
 }

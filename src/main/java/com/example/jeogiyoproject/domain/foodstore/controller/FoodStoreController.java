@@ -1,22 +1,54 @@
 package com.example.jeogiyoproject.domain.foodstore.controller;
 
-import com.example.jeogiyoproject.domain.foodstore.dto.req.FoodStoreSaveRequestDto;
+import com.example.jeogiyoproject.domain.foodstore.dto.req.FoodStoreDeleteRequestDto;
+import com.example.jeogiyoproject.domain.foodstore.dto.req.FoodStoreRequestDto;
 import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreResponseDto;
-import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
+import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreSearchResponseDto;
+import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.service.FoodStoreService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class FoodStoreController {
     private final FoodStoreService foodStoreService;
 
+    // 가게생성
     @PostMapping("/foodstores")
-    public ResponseEntity<FoodStoreResponseDto> save(@RequestBody FoodStoreSaveRequestDto dto) {
+    public ResponseEntity<FoodStoreResponseDto> save(@RequestBody FoodStoreRequestDto dto) {
         return ResponseEntity.ok(foodStoreService.save(dto));
+    }
+
+    // 가게수정
+    @PatchMapping("/foodstores/{foodStoreId}")
+    public ResponseEntity<FoodStoreUpdateResponseDto> update(
+            @PathVariable Long foodStoreId,
+            @RequestBody @Valid FoodStoreRequestDto dto) {
+        FoodStoreUpdateResponseDto responseDto = foodStoreService.update(foodStoreId, dto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // 가게 이름으로 조회
+    @GetMapping("/foodstores/search")
+    public ResponseEntity<List<FoodStoreResponseDto>> findStoreByTitle(@RequestParam String title) {
+        return ResponseEntity.ok(foodStoreService.findStoreByTitle(title));
+    }
+
+    // 가게 단건조회
+    @GetMapping("/foodstores/{foodStoreId}")
+    public ResponseEntity<FoodStoreSearchResponseDto> getFoodStore(@PathVariable Long foodStoreId) {
+        return ResponseEntity.ok(foodStoreService.getFoodStore(foodStoreId));
+    }
+
+    // 가게 폐업
+    @PatchMapping("/foodstores/{foodStoreId}/delete")
+    public ResponseEntity<String> delete(@PathVariable Long foodStoreId, @RequestBody FoodStoreDeleteRequestDto dto) {
+        foodStoreService.delete(dto);
+        return ResponseEntity.ok("성공적으로 삭제되었습니다");
     }
 }

@@ -11,14 +11,16 @@ public class FindOrdersResponseDto {
     private final Long orderId;
     private final String status;
     private final Integer totalPrice;
+    private final Integer totalQuantity;
     private final String request;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private final LocalDateTime orderedAt;
 
-    private FindOrdersResponseDto(Long orderId, String status, Integer totalPrice, String request, LocalDateTime orderedAt) {
+    private FindOrdersResponseDto(Long orderId, String status, Integer totalPrice, Integer totalQuantity, String request, LocalDateTime orderedAt) {
         this.orderId = orderId;
         this.status = status;
         this.totalPrice = totalPrice;
+        this.totalQuantity = totalQuantity;
         this.request = request;
         this.orderedAt = orderedAt;
     }
@@ -27,7 +29,7 @@ public class FindOrdersResponseDto {
         return new FindOrdersResponseDto(order.getId(),
                 order.getStatus().name(),
                 order.getTotalPrice(),
-                order.getRequest(),
-                order.getCreatedAt());
+                order.getTotalQuantity(),
+                order.getRequest(), order.getCreatedAt());
     }
 }

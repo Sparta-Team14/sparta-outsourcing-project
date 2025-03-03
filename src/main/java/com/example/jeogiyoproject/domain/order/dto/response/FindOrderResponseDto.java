@@ -8,34 +8,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class OrderResponseDto {
+public class FindOrderResponseDto {
     private final Long orderId;
     private final String address;
     private final Integer totalPrice;
-    private final List<OrderMenuResponseDto> menus;
+    private final Integer totalQuantity;
+    private final List<OrderMenuResponseDto> items;
 
-    private OrderResponseDto(Long orderId, String address, Integer totalPrice, List<OrderMenuResponseDto> menus) {
+    private FindOrderResponseDto(Long orderId, String address, Integer totalPrice, Integer totalQuantity, List<OrderMenuResponseDto> items) {
         this.orderId = orderId;
         this.address = address;
         this.totalPrice = totalPrice;
-        this.menus = menus;
+        this.totalQuantity = totalQuantity;
+        this.items = items;
     }
 
-    public static OrderResponseDto fromOrderAndOrderDetail(Order order, List<OrderDetail> orderDetails) {
-        List<OrderMenuResponseDto> menus = new ArrayList<>();
+    public static FindOrderResponseDto fromOrderAndOrderDetail(Order order, List<OrderDetail> orderDetails) {
+        List<OrderMenuResponseDto> items = new ArrayList<>();
         for (OrderDetail orderDetail : orderDetails) {
             new OrderMenuResponseDto(
                     orderDetail.getMenu().getId(),
                     orderDetail.getMenu().getName(),
-                    orderDetail.getAmount(),
-                    orderDetail.getAmount() * orderDetail.getMenu().getPrice()
+                    orderDetail.getQuantity(),
+                    orderDetail.getQuantity() * orderDetail.getMenu().getPrice()
             );
         }
-        return new OrderResponseDto(
+        return new FindOrderResponseDto(
                 order.getId(),
                 order.getUser().getAddress(),
                 order.getTotalPrice(),
-                menus
+                order.getTotalQuantity(),
+                items
         );
     }
 }

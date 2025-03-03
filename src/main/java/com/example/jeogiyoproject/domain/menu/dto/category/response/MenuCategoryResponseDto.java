@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.menu.dto.category;
+package com.example.jeogiyoproject.domain.menu.dto.category.response;
 
 
 import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
@@ -17,7 +17,7 @@ public class MenuCategoryResponseDto {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
-    public static MenuCategoryResponseDto fromEntity(MenuCategory category){
+    public static MenuCategoryResponseDto fromMenuCategory(MenuCategory category){
         return MenuCategoryResponseDto.builder()
                 .id(category.getId())
                 .foodstoreId(category.getFoodStore().getId())
