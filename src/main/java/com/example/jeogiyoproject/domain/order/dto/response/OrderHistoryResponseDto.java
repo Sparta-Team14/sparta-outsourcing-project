@@ -1,9 +1,11 @@
 package com.example.jeogiyoproject.domain.order.dto.response;
 
 import com.example.jeogiyoproject.domain.order.entity.Order;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class OrderHistoryResponseDto {
     private final Long orderId;
     private final Long foodstoreId;
@@ -22,12 +24,13 @@ public class OrderHistoryResponseDto {
     }
 
     public static OrderHistoryResponseDto fromOrder(Order order) {
-        return new OrderHistoryResponseDto(order.getId(),
-                order.getFoodStore().getId(),
-                order.getFoodStore().getTitle(),
-                order.getTotalPrice(),
-                order.getTotalQuantity(),
-                order.getRequest()
-        );
+        return OrderHistoryResponseDto.builder()
+                .orderId(order.getId())
+                .foodstoreId(order.getFoodStore().getId())
+                .foodStoreTitle(order.getFoodStore().getTitle())
+                .totalPrice(order.getTotalPrice())
+                .totalQuantity(order.getTotalQuantity())
+                .request(order.getRequest())
+                .build();
     }
 }

@@ -1,13 +1,21 @@
 package com.example.jeogiyoproject.domain.user.entity;
 
 import com.example.jeogiyoproject.domain.base.BaseEntity;
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted_at = now() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor
 public class User extends BaseEntity {
 
@@ -23,9 +31,11 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String address; // 주소
     @Column(length = 5, nullable = false)
-    private String role; // 역할
+    private UserRole role; // 역할
 
-    public User(String email, String password, String name, String address, String role) {
+    private LocalDateTime deletedAt; // deleted_at
+
+    public User(String email, String password, String name, String address, UserRole role) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -33,12 +43,15 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void update(String password, String address) {
-        this.password = password;
+    public void update(String address) {
         this.address = address;
     }
 
-    public void updaterole(String role) {
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateRole(UserRole role) {
         this.role = role;
     }
 }

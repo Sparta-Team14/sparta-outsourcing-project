@@ -2,11 +2,13 @@ package com.example.jeogiyoproject.domain.order.dto.response;
 
 import com.example.jeogiyoproject.domain.order.entity.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 public class CreateOrderResponseDto {
     private final Long orderId;
     private final String status;
@@ -20,6 +22,10 @@ public class CreateOrderResponseDto {
     }
 
     public static CreateOrderResponseDto fromOrder(Order order) {
-        return new CreateOrderResponseDto(order.getId(), order.getStatus().name(), order.getCreatedAt());
+        return CreateOrderResponseDto.builder()
+                .orderId(order.getId())
+                .status(order.getStatus().name())
+                .orderedAt(order.getCreatedAt())
+                .build();
     }
 }

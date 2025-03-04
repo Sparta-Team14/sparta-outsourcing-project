@@ -6,12 +6,13 @@ import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategory
 import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryResponseDto;
 import com.example.jeogiyoproject.domain.menu.service.MenuCategoryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MenuCategoryController {
@@ -22,6 +23,7 @@ public class MenuCategoryController {
                                                                    @PathVariable Long foodstoreId){
         // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
         Long userId = 1L;
+        log.info("userId = {}",userId);
         return new ResponseEntity<>(menuCategoryService.createCategory(userId,foodstoreId,requestDto.getName()),HttpStatus.CREATED);
     }
     @PutMapping("/menu-categories/{categoryId}")

@@ -2,14 +2,13 @@ package com.example.jeogiyoproject.domain.foodstore.dto.res;
 
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
 public class FoodStoreResponseDto {
     private final Long id;
-//    private final String ownerId;
+    private final Long userId;
     private final String title;
     private final String address;
     private final Integer minPrice;
@@ -20,7 +19,7 @@ public class FoodStoreResponseDto {
 
     public FoodStoreResponseDto(
             Long id,
-//            String ownerId,
+            Long userId,
             String title,
             String address,
             Integer minPrice,
@@ -30,7 +29,7 @@ public class FoodStoreResponseDto {
             LocalDateTime updatedAt
     ) {
         this.id = id;
-//        this.ownerId = ownerId;
+        this.userId = userId;
         this.title = title;
         this.address = address;
         this.minPrice = minPrice;
