@@ -1,8 +1,9 @@
 package com.example.jeogiyoproject.domain.foodstore.entity;
 
 import com.example.jeogiyoproject.domain.base.BaseEntity;
-import com.example.jeogiyoproject.domain.menu.entity.Menu;
+
 import com.example.jeogiyoproject.domain.user.entity.Users;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

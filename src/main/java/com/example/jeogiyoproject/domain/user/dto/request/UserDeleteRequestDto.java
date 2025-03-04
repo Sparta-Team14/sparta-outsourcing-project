@@ -3,8 +3,6 @@ package com.example.jeogiyoproject.domain.user.dto.request;
 import lombok.Getter;
 
 @Getter
-public class UserUpdateRequestDto {
+public class UserDeleteRequestDto {
     private String password;
-    private String newPassword;
-    private String address;
 }
