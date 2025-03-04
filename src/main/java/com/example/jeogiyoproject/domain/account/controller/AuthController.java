@@ -2,6 +2,7 @@ package com.example.jeogiyoproject.domain.account.controller;
 
 import com.example.jeogiyoproject.domain.account.dto.request.LoginRequestDto;
 import com.example.jeogiyoproject.domain.account.dto.request.SignUpRequestDto;
+import com.example.jeogiyoproject.domain.account.dto.response.LoginResponseDto;
 import com.example.jeogiyoproject.domain.account.dto.response.SignUpResponseDto;
 import com.example.jeogiyoproject.domain.account.service.AuthService;
 import com.example.jeogiyoproject.domain.account.service.UserService;
@@ -24,6 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public void login(@RequestBody LoginRequestDto loginRequestDto) { // 로그인
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) { // 로그인
+        return ResponseEntity.ok(authService.login(loginRequestDto));
     }
 }

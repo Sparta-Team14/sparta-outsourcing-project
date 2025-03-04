@@ -1,12 +1,16 @@
 package com.example.jeogiyoproject.domain.account.service;
 
+import com.example.jeogiyoproject.domain.account.dto.request.LoginRequestDto;
 import com.example.jeogiyoproject.domain.account.dto.request.SignUpRequestDto;
+import com.example.jeogiyoproject.domain.account.dto.response.LoginResponseDto;
 import com.example.jeogiyoproject.domain.account.dto.response.SignUpResponseDto;
 import com.example.jeogiyoproject.domain.account.entity.User;
 import com.example.jeogiyoproject.domain.account.repository.UserRepository;
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
+import com.example.jeogiyoproject.global.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,17 +21,34 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public SignUpResponseDto save(SignUpRequestDto requestDto) { // 회원가입
 
-        if (!requestDto.getRole().equals("OWNER") && !requestDto.getRole().equals("USER")) {
-            throw new CustomException(ErrorCode.ROLE_IS_WRONG);
+        if (userRepository.existsByEmail(requestDto.getEmail())) {
+            throw new CustomException(ErrorCode.EMAIL_IS_EXIST);
         }
+
         String password = passwordEncoder.encode(requestDto.getPassword());
-        User user = new User(requestDto.getEmail(), password, requestDto.getName(), requestDto.getAddress(), requestDto.getRole());
+        UserRole userRole = UserRole.valueOf(requestDto.getRole());
+        User user = new User(requestDto.getEmail(), password, requestDto.getName(), requestDto.getAddress(), userRole);
         userRepository.save(user);
 
-        return new SignUpResponseDto(user.getId(), user.getName(), user.getEmail(), user.getCreatedAt(), user.getUpdatedAt());
+        return new SignUpResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getCreatedAt(), user.getUpdatedAt());
+    }
+
+    @Transactional
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+        User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
+        );
+        if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
+        }
+
+        String bearerToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getRole());
+
+        return new LoginResponseDto(bearerToken);
     }
 }
