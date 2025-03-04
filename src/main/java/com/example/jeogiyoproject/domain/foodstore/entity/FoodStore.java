@@ -1,5 +1,6 @@
 package com.example.jeogiyoproject.domain.foodstore.entity;
 import com.example.jeogiyoproject.domain.base.BaseEntity;
+import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,8 +9,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -25,8 +24,9 @@ public class FoodStore extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @OneToMany(mappedBy = "foodStore", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Menu> menus = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_category_id")
+    private MenuCategory menuCategory;
 
     @Column(nullable = false)
     private String title;

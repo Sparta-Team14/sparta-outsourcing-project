@@ -6,6 +6,7 @@ import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreSearchRespon
 import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryBasicDto;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -115,16 +115,16 @@ public class FoodStoreService {
                 () -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND)
         );
 
+        Long menuCategoryId =  foodStore.getMenuCategory().getId();
+
         return new FoodStoreSearchResponseDto(
                 foodStore.getId(),
                 foodStore.getTitle(),
                 foodStore.getAddress(),
                 foodStore.getMinPrice(),
                 foodStore.getOpenAt(),
-                foodStore.getCloseAt()
-//                foodStore.getMenus().stream()
-//                        .map(MenuResponseDto::fromMenu)
-//                        .collect(Collectors.toList())
+                foodStore.getCloseAt(),
+                menuCategoryId
         );
     }
 

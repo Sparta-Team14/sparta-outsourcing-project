@@ -34,9 +34,9 @@ public class UserController {
         return ResponseEntity.ok(userService.update(id, userUpdateRequestDto));
     }
 
-    @PatchMapping("/users/{id}/profiles")
-    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequestDto userPasswordUpdateRequestDto) {
-        return ResponseEntity.ok(userService.updatePassword(id, userPasswordUpdateRequestDto));
-    }
+//    @PatchMapping("/users/{id}/profiles")
+//    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequestDto userPasswordUpdateRequestDto) {
+//        return ResponseEntity.ok(userService.updatePassword(id, userPasswordUpdateRequestDto));
+//    }
 
 }
