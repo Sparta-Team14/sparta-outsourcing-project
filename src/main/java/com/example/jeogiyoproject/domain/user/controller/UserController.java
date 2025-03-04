@@ -29,13 +29,13 @@ public class UserController {
         return ResponseEntity.ok(userService.findUser(id));
     }
 
-    @PatchMapping("/users/{id}/profiles")
+    @PatchMapping("/users/{id}/profiles/address")
     public ResponseEntity<UserAddressUpdateResponseDto> update(@PathVariable Long id, @RequestBody UserAddressUpdateRequestDto userUpdateRequestDto) { // 주소 변경
         return ResponseEntity.ok(userService.update(id, userUpdateRequestDto));
     }
 
-    @PatchMapping("/users/{id}/profiles")
-    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequestDto userPasswordUpdateRequestDto) {
+    @PatchMapping("/users/{id}/profiles/password")
+    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequestDto userPasswordUpdateRequestDto) { // 비밀번호 변경
         return ResponseEntity.ok(userService.updatePassword(id, userPasswordUpdateRequestDto));
     }
 
