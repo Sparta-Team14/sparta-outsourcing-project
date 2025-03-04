@@ -17,6 +17,7 @@ public enum ErrorCode {
     PASSWORD_IS_WRONG(HttpStatus.NOT_FOUND, "비밀번호가 일치하지않습니다."),
     TOKEN_IS_NOT_FOUND(HttpStatus.NOT_FOUND, "토큰을 찾을 수 없습니다."),
     EMAIL_IS_EXIST(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
+    USE_AUTH_AUTHUSER_REQUIRED(HttpStatus.BAD_REQUEST, "@Auth와 AuthUser 타입은 함께 사용해야합니다."),
 
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴번호 입니다."),

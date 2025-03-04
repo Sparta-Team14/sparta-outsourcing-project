@@ -1,11 +1,14 @@
 package com.example.jeogiyoproject.domain.user.controller;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
-import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserDeleteRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserAddressUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserPasswordUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
+import com.example.jeogiyoproject.domain.user.dto.response.UserPasswordUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
-import com.example.jeogiyoproject.domain.user.dto.response.UserUpdateResponseDto;
-import com.example.jeogiyoproject.domain.user.service.UserService;
+import com.example.jeogiyoproject.domain.user.dto.response.UserAddressUpdateResponseDto;
+import com.example.jeogiyoproject.domain.user.userservice.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +20,8 @@ public class UserController {
     private final UserService userService;
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable Long id) { // 회원탈퇴
-        userService.deleteUser(id);
+    public void deleteUser(@PathVariable Long id, @RequestBody UserDeleteRequestDto userDeleteRequestDto) { // 회원탈퇴
+        userService.deleteUser(id, userDeleteRequestDto);
     }
 
     @GetMapping("/users/{id}")
@@ -27,13 +30,13 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}/profiles")
-    public ResponseEntity<UserUpdateResponseDto> update(@PathVariable Long id, @RequestBody UserUpdateRequestDto userUpdateRequestDto) { // 비밀번호 및 주소 변경
+    public ResponseEntity<UserAddressUpdateResponseDto> update(@PathVariable Long id, @RequestBody UserAddressUpdateRequestDto userUpdateRequestDto) { // 주소 변경
         return ResponseEntity.ok(userService.update(id, userUpdateRequestDto));
     }
 
-    @PatchMapping("/users/{id}/profiles/role")
-    public ResponseEntity<RoleUpdateResponseDto> updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) { // 역할 변경
-        return ResponseEntity.ok(userService.updateRole(id, roleUpdateRequestDto));
+    @PatchMapping("/users/{id}/profiles")
+    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@PathVariable Long id, @RequestBody UserPasswordUpdateRequestDto userPasswordUpdateRequestDto) {
+        return ResponseEntity.ok(userService.updatePassword(id, userPasswordUpdateRequestDto));
     }
 
 }
