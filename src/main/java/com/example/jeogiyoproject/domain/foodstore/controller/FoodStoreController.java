@@ -8,6 +8,7 @@ import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateRespon
 import com.example.jeogiyoproject.domain.foodstore.service.FoodStoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +21,18 @@ public class FoodStoreController {
 
     // 가게생성
     @PostMapping("/foodstores")
-    public ResponseEntity<FoodStoreResponseDto> save(@RequestBody FoodStoreRequestDto dto) {
-        return ResponseEntity.ok(foodStoreService.save(dto));
+    public ResponseEntity<FoodStoreResponseDto> create(
+            @RequestBody FoodStoreRequestDto dto,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+    ) {
+        return ResponseEntity.ok(foodStoreService.create(dto,token));
     }
 
     // 가게수정
     @PatchMapping("/foodstores/{foodStoreId}")
     public ResponseEntity<FoodStoreUpdateResponseDto> update(
             @PathVariable Long foodStoreId,
-            @RequestBody @Valid FoodStoreRequestDto dto) {
+            @RequestBody FoodStoreRequestDto dto) {
         FoodStoreUpdateResponseDto responseDto = foodStoreService.update(foodStoreId, dto);
         return ResponseEntity.ok(responseDto);
     }
@@ -46,9 +50,13 @@ public class FoodStoreController {
     }
 
     // 가게 폐업
-    @PatchMapping("/foodstores/{foodStoreId}/delete")
-    public ResponseEntity<String> delete(@PathVariable Long foodStoreId, @RequestBody FoodStoreDeleteRequestDto dto) {
-        foodStoreService.delete(dto);
+    @DeleteMapping("/foodstores/{foodStoreId}")
+    public ResponseEntity<String> delete(
+            @PathVariable Long foodStoreId,
+            @RequestHeader("Authorization") String token,
+            @RequestBody FoodStoreDeleteRequestDto dto
+    ) {
+        foodStoreService.delete(foodStoreId, token, dto.getPassword());
         return ResponseEntity.ok("성공적으로 삭제되었습니다");
     }
 }
