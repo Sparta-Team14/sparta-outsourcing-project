@@ -47,6 +47,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // H2
     testRuntimeOnly 'com.h2database:h2'
+    // json-simple
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+    // aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('test') {
