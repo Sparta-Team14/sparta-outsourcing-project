@@ -17,13 +17,7 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @GetMapping
-    public ResponseEntity<List<ReviewResponseDto>> getReviews(
-            @RequestParam(name = "rating", required = false) Integer rating) {
 
-        List<ReviewResponseDto> reviews = reviewService.findReviews(rating);
-        return ResponseEntity.ok(reviews);
-    }
 
 
 }
