@@ -2,7 +2,7 @@ package com.example.jeogiyoproject.domain.user.controller;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
-import com.example.jeogiyoproject.domain.user.userservice.UserAdminService;
+import com.example.jeogiyoproject.domain.user.service.UserAdminService;
 import com.example.jeogiyoproject.global.common.annotation.Admin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

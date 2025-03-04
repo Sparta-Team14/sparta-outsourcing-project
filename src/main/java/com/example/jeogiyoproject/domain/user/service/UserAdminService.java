@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.user.userservice;
+package com.example.jeogiyoproject.domain.user.service;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
