@@ -11,8 +11,8 @@ import org.hibernate.annotations.Where;
 @Getter
 @Entity
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
-@Where(clause = "is_deleted = 0")
+@SQLDelete(sql = "UPDATE users SET deletedAt = true WHERE id = ?")
+@Where(clause = "deletedAt = 0")
 @NoArgsConstructor
 public class User extends BaseEntity {
 
@@ -30,7 +30,7 @@ public class User extends BaseEntity {
     @Column(length = 5, nullable = false)
     private UserRole role; // 역할
 
-    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    @Column(name = "deletedAt") // default 설정 제외
     private boolean deleted;
 
     public User(String email, String password, String name, String address, UserRole role) {
@@ -41,12 +41,15 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
-    public void update(String password, String address) {
-        this.password = password;
+    public void update(String address) {
         this.address = address;
     }
 
-    public void updaterole(UserRole role) {
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateRole(UserRole role) {
         this.role = role;
     }
 }

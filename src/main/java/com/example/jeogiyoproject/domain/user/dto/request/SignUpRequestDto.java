@@ -12,5 +12,5 @@ public class SignUpRequestDto {
     private String password; // 비밀번호
     private String name; // 이름
     private String address; // 주소
-    private String role; // 역할
+//    private String role; // 역할
 }

@@ -2,17 +2,19 @@ package com.example.jeogiyoproject.domain.user.userservice;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserDeleteRequestDto;
-import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserAddressUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserPasswordUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
+import com.example.jeogiyoproject.domain.user.dto.response.UserPasswordUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
-import com.example.jeogiyoproject.domain.user.dto.response.UserUpdateResponseDto;
+import com.example.jeogiyoproject.domain.user.dto.response.UserAddressUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,7 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserResponseDto findUser(Long id) { // 회원 조회
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
@@ -44,15 +46,28 @@ public class UserService {
     }
 
     @Transactional
-    public UserUpdateResponseDto update(Long id, UserUpdateRequestDto userUpdateRequestDto) { // 비밀번호 및 주소 변경
+    public UserAddressUpdateResponseDto update(Long id, UserAddressUpdateRequestDto userUpdateRequestDto) { // 주소 변경
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
         if (!passwordEncoder.matches(userUpdateRequestDto.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
         }
-        user.update(userUpdateRequestDto.getNewPassword(), userUpdateRequestDto.getAddress());
-        return new UserUpdateResponseDto(user.getId(), user.getName(), user.getEmail(), user.getAddress());
+        user.update(userUpdateRequestDto.getAddress()); // 주소만 업데이트 가능하게 추가
+        return new UserAddressUpdateResponseDto(user.getId(), user.getName(), user.getEmail(), user.getAddress(), user.getUpdatedAt());
+    }
+
+    @Transactional
+    public UserPasswordUpdateResponseDto updatePassword(Long id, UserPasswordUpdateRequestDto userPasswordUpdateRequestDto) { // 비밀번호 변경
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
+        );
+        if (!passwordEncoder.matches(userPasswordUpdateRequestDto.getPassword(), user.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
+        }
+        user.updatePassword(userPasswordUpdateRequestDto.getNewPassword());
+
+        return new UserPasswordUpdateResponseDto(user.getId(), user.getEmail(), user.getName(), user.getAddress(), user.getUpdatedAt());
     }
 
     @Transactional
@@ -64,8 +79,10 @@ public class UserService {
             throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
         }
         UserRole userRole = UserRole.of(roleUpdateRequestDto.getRole());
-        user.updaterole(userRole);
+        user.updateRole(userRole);
 
         return new RoleUpdateResponseDto(user.getId(), user.getEmail(), userRole, user.getUpdatedAt());
     }
+
+
 }

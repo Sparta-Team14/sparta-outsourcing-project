@@ -28,29 +28,29 @@ public class JwtUtil {
     @Value("${jwt.secret.key}")
     private String secretkey;
     private Key key;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256; // HS256으로 초기화
 
     @PostConstruct
-    public void init() {
+    public void init() { // 기본 생성
         byte[] bytes = Base64.getDecoder().decode(secretkey);
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String email, UserRole userRole) {
+    public String createToken(Long userId, String email, UserRole userRole) { // 토큰 생성
         Date date = new Date();
 
-        return BEARER_PREFIX +
+        return BEARER_PREFIX + // Bearer
                 Jwts.builder()
-                        .setSubject(String.valueOf(userId))
-                        .claim("email", email)
-                        .claim("userRole", userRole)
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME))
-                        .setIssuedAt(date)
-                        .signWith(key, signatureAlgorithm)
-                        .compact();
+                        .setSubject(String.valueOf(userId)) // userid 추가
+                        .claim("email", email) // 이메일 추가
+                        .claim("userRole", userRole) // 역할 추가
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) //유효 시간
+                        .setIssuedAt(date) //만료시간
+                        .signWith(key, signatureAlgorithm) // hs256으로 서명한다.
+                        .compact(); // builder
     }
 
-    public String substringToken(String tokenValue) {
+    public String substringToken(String tokenValue) { // Barers 앞 7글자를 자름
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             return tokenValue.substring(7);
         }
