@@ -5,7 +5,7 @@ import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserUpdateResponseDto;
-import com.example.jeogiyoproject.domain.user.service.UserService;
+import com.example.jeogiyoproject.domain.userservice.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
