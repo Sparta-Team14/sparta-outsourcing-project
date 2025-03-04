@@ -4,7 +4,7 @@ import com.example.jeogiyoproject.domain.account.dto.request.LoginRequestDto;
 import com.example.jeogiyoproject.domain.account.dto.request.SignUpRequestDto;
 import com.example.jeogiyoproject.domain.account.dto.response.LoginResponseDto;
 import com.example.jeogiyoproject.domain.account.dto.response.SignUpResponseDto;
-import com.example.jeogiyoproject.domain.account.entity.User;
+import com.example.jeogiyoproject.domain.account.entity.Users;
 import com.example.jeogiyoproject.domain.account.repository.UserRepository;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
@@ -32,7 +32,7 @@ public class AuthService {
 
         String password = passwordEncoder.encode(requestDto.getPassword());
         UserRole userRole = UserRole.valueOf(requestDto.getRole());
-        User user = new User(requestDto.getEmail(), password, requestDto.getName(), requestDto.getAddress(), userRole);
+        Users user = new Users(requestDto.getEmail(), password, requestDto.getName(), requestDto.getAddress(), userRole);
         userRepository.save(user);
 
         return new SignUpResponseDto(user.getId(), user.getName(), user.getEmail(), user.getRole(), user.getCreatedAt(), user.getUpdatedAt());
@@ -40,7 +40,7 @@ public class AuthService {
 
     @Transactional
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(
+        Users user = userRepository.findByEmail(loginRequestDto.getEmail()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {

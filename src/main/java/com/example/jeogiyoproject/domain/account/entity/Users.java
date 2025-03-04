@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
-public class User extends BaseEntity {
+public class Users extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 회원번호
@@ -26,7 +26,7 @@ public class User extends BaseEntity {
     @Column(length = 5, nullable = false)
     private UserRole role; // 역할
 
-    public User(String email, String password, String name, String address, UserRole role) {
+    public Users(String email, String password, String name, String address, UserRole role) {
         this.email = email;
         this.password = password;
         this.name = name;

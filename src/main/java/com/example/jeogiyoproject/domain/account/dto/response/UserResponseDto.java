@@ -1,5 +1,6 @@
 package com.example.jeogiyoproject.domain.account.dto.response;
 
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -8,9 +9,9 @@ import java.time.LocalDateTime;
 public class UserResponseDto {
     private final String name;
     private final String adress;
-    private final String role;
+    private final UserRole role;
 
-    public UserResponseDto(String name, String adress, String role) {
+    public UserResponseDto(String name, String adress, UserRole role) {
         this.name = name;
         this.adress = adress;
         this.role = role;

@@ -21,7 +21,6 @@ public enum ErrorCode {
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴번호 입니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 카테고리 ID입니다."),
-    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴 ID입니다."),
     MENU_DELETED(HttpStatus.NOT_FOUND,"삭제된 메뉴입니다."),
 
     // FoodStore
@@ -34,7 +33,7 @@ public enum ErrorCode {
     CHANGE_STATUS_ERROR(HttpStatus.BAD_REQUEST, "상태를 변경할 수 없습니다."),
     NOT_ORDER_USER_ID(HttpStatus.FORBIDDEN, "주문한 회원번호가 아닙니다."),
 
-    UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다."),
+    UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 
     private final HttpStatus status;
     private final String message;
