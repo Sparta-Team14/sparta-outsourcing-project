@@ -1,6 +1,7 @@
 package com.example.jeogiyoproject.domain.userservice;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserDeleteRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
@@ -23,10 +24,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void deleteUser(Long id) { // 회원 탈퇴
-        if(!userRepository.existsById(id)) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
+    public void deleteUser(Long id, UserDeleteRequestDto userDeleteRequestDto) { // 회원 탈퇴
+        Users users = userRepository.findById(id).orElseThrow(
+                () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
+        );
+        if (passwordEncoder.matches(userDeleteRequestDto.getPassword(), users.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
         }
+
         userRepository.deleteById(id);
     }
 

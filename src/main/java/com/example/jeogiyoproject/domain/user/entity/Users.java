@@ -5,10 +5,14 @@ import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = 0")
 @NoArgsConstructor
 public class Users extends BaseEntity {
 
@@ -25,6 +29,9 @@ public class Users extends BaseEntity {
     private String address; // 주소
     @Column(length = 5, nullable = false)
     private UserRole role; // 역할
+
+    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean deleted;
 
     public Users(String email, String password, String name, String address, UserRole role) {
         this.email = email;

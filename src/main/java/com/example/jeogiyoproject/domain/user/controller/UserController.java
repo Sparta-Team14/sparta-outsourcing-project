@@ -1,6 +1,7 @@
 package com.example.jeogiyoproject.domain.user.controller;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.UserDeleteRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
@@ -17,8 +18,8 @@ public class UserController {
     private final UserService userService;
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable Long id) { // 회원탈퇴
-        userService.deleteUser(id);
+    public void deleteUser(@PathVariable Long id, @RequestBody UserDeleteRequestDto userDeleteRequestDto) { // 회원탈퇴
+        userService.deleteUser(id, userDeleteRequestDto);
     }
 
     @GetMapping("/users/{id}")
