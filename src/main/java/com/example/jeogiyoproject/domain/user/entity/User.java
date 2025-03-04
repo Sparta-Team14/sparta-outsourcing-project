@@ -33,8 +33,7 @@ public class User extends BaseEntity {
     @Column(length = 5, nullable = false)
     private UserRole role; // 역할
 
-    @Column(name = "deleted_at") // default 설정 제외
-    private LocalDateTime deleted_at;
+    private LocalDateTime deletedAt; // deleted_at
 
     public User(String email, String password, String name, String address, UserRole role) {
         this.email = email;
