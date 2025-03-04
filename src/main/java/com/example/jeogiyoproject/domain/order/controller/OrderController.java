@@ -1,9 +1,6 @@
 package com.example.jeogiyoproject.domain.order.controller;
 
-import com.example.jeogiyoproject.domain.order.dto.request.ChangeStatusRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.CreateOrderRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.FindOrdersRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.OrderHistoryRequestDto;
+import com.example.jeogiyoproject.domain.order.dto.request.*;
 import com.example.jeogiyoproject.domain.order.dto.response.*;
 import com.example.jeogiyoproject.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +63,13 @@ public class OrderController {
     @GetMapping("/orders/{orderId}")
     public ResponseEntity<FindOrderByUserResponseDto> findOrderByUser(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.findOrderByUser(orderId));
+    }
+
+    // 리뷰 생성 ( 사용자 )
+    @PostMapping("/orders/{orderId}/reviews")
+    public ResponseEntity<CreateReviewResponseDto> createReview(@PathVariable Long ordersId,
+                                                @RequestBody CreateReviewRequestDto dto) {
+        return ResponseEntity.ok(orderService.createReview(ordersId, dto));
     }
 
     // 주문 취소(사용자)

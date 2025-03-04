@@ -19,7 +19,7 @@ public enum ErrorCode {
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴번호 입니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 카테고리 ID입니다."),
-    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴 ID입니다."),
+
     MENU_DELETED(HttpStatus.NOT_FOUND,"삭제된 메뉴입니다."),
 
     // FoodStore

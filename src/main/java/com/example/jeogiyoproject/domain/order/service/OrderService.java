@@ -11,6 +11,8 @@ import com.example.jeogiyoproject.domain.order.entity.OrderDetail;
 import com.example.jeogiyoproject.domain.order.enums.Status;
 import com.example.jeogiyoproject.domain.order.repository.OrderDetailRepository;
 import com.example.jeogiyoproject.domain.order.repository.OrderRepository;
+import com.example.jeogiyoproject.domain.review.entity.Review;
+import com.example.jeogiyoproject.domain.review.repository.ReviewRepository;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,6 +38,9 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final FoodStoreRepository foodStoreRepository;
     private final MenuRepository menuRepository;
+    private final ReviewRepository reviewRepository;
+
+
 
     @Transactional
     public CreateOrderResponseDto createOrder(Long foodstoreId, CreateOrderRequestDto dto) {
@@ -193,6 +199,16 @@ public class OrderService {
     }
 
     @Transactional
+    public CreateReviewResponseDto createReview(Long ordersId, @RequestBody CreateReviewRequestDto dto) {
+
+        Order order = findOrder(ordersId);
+        Review review = new Review(dto.getRating(), dto.getContents(), order);
+        Review savedOrder = reviewRepository.save(review);
+        return new CreateReviewResponseDto(savedOrder.getId(), savedOrder.getRating(),
+                savedOrder.getContents(), savedOrder.getCreatedAt());
+    }
+
+    @Transactional
     public String cancelOrder(Long orderId) {
         // TODO 유저 데이터
         User user = new User();
@@ -248,4 +264,6 @@ public class OrderService {
             throw new CustomException(ErrorCode.NOT_ORDER_USER_ID, "회원번호: " + user.getId());
         }
     }
+
+
 }
