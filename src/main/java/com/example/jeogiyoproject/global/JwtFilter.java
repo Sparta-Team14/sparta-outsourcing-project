@@ -3,7 +3,6 @@ package com.example.jeogiyoproject.global;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.util.JwtUtil;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ClaimsMutator;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.FilterChain;

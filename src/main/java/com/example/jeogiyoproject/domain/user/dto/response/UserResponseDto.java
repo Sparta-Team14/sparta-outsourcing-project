@@ -1,9 +1,7 @@
-package com.example.jeogiyoproject.domain.account.dto.response;
+package com.example.jeogiyoproject.domain.user.dto.response;
 
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class UserResponseDto {

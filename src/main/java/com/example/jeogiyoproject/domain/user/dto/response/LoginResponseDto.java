@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.account.dto.response;
+package com.example.jeogiyoproject.domain.user.dto.response;
 
 import lombok.Getter;
 

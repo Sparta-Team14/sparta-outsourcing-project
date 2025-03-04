@@ -1,12 +1,10 @@
-package com.example.jeogiyoproject.domain.account.controller;
+package com.example.jeogiyoproject.domain.user.controller;
 
-import com.example.jeogiyoproject.domain.account.dto.request.LoginRequestDto;
-import com.example.jeogiyoproject.domain.account.dto.request.SignUpRequestDto;
-import com.example.jeogiyoproject.domain.account.dto.response.LoginResponseDto;
-import com.example.jeogiyoproject.domain.account.dto.response.SignUpResponseDto;
-import com.example.jeogiyoproject.domain.account.service.AuthService;
-import com.example.jeogiyoproject.domain.account.service.UserService;
-import lombok.Getter;
+import com.example.jeogiyoproject.domain.user.dto.request.LoginRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.request.SignUpRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.response.LoginResponseDto;
+import com.example.jeogiyoproject.domain.user.dto.response.SignUpResponseDto;
+import com.example.jeogiyoproject.domain.user.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

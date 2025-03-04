@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.domain.account.entity;
+package com.example.jeogiyoproject.domain.user.entity;
 
 import com.example.jeogiyoproject.domain.base.BaseEntity;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;

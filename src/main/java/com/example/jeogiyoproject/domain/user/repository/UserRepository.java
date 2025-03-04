@@ -1,7 +1,7 @@
-package com.example.jeogiyoproject.domain.account.repository;
+package com.example.jeogiyoproject.domain.user.repository;
 
 
-import com.example.jeogiyoproject.domain.account.entity.Users;
+import com.example.jeogiyoproject.domain.user.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
