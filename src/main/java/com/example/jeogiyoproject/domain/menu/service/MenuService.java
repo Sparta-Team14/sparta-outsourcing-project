@@ -12,11 +12,13 @@ import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MenuService {
@@ -89,7 +91,19 @@ public class MenuService {
 
         for (MenuCategoryListResponseDto categoryDto : categories) {
             List<Menu> menus = menuRepository.findMenusByMenuCategoryIdAndDeletedAtIsNull(categoryDto.getCategoryId());
+            for (Menu menu : menus) {
+                MenuBasicDto menuDto = new MenuBasicDto(menu.getId(), menu.getName(), menu.getInfo(), menu.getPrice());
+                categoryDto.addMenu(menuDto);
+            }
+        }
+        return categories;
+    }
+    @Transactional(readOnly = true)
+    public List<MenuCategoryListResponseDto> findDeletedMenuList(Long foodstoreId) {
+        List<MenuCategoryListResponseDto> categories = menuRepository.findCategoriesByFoodStoreId(foodstoreId);
 
+        for (MenuCategoryListResponseDto categoryDto : categories) {
+            List<Menu> menus = menuRepository.findMenusByMenuCategoryIdAndDeletedAtIsNotNull(categoryDto.getCategoryId());
             for (Menu menu : menus) {
                 MenuBasicDto menuDto = new MenuBasicDto(menu.getId(), menu.getName(), menu.getInfo(), menu.getPrice());
                 categoryDto.addMenu(menuDto);

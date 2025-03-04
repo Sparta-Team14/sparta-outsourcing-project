@@ -52,4 +52,8 @@ public class MenuController {
     private ResponseEntity<List<MenuCategoryListResponseDto>> findMenuList(@RequestBody MenuListRequestDto requestDto){
         return ResponseEntity.ok(menuService.findMenuList(requestDto.getFoodstoreId()));
     }
+    @GetMapping("/deleted")
+    private ResponseEntity<List<MenuCategoryListResponseDto>> findDeletedMenuList(@RequestBody MenuListRequestDto requestDto){
+        return ResponseEntity.ok(menuService.findDeletedMenuList(requestDto.getFoodstoreId()));
+    }
 }

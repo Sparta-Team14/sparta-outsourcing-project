@@ -99,7 +99,7 @@ public class MenuCategoryService {
         menuCategoryRepository.flush();
         return MenuCategoryResponseDto.fromMenuCategory(category);
     }
-
+    @Transactional(readOnly = true)
     public List<MenuCategoryBasicDto> findCategoryList(Long foodstoreId) {
         List<MenuCategory> categories = menuCategoryRepository.findAllByFoodStoreIdAndDeletedAtIsNull(foodstoreId);
         return categories.stream()
@@ -107,6 +107,7 @@ public class MenuCategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<MenuCategoryDeletedBasicDto> findDeletedCategoryList(Long userId, Long foodstoreId) {
         // request의 foodstore를 조회하는 로직 (추후 db에서 조회하도록 변경)
         FoodStore foodStore = foodStoreRepository.findById(foodstoreId)
