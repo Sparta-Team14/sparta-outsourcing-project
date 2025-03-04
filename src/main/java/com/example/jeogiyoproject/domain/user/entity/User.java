@@ -6,13 +6,16 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.Where;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET deletedAt = true WHERE id = ?")
-@Where(clause = "deletedAt = 0")
+@SQLDelete(sql = "UPDATE users SET deleted_at = now() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor
 public class User extends BaseEntity {
 
@@ -30,8 +33,8 @@ public class User extends BaseEntity {
     @Column(length = 5, nullable = false)
     private UserRole role; // 역할
 
-    @Column(name = "deletedAt") // default 설정 제외
-    private boolean deleted;
+    @Column(name = "deleted_at") // default 설정 제외
+    private LocalDateTime deleted_at;
 
     public User(String email, String password, String name, String address, UserRole role) {
         this.email = email;
