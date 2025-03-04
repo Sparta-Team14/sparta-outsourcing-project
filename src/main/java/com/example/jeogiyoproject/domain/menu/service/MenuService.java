@@ -30,19 +30,41 @@ public class MenuService {
         MenuCategory category = categoryRepository.findById(requestDto.getCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
         // category.getFoodStore().getUserId() 와 userId를 비교, 해당 가게의 사장인지 확인
+        Long foodstoreOwnerId = 1L;
+        if(!foodstoreOwnerId.equals(userId)){
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
+        }
+
+//        boolean nameExist = menuCategoryRepository.existsByFoodStoreIdAndName(foodstoreId, name);
+//        if(nameExist){
+//            throw new CustomException(ErrorCode.CATEGORY_IS_EXIST);
+//        }
+        boolean nameExist = menuRepository.existsByMenuCategory_FoodStore_IdAndName(category.getFoodStore().getId(),requestDto.getName());
+        if(nameExist){
+            throw new CustomException(ErrorCode.MENU_IS_EXIST);
+        }
+
         Menu menu = new Menu(category,requestDto.getName(),requestDto.getInfo(),requestDto.getPrice());
         menuRepository.save(menu);
         return MenuResponseDto.fromMenu(menu);
     }
     @Transactional
-    public MenuResponseDto updateService(Long userId, Long menuId, MenuUpdateRequestDto requestDto) {
+    public MenuResponseDto updateMenu(Long userId, Long menuId, MenuUpdateRequestDto requestDto) {
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND));
-//        Long ownerId = menu.getMenuCategory().getFoodStore().getUser().getUserId();
-        Long ownerId = 1L;
-        if(!ownerId.equals(userId)){
+//        Long foodStoreOwnerId = menu.getMenuCategory().getFoodStore().getUser().getUserId();
+
+        Long foodStoreOwnerId = 1L;
+        Long foodstoreId = menu.getMenuCategory().getFoodStore().getId();
+        if(!foodStoreOwnerId.equals(userId)){
             throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
+
+        boolean nameExist = menuRepository.existsByMenuCategory_FoodStore_IdAndName(foodstoreId,requestDto.getName());
+        if(nameExist){
+            throw new CustomException(ErrorCode.MENU_IS_EXIST);
+        }
+
         menu.updateMenu(requestDto);
         menuRepository.flush();
         return MenuResponseDto.fromMenu(menu);
@@ -56,6 +78,11 @@ public class MenuService {
         if(!ownerId.equals(userId)){
             throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
+
+        if(menu.getDeletedAt() != null){
+            throw new CustomException(ErrorCode.MENU_ALREADY_DELETED);
+        }
+
         menu.setDeletedAt();
         menuRepository.flush();
         return MenuResponseDto.fromMenu(menu);
@@ -69,6 +96,11 @@ public class MenuService {
         if(!ownerId.equals(userId)){
             throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
+
+        if(menu.getDeletedAt() == null){
+            throw new CustomException(ErrorCode.MENU_NOT_DELETED);
+        }
+
         menu.restore();
         menuRepository.flush();
         return MenuResponseDto.fromMenu(menu);

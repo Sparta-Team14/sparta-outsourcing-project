@@ -30,16 +30,22 @@ public class MenuCategoryService {
     public MenuCategoryResponseDto createCategory(Long userId, Long foodstoreId, String name) {
         // request의 foodstore를 조회하는 로직 (추후 db에서 조회하도록 변경)
         FoodStore foodStore = foodStoreRepository.findById(foodstoreId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOODSTORE_OWNER));
+                .orElseThrow(() -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND));
 // foodstore Entity에 userId 추가되면 수정 예정
 //        if(!foodStore.getUser().getId().equals(userId)){
 //            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
 //        }
-
         Long foodStoreOwnerId = 1L;
         if (!foodStoreOwnerId.equals(userId)) {
-            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
+
+        boolean nameExist = menuCategoryRepository.existsByFoodStoreIdAndName(foodstoreId, name);
+
+        if(nameExist){
+            throw new CustomException(ErrorCode.CATEGORY_IS_EXIST);
+        }
+
         MenuCategory category = new MenuCategory(name, foodStore);
         menuCategoryRepository.save(category);
         return MenuCategoryResponseDto.fromMenuCategory(category);
@@ -47,18 +53,24 @@ public class MenuCategoryService {
 
     @Transactional
     public MenuCategoryResponseDto updateCategory(Long userId, Long categoryId, String name) {
+
         MenuCategory category = menuCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
-//        foodstore Entity에 userId 추가되면 수정 예정
+
+        Long foodStoreOwnerId = 1L;
+//        foodstore Entity에 user객체 추가되면 수정 예정
 //        if(!category.getFoodStore().getUser().getId().equals(userId)){
 //            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
 //        }
-
-        Long foodStoreOwnerId = 1L;
         if (!foodStoreOwnerId.equals(userId)) {
-            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
 
+        boolean nameExist = menuCategoryRepository.existsByFoodStoreIdAndName(category.getFoodStore().getId(), name);
+
+        if(nameExist){
+            throw new CustomException(ErrorCode.CATEGORY_IS_EXIST);
+        }
         category.updateName(name);
         menuCategoryRepository.flush();
         return MenuCategoryResponseDto.fromMenuCategory(category);
@@ -68,6 +80,7 @@ public class MenuCategoryService {
     public MenuCategoryResponseDto deleteCategory(Long userId, Long categoryId) {
         MenuCategory category = menuCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+
 //        foodstore Entity에 userId 추가되면 수정 예정
 //        if(!category.getFoodStore().getUser().getId().equals(userId)){
 //            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
@@ -75,8 +88,13 @@ public class MenuCategoryService {
 
         Long foodStoreOwnerId = 1L;
         if (!foodStoreOwnerId.equals(userId)) {
-            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
+
+        if(category.getDeletedAt() != null){
+            throw new CustomException(ErrorCode.CATEGORY_ALREADY_DELETED);
+        }
+
         category.setDeletedAt();
         menuCategoryRepository.flush();
         return MenuCategoryResponseDto.fromMenuCategory(category);
@@ -90,11 +108,15 @@ public class MenuCategoryService {
 //        if(!category.getFoodStore().getUser().getId().equals(userId)){
 //            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
 //        }
-
         Long foodStoreOwnerId = 1L;
         if (!foodStoreOwnerId.equals(userId)) {
-            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
+
+        if(category.getDeletedAt() == null){
+            throw new CustomException(ErrorCode.CATEGORY_NOT_DELETED);
+        }
+
         category.restore();
         menuCategoryRepository.flush();
         return MenuCategoryResponseDto.fromMenuCategory(category);
@@ -111,7 +133,7 @@ public class MenuCategoryService {
     public List<MenuCategoryDeletedBasicDto> findDeletedCategoryList(Long userId, Long foodstoreId) {
         // request의 foodstore를 조회하는 로직 (추후 db에서 조회하도록 변경)
         FoodStore foodStore = foodStoreRepository.findById(foodstoreId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOODSTORE_OWNER));
+                .orElseThrow(() -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND));
         // foodstore Entity에 userId 추가되면 수정 예정
 //        if(!foodStore.getUser().getId().equals(userId)){
 //            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
@@ -119,7 +141,7 @@ public class MenuCategoryService {
 
         Long foodStoreOwnerId = 1L;
         if (!foodStoreOwnerId.equals(userId)) {
-            throw new NotOwnerException("해당 가게의 사장만 접근 가능합니다.");
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
         }
         List<MenuCategory> categories = menuCategoryRepository.findAllByFoodStoreIdAndDeletedAtIsNotNull(foodstoreId);
         return categories.stream()

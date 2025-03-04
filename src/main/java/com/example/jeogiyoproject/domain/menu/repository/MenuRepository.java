@@ -23,4 +23,7 @@ public interface MenuRepository extends JpaRepository<Menu,Long> {
     List<MenuCategoryListResponseDto> findCategoriesByFoodStoreId(@Param("foodStoreId") Long foodStoreId);
 
     List<Menu> findMenusByMenuCategoryIdAndDeletedAtIsNotNull(Long categoryId);
+
+    boolean existsByMenuCategory_FoodStore_IdAndName(Long foodStoreId, String name);
+
 }
