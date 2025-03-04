@@ -70,19 +70,5 @@ public class UserService {
         return new UserPasswordUpdateResponseDto(user.getId(), user.getEmail(), user.getName(), user.getAddress(), user.getUpdatedAt());
     }
 
-    @Transactional
-    public RoleUpdateResponseDto updateRole(Long id, RoleUpdateRequestDto roleUpdateRequestDto) { // 회원 역할 수정
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
-        );
-        if (!passwordEncoder.matches(roleUpdateRequestDto.getPassword(), user.getPassword())) {
-            throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
-        }
-        UserRole userRole = UserRole.of(roleUpdateRequestDto.getRole());
-        user.updateRole(userRole);
-
-        return new RoleUpdateResponseDto(user.getId(), user.getEmail(), userRole, user.getUpdatedAt());
-    }
-
 
 }

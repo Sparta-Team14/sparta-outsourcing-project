@@ -39,9 +39,4 @@ public class UserController {
         return ResponseEntity.ok(userService.updatePassword(id, userPasswordUpdateRequestDto));
     }
 
-    @PatchMapping("/users/{id}/profiles/role")
-    public ResponseEntity<RoleUpdateResponseDto> updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) { // 역할 변경, 관리자 권한으로만 접근 가능하게 고려중
-        return ResponseEntity.ok(userService.updateRole(id, roleUpdateRequestDto));
-    }
-
 }
