@@ -1,8 +1,10 @@
 package com.example.jeogiyoproject.global.exception;
 
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
+@Getter
 @Builder
 public class ErrorResponse {
     private String status;
