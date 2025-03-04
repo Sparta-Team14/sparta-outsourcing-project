@@ -25,6 +25,8 @@ public enum ErrorCode {
 
     // FoodStore
     FOODSTORE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 가게번호 입니다."),
+    SAME_NAME_AND_ADDRESS(HttpStatus.NOT_FOUND, "동일한 가게가 존재합니다."),
+    MAXIMUM_STORE(HttpStatus.NOT_FOUND, "등록가능한 가게를 초과하였습니다."),
 
     // Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문번호 입니다."),
