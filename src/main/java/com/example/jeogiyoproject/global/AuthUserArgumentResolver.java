@@ -1,13 +1,11 @@
 package com.example.jeogiyoproject.global;
 
-import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.common.annotation.Auth;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.Null;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

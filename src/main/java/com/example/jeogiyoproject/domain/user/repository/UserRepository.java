@@ -1,14 +1,14 @@
 package com.example.jeogiyoproject.domain.user.repository;
 
 
-import com.example.jeogiyoproject.domain.user.entity.Users;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<Users, Long> {
-    Optional<Users> findByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 
     //boolean existsByEmail(String email);
 

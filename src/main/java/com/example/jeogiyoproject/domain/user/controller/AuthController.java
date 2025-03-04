@@ -4,7 +4,7 @@ import com.example.jeogiyoproject.domain.user.dto.request.LoginRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.SignUpRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.LoginResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.SignUpResponseDto;
-import com.example.jeogiyoproject.domain.userservice.AuthService;
+import com.example.jeogiyoproject.domain.user.userservice.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

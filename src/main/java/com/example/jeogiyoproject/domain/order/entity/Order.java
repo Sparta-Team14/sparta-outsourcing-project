@@ -1,9 +1,9 @@
 package com.example.jeogiyoproject.domain.order.entity;
 
-import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.base.BaseEntity;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.order.enums.Status;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
