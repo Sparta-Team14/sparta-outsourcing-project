@@ -15,11 +15,12 @@ public enum ErrorCode {
     ROLE_IS_WRONG(HttpStatus.BAD_REQUEST, "권한을 잘못 입력하셨습니다."),
     USER_IS_NOT_EXIST(HttpStatus.NOT_FOUND, "사용자가 없습니다."),
     PASSWORD_IS_WRONG(HttpStatus.NOT_FOUND, "비밀번호가 일치하지않습니다."),
+    TOKEN_IS_NOT_FOUND(HttpStatus.NOT_FOUND, "토큰을 찾을 수 없습니다."),
+    EMAIL_IS_EXIST(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
 
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴번호 입니다."),
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 카테고리 ID입니다."),
-//    MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴 ID입니다."),
     MENU_DELETED(HttpStatus.NOT_FOUND,"삭제된 메뉴입니다."),
 
     // FoodStore

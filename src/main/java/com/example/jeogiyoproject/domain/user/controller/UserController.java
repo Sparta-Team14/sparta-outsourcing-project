@@ -2,6 +2,7 @@ package com.example.jeogiyoproject.domain.user.controller;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.service.UserService;
@@ -31,8 +32,8 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}/profiles/role")
-    public void updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) { // 역할 변경
-        userService.updateRole(id, roleUpdateRequestDto);
+    public ResponseEntity<RoleUpdateResponseDto> updateRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) { // 역할 변경
+        return ResponseEntity.ok(userService.updateRole(id, roleUpdateRequestDto));
     }
 
 }

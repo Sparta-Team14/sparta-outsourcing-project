@@ -2,10 +2,12 @@ package com.example.jeogiyoproject.domain.user.service;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserUpdateRequestDto;
+import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserUpdateResponseDto;
-import com.example.jeogiyoproject.domain.user.entity.User;
+import com.example.jeogiyoproject.domain.user.entity.Users;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
@@ -30,7 +32,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDto findUser(Long id) { // 회원 조회
-        User user = userRepository.findById(id).orElseThrow(
+        Users user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
         return new UserResponseDto(user.getName(), user.getAddress(), user.getRole());
@@ -38,7 +40,7 @@ public class UserService {
 
     @Transactional
     public UserUpdateResponseDto update(Long id, UserUpdateRequestDto userUpdateRequestDto) { // 비밀번호 및 이메일 변경
-        User user = userRepository.findById(id).orElseThrow(
+        Users user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
         if (!passwordEncoder.matches(userUpdateRequestDto.getPassword(), user.getPassword())) {
@@ -49,13 +51,16 @@ public class UserService {
     }
 
     @Transactional
-    public void updateRole(Long id, RoleUpdateRequestDto roleUpdateRequestDto) { // 회원 역할 수정
-        User user = userRepository.findById(id).orElseThrow(
+    public RoleUpdateResponseDto updateRole(Long id, RoleUpdateRequestDto roleUpdateRequestDto) { // 회원 역할 수정
+        Users user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
         if (!passwordEncoder.matches(roleUpdateRequestDto.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
         }
-        user.updaterole(roleUpdateRequestDto.getRole());
+        UserRole userRole = UserRole.of(roleUpdateRequestDto.getRole());
+        user.updaterole(userRole);
+
+        return new RoleUpdateResponseDto(user.getId(), user.getEmail(), userRole, user.getUpdatedAt());
     }
 }
