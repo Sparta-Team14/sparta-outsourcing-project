@@ -26,7 +26,7 @@ public class AuthService {
     @Transactional
     public SignUpResponseDto save(SignUpRequestDto requestDto) { // 회원가입
 
-        if (userRepository.existsByEmail(requestDto.getEmail())) {
+        if (userRepository.existsByEmail(requestDto.getEmail()) > 0) { // 이미 탈퇴한 이메일은 가입 불가능
             throw new CustomException(ErrorCode.EMAIL_IS_EXIST);
         }
 
