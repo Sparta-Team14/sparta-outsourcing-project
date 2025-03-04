@@ -39,7 +39,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserUpdateResponseDto update(Long id, UserUpdateRequestDto userUpdateRequestDto) { // 비밀번호 및 이메일 변경
+    public UserUpdateResponseDto update(Long id, UserUpdateRequestDto userUpdateRequestDto) { // 비밀번호 및 주소 변경
         Users user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
