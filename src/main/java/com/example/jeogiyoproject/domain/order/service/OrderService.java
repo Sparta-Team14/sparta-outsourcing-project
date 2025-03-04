@@ -12,6 +12,8 @@ import com.example.jeogiyoproject.domain.order.enums.Status;
 import com.example.jeogiyoproject.domain.order.repository.OrderDetailRepository;
 import com.example.jeogiyoproject.domain.order.repository.OrderRepository;
 import com.example.jeogiyoproject.domain.user.entity.User;
+import com.example.jeogiyoproject.global.common.annotation.Auth;
+import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +31,16 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService {
+public class OrderService implements OrderServiceInterface{
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final FoodStoreRepository foodStoreRepository;
     private final MenuRepository menuRepository;
 
+    @Override
     @Transactional
-    public CreateOrderResponseDto createOrder(Long foodstoreId, CreateOrderRequestDto dto) {
-        // TODO 유저 데이터
+    public CreateOrderResponseDto createOrder(AuthUser authUser, Long foodstoreId, CreateOrderRequestDto dto) {
         User user = new User();
 
         // e1: 존재하지 않는 가게 조회 시
@@ -92,7 +94,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Page<FindOrdersResponseDto> findAllOrders(Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
+    public Page<FindOrdersResponseDto> findAllOrders(AuthUser authUser, Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
         // TODO 유저 데이터
         User user = new User();
 
@@ -105,13 +107,13 @@ public class OrderService {
         if (endAt != null) {
             endAt = endAt.plusDays(1);
         }
-        Page<Order> orders = orderRepository.findAllByCreatedAtDesc(pageable, status.name(), dto.getStartAt(), endAt);
+        Page<Order> orders = orderRepository.findAllByFoodstoreIdByCreatedAtDesc(pageable, foodstoreId, status, dto.getStartAt(), endAt);
 
         return orders.map(FindOrdersResponseDto::fromOrder);
     }
 
     @Transactional(readOnly = true)
-    public FindOrderResponseDto findOrder(Long foodstoreId, Long orderId) {
+    public FindOrderResponseDto findOrder(AuthUser authUser, Long foodstoreId, Long orderId) {
         // TODO 유저 데이터
         User user = new User();
 
@@ -127,7 +129,7 @@ public class OrderService {
     }
 
     @Transactional
-    public String changeStatus(Long foodstoreId, Long orderId, ChangeStatusRequestDto dto) {
+    public ChangeOrderStatusResponseDto changeStatus(AuthUser authUser, Long foodstoreId, Long orderId, ChangeOrderStatusRequestDto dto) {
         // TODO 유저 데이터
         User user = new User();
 
@@ -150,11 +152,12 @@ public class OrderService {
         }
 
         order.updateStatus(status);
-        return "주문 상태가 변경되었습니다. 주문번호: " + orderId + ", 상태: " + status;
+        orderRepository.flush();
+        return ChangeOrderStatusResponseDto.fromOrder(order);
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderHistoryResponseDto> findOrdersByUser(int page, int size, OrderHistoryRequestDto dto) {
+    public Page<OrderHistoryResponseDto> findOrdersByUser(AuthUser authUser, int page, int size, OrderHistoryRequestDto dto) {
         // TODO 유저 데이터
         User user = new User();
 
@@ -168,7 +171,7 @@ public class OrderService {
         Page<Order> orders = orderRepository.findAllByUserId(pageable,
                 user.getId(),
                 dto.getFoodstoreTitle(),
-                status.name(),
+                status,
                 dto.getStartAt(),
                 endAt
         );
@@ -177,7 +180,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public FindOrderByUserResponseDto findOrderByUser(Long orderId) {
+    public FindOrderByUserResponseDto findOrderByUser(AuthUser authUser, Long orderId) {
         // TODO 유저 데이터
         User user = new User();
 
@@ -193,7 +196,7 @@ public class OrderService {
     }
 
     @Transactional
-    public String cancelOrder(Long orderId) {
+    public ChangeOrderStatusResponseDto cancelOrder(AuthUser authUser, Long orderId) {
         // TODO 유저 데이터
         User user = new User();
 
@@ -212,8 +215,9 @@ public class OrderService {
         order.updateStatus(Status.CANCELED);
         // 주문 삭제
         orderRepository.deleteById(orderId);
+        orderRepository.flush();
 
-        return "주문이 취소되었습니다. 주문번호: " + orderId;
+        return ChangeOrderStatusResponseDto.fromOrder(order);
     }
 
     private FoodStore findFoodStore(Long foodstoreId) {
