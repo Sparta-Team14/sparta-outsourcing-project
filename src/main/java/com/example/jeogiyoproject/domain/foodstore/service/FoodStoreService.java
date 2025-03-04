@@ -6,8 +6,7 @@ import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreSearchRespon
 import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
-import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
-import com.example.jeogiyoproject.domain.user.entity.Users;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
@@ -40,7 +39,7 @@ public class FoodStoreService {
     public FoodStoreResponseDto create(FoodStoreRequestDto dto, String token) {
         String jwt = jwtUtil.substringToken(token);
         Long userId = Long.valueOf(jwtUtil.extractClaims(jwt).getSubject());
-        Users user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_IS_NOT_EXIST));
 
         // es.1 유저 role이 OWNER가 아닐때 생성불가
@@ -160,7 +159,7 @@ public class FoodStoreService {
     public void delete(Long foodStoreId, String token, String password) {
         String jwt = jwtUtil.substringToken(token);
         Long userId = Long.valueOf(jwtUtil.extractClaims(jwt).getSubject());
-        Users user = userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_IS_NOT_EXIST));
 
         // es.1 비밀번호가 일치하지 않을시

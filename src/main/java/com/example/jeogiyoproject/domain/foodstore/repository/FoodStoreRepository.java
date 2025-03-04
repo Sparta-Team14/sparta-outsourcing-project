@@ -1,8 +1,7 @@
 package com.example.jeogiyoproject.domain.foodstore.repository;
 
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
-import com.example.jeogiyoproject.domain.user.entity.Users;
-import org.springframework.data.jpa.repository.EntityGraph;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,5 +13,5 @@ public interface FoodStoreRepository extends JpaRepository<FoodStore, Long> {
 //    @EntityGraph(attributePaths = {"menus"})
     Optional<FoodStore> findById(Long foodStoreId);
     boolean existsByTitleAndAddress(String title, String address);
-    long countByUser(Users user);
+    long countByUser(User user);
 }
