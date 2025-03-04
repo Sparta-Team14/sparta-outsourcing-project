@@ -1,16 +1,13 @@
-package com.example.jeogiyoproject.domain.user.userservice;
+package com.example.jeogiyoproject.domain.user.service;
 
-import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserDeleteRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserAddressUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserPasswordUpdateRequestDto;
-import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserPasswordUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserAddressUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
-import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;

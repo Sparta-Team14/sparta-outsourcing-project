@@ -19,11 +19,18 @@ public enum ErrorCode {
     EMAIL_IS_EXIST(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
     USE_AUTH_AUTHUSER_REQUIRED(HttpStatus.BAD_REQUEST, "@Auth와 AuthUser 타입은 함께 사용해야합니다."),
 
+    // MenuCategory
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 카테고리 ID입니다."),
+    CATEGORY_IS_EXIST(HttpStatus.BAD_REQUEST,"이미 존재하는 카테고리명 입니다."),
+    CATEGORY_ALREADY_DELETED(HttpStatus.BAD_REQUEST,"이미 삭제된 카테고리입니다."),
+    CATEGORY_NOT_DELETED(HttpStatus.BAD_REQUEST,"삭제되어 있는 카테고리만 복구할 수 있습니다."),
+
     // Menu
     MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 메뉴번호 입니다."),
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"존재하지 않는 카테고리 ID입니다."),
     MENU_DELETED(HttpStatus.NOT_FOUND,"삭제된 메뉴입니다."),
-
+    MENU_IS_EXIST(HttpStatus.BAD_REQUEST,"이미 존재하는 메뉴명 입니다."),
+    MENU_ALREADY_DELETED(HttpStatus.BAD_REQUEST,"이미 삭제된 메뉴입니다."),
+    MENU_NOT_DELETED(HttpStatus.BAD_REQUEST,"삭제되어 있는 메뉴만 복구할 수 있습니다."),
     // FoodStore
     FOODSTORE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 가게번호 입니다."),
     SAME_NAME_AND_ADDRESS(HttpStatus.NOT_FOUND, "동일한 가게가 존재합니다."),

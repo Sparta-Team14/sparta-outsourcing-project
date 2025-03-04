@@ -1,14 +1,12 @@
 package com.example.jeogiyoproject.domain.user.controller;
 
-import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserDeleteRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserAddressUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.request.UserPasswordUpdateRequestDto;
-import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserPasswordUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserResponseDto;
 import com.example.jeogiyoproject.domain.user.dto.response.UserAddressUpdateResponseDto;
-import com.example.jeogiyoproject.domain.user.userservice.UserService;
+import com.example.jeogiyoproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

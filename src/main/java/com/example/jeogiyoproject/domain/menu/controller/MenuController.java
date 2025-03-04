@@ -30,7 +30,7 @@ public class MenuController {
                                                        @PathVariable Long menuId){
         // AOP로 userRole 체크, userId 가져오는 로직 추가 예정
         Long userId = 1L;
-        return ResponseEntity.ok(menuService.updateService(userId,menuId,requestDto));
+        return ResponseEntity.ok(menuService.updateMenu(userId,menuId,requestDto));
     }
     @DeleteMapping("/{menuId}")
     private ResponseEntity<MenuResponseDto> deleteMenu(@PathVariable Long menuId){
@@ -51,5 +51,9 @@ public class MenuController {
     @GetMapping
     private ResponseEntity<List<MenuCategoryListResponseDto>> findMenuList(@RequestBody MenuListRequestDto requestDto){
         return ResponseEntity.ok(menuService.findMenuList(requestDto.getFoodstoreId()));
+    }
+    @GetMapping("/deleted")
+    private ResponseEntity<List<MenuCategoryListResponseDto>> findDeletedMenuList(@RequestBody MenuListRequestDto requestDto){
+        return ResponseEntity.ok(menuService.findDeletedMenuList(requestDto.getFoodstoreId()));
     }
 }
