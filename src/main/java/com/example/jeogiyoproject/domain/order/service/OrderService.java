@@ -199,9 +199,9 @@ public class OrderService {
     }
 
     @Transactional
-    public CreateReviewResponseDto createReview(Long ordersId, @RequestBody CreateReviewRequestDto dto) {
+    public CreateReviewResponseDto createReview(Long orderId, @RequestBody CreateReviewRequestDto dto) {
 
-        Order order = findOrder(ordersId);
+        Order order = findOrder(orderId);
         Review review = new Review(dto.getRating(), dto.getContents(), order);
         Review savedOrder = reviewRepository.save(review);
         return new CreateReviewResponseDto(savedOrder.getId(), savedOrder.getRating(),

@@ -67,9 +67,9 @@ public class OrderController {
 
     // 리뷰 생성 ( 사용자 )
     @PostMapping("/orders/{orderId}/reviews")
-    public ResponseEntity<CreateReviewResponseDto> createReview(@PathVariable Long ordersId,
+    public ResponseEntity<CreateReviewResponseDto> createReview(@PathVariable Long orderId,
                                                 @RequestBody CreateReviewRequestDto dto) {
-        return ResponseEntity.ok(orderService.createReview(ordersId, dto));
+        return ResponseEntity.ok(orderService.createReview(orderId, dto));
     }
 
     // 주문 취소(사용자)

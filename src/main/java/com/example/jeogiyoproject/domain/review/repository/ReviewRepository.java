@@ -12,4 +12,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
 
+    Review findByrating(int rating);
+
+    Review findByRatingBetween(Integer minRating, Integer maxRating);
 }

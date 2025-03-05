@@ -20,12 +20,13 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
 
     @Transactional(readOnly = true)
-    public ReviewPageResponseDto findAll(LocalDateTime startDate, LocalDateTime endDate, int page, int size, int rating) {
+    public ReviewPageResponseDto findAll(LocalDateTime startDate, LocalDateTime endDate, int page, int size, Integer rating) {
         // page를 0이하로 입력하면 첫번째 페이지 반환
         int adjustedPage = (page > 0) ? page - 1 : 0;
         // 수정일 기준으로 내림차순 정렬
         PageRequest pageable = PageRequest.of(adjustedPage, size, Sort.by("createdAt").ascending());
         Page<Review> reviewPage;
+
 
         // startDate와 endDate를 입력했을 때 startDate가 endDate 보다 뒤면 예외처리
         if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
@@ -40,6 +41,11 @@ public class ReviewService {
 
             reviewPage = reviewRepository.findByCreatedAtBetween(startDate, endDate, pageable);
         }
+       if (rating != null) {
+           reviewRepository.findByrating(rating);
+       } else {
+            reviewRepository.findByRatingBetween(1, 5);
+       }
 
         Page<ReviewResponseDto> responseDto = reviewPage.map(review -> new ReviewResponseDto(
                 review.getOrder().getId(),
