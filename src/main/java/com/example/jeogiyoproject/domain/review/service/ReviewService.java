@@ -27,12 +27,26 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final OrderRepository orderRepository;
 
+
+    @Transactional
+    public CreateReviewResponseDto createReview(Long orderId, CreateReviewRequestDto dto) {
+
+        Order order = findOrder(orderId);
+        Review review = new Review(dto.getRating(), dto.getContents(), order);
+        Review savedOrder = reviewRepository.save(review);
+        return new CreateReviewResponseDto(savedOrder.getOrder().getId(), savedOrder.getId(), savedOrder.getRating(),
+                savedOrder.getContents(), savedOrder.getCreatedAt());
+    }
+
+
     @Transactional(readOnly = true)
     public ReviewPageResponseDto findAll(LocalDateTime startDate, LocalDateTime endDate, int page, int size, Integer rating) {
+
+
         // page를 0이하로 입력하면 첫번째 페이지 반환
         int adjustedPage = (page > 0) ? page - 1 : 0;
         // 수정일 기준으로 내림차순 정렬
-        PageRequest pageable = PageRequest.of(adjustedPage, size, Sort.by("createdAt").ascending());
+        PageRequest pageable = PageRequest.of(adjustedPage, size, Sort.by("createdAt").descending());
         Page<Review> reviewPage;
 
 
@@ -41,22 +55,18 @@ public class ReviewService {
             throw new IllegalStateException("시작 날짜는 종료 날짜보다 이후일 수 없습니다.");
         }
 
-        // startDate와 endDate 둘 중 하나라도 null 이면 전체 기간 조회
         if (startDate == null || endDate == null) {
-            reviewPage = reviewRepository.findAll(pageable);
+            reviewPage = (rating != null)
+                    ? reviewRepository.findAllByRating(rating, pageable) // 특정 별점만 조회
+                    : reviewRepository.findAllByRatingBetween(1, 5, pageable); // 전체 (1~5점) 조회
         } else {
-            // startDate와 endDate 둘 다 입력하면 두 기간 사이 조회
-
-            reviewPage = reviewRepository.findByCreatedAtBetween(startDate, endDate, pageable);
+            reviewPage = (rating != null)
+                    ? reviewRepository.findAllByCreatedAtBetweenAndRating(startDate, endDate, rating, pageable) // 특정 기간 & 특정 별점 조회
+                    : reviewRepository.findAllByCreatedAtBetween(startDate, endDate, pageable); // 특정 기간 내 모든 리뷰 조회
         }
-       if (rating != null) {
-           reviewRepository.findByrating(rating);
-       } else {
-            reviewRepository.findByRatingBetween(1, 5);
-       }
 
         Page<ReviewResponseDto> responseDto = reviewPage.map(review -> new ReviewResponseDto(
-                review.getOrder().getId(),
+                review.getId(), review.getOrder().getId(),
                 review.getRating(),
                 review.getContents(),
                 review.getCreatedAt()
@@ -64,16 +74,6 @@ public class ReviewService {
 
         return new ReviewPageResponseDto(responseDto);
 
-    }
-
-    @Transactional
-    public CreateReviewResponseDto createReview(Long ordersId, @RequestBody CreateReviewRequestDto dto) {
-
-        Order order = findOrder(ordersId);
-        Review review = new Review(dto.getRating(), dto.getContents(), order);
-        Review savedOrder = reviewRepository.save(review);
-        return new CreateReviewResponseDto(savedOrder.getId(), savedOrder.getRating(),
-                savedOrder.getContents(), savedOrder.getCreatedAt());
     }
 
     private Order findOrder(Long orderId) {
