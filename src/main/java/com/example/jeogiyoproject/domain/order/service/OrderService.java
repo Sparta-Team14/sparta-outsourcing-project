@@ -41,7 +41,7 @@ public class OrderService implements OrderServiceInterface{
     @Override
     @Transactional
     public CreateOrderResponseDto createOrder(AuthUser authUser, Long foodstoreId, CreateOrderRequestDto dto) {
-        User user = new User();
+        User user = User.fromAuthUser(authUser);
 
         // e1: 존재하지 않는 가게 조회 시
         FoodStore foodStore = findFoodStore(foodstoreId);
@@ -64,14 +64,12 @@ public class OrderService implements OrderServiceInterface{
                     .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND,
                             "메뉴번호:" + menuRequest.getMenuId()));
 
-            // TODO menu -> foodstore 추가
             // e3-2: 주문 메뉴가 해당 가게의 메뉴가 아닌 경우
-            /*
-            if (!foodstoreId.equals(menu.getFoodStore().getId())) {
+            if (!foodstoreId.equals(menu.getMenuCategory().getFoodStore().getId())) {
                 throw new CustomException(ErrorCode.ORDER_BAD_REQUEST,
                         "해당 가게의 메뉴가 아닙니다. 메뉴번호: " + menuRequest.getMenuId());
             }
-            */
+
             totalPrice += menu.getPrice() * menuRequest.getQuantity();
             totalQuantity += menuRequest.getQuantity();
             menuMap.put(menu, menuRequest.getQuantity());
@@ -95,8 +93,7 @@ public class OrderService implements OrderServiceInterface{
 
     @Transactional(readOnly = true)
     public Page<FindOrdersResponseDto> findAllOrders(AuthUser authUser, Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
-        // TODO 유저 데이터
-        User user = new User();
+        User user = User.fromAuthUser(authUser);
 
         // e1: 해당 가게의 사장이 아닌 경우
         validFoodstoreOwner(foodstoreId, user);
@@ -114,8 +111,7 @@ public class OrderService implements OrderServiceInterface{
 
     @Transactional(readOnly = true)
     public FindOrderResponseDto findOrder(AuthUser authUser, Long foodstoreId, Long orderId) {
-        // TODO 유저 데이터
-        User user = new User();
+        User user = User.fromAuthUser(authUser);
 
         // e1: 해당 가게의 사장이 아닌 경우
         validFoodstoreOwner(foodstoreId, user);
@@ -130,8 +126,7 @@ public class OrderService implements OrderServiceInterface{
 
     @Transactional
     public ChangeOrderStatusResponseDto changeStatus(AuthUser authUser, Long foodstoreId, Long orderId, ChangeOrderStatusRequestDto dto) {
-        // TODO 유저 데이터
-        User user = new User();
+        User user = User.fromAuthUser(authUser);
 
         // e1: 해당 가게의 사장이 아닌 경우
         validFoodstoreOwner(foodstoreId, user);
@@ -158,8 +153,7 @@ public class OrderService implements OrderServiceInterface{
 
     @Transactional(readOnly = true)
     public Page<OrderHistoryResponseDto> findOrdersByUser(AuthUser authUser, int page, int size, OrderHistoryRequestDto dto) {
-        // TODO 유저 데이터
-        User user = new User();
+        User user = User.fromAuthUser(authUser);
 
         Pageable pageable = PageRequest.of(page - 1, size);
         Status status = Status.of(dto.getStatus());
@@ -181,8 +175,7 @@ public class OrderService implements OrderServiceInterface{
 
     @Transactional(readOnly = true)
     public FindOrderByUserResponseDto findOrderByUser(AuthUser authUser, Long orderId) {
-        // TODO 유저 데이터
-        User user = new User();
+        User user = User.fromAuthUser(authUser);
 
         // e1: 주문이 존재하지 않는 경우
         Order order = findOrder(orderId);
@@ -197,8 +190,7 @@ public class OrderService implements OrderServiceInterface{
 
     @Transactional
     public ChangeOrderStatusResponseDto cancelOrder(AuthUser authUser, Long orderId) {
-        // TODO 유저 데이터
-        User user = new User();
+        User user = User.fromAuthUser(authUser);
 
         // e1: 주문이 존재하지 않는 경우
         Order order = findOrder(orderId);
@@ -233,12 +225,10 @@ public class OrderService implements OrderServiceInterface{
 
     private void validFoodstoreOwner(Long foodstoreId, User user) {
         FoodStore foodStore = findFoodStore(foodstoreId);
-        // TODO 해당 가게의 사장이 아닌 경우
-        /*
-        if (foodStore.getUser().getId() != user.getId()) {
+        if (!user.getId().equals(foodStore.getUser().getId())) {
            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "userId: " + user.getId());
         }
-        */
+
     }
 
     private Order findOrder(Long orderId) {
