@@ -21,5 +21,5 @@ public class Cart {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "foodstore_id")
-    private FoodStore foodStore;
+    private FoodStore foodstore;
 }

@@ -2,6 +2,7 @@ package com.example.jeogiyoproject.domain.user.entity;
 
 import com.example.jeogiyoproject.domain.base.BaseEntity;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
+import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,16 @@ public class User extends BaseEntity {
         this.role = role;
     }
 
+    private User(Long id, String email, UserRole role) {
+        this.id = id;
+        this.email = email;
+        this.role = role;
+    }
+
+    public static User fromAuthUser(AuthUser authUser) {
+        return new User(authUser.getId(), authUser.getEmail(), authUser.getUserRole());
+    }
+
     public void update(String address) {
         this.address = address;
     }
@@ -54,4 +65,6 @@ public class User extends BaseEntity {
     public void updateRole(UserRole role) {
         this.role = role;
     }
+
+
 }

@@ -1,15 +1,14 @@
 package com.example.jeogiyoproject.domain.review.controller;
 
+import com.example.jeogiyoproject.domain.order.dto.request.CreateReviewRequestDto;
+import com.example.jeogiyoproject.domain.order.dto.response.CreateReviewResponseDto;
 import com.example.jeogiyoproject.domain.review.dto.response.ReviewPageResponseDto;
 import com.example.jeogiyoproject.domain.review.dto.response.ReviewResponseDto;
 import com.example.jeogiyoproject.domain.review.service.ReviewService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,5 +33,13 @@ public class ReviewController {
         ReviewPageResponseDto responseDto = reviewService.findAll(startDateTime, endDateTime, page, size, rating);
         return ResponseEntity.ok(responseDto);
     }
+    // 리뷰 생성 ( 사용자 )
+    @PostMapping("/orders/{orderId}/reviews")
+    public ResponseEntity<CreateReviewResponseDto> createReview(@PathVariable Long orderId,
+                                                                @RequestBody CreateReviewRequestDto dto) {
+        return ResponseEntity.ok(reviewService.createReview(orderId, dto));
+    }
+
+
 }
 
