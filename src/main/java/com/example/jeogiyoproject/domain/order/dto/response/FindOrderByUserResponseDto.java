@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class FindOrderByUserResponseDto {
     private final Long orderId;
+    private final String status;
     private final Long foodstoreId;
     private final String foodstoreTitle;
     private final Integer totalPrice;
@@ -35,6 +36,7 @@ public class FindOrderByUserResponseDto {
         }
         return FindOrderByUserResponseDto.builder()
                 .orderId(order.getId())
+                .status(order.getStatus().name())
                 .foodstoreId(order.getFoodstore().getId())
                 .foodstoreTitle(order.getFoodstore().getTitle())
                 .totalPrice(order.getTotalPrice())

@@ -8,6 +8,7 @@ import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
 import com.example.jeogiyoproject.domain.order.dto.request.*;
 import com.example.jeogiyoproject.domain.order.dto.response.*;
 import com.example.jeogiyoproject.domain.order.entity.Order;
+import com.example.jeogiyoproject.domain.order.entity.OrderDetail;
 import com.example.jeogiyoproject.domain.order.enums.Status;
 import com.example.jeogiyoproject.domain.order.repository.OrderDetailRepository;
 import com.example.jeogiyoproject.domain.order.repository.OrderRepository;
@@ -23,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -399,6 +399,7 @@ public class OrderSerivceTest {
     @Nested
     class 주문이력_목록_조회 {
         OrderHistoryRequestDto dto = new OrderHistoryRequestDto();
+
         @Test
         void 시작_일자가_종료_일자보다_느린_경우() {
             // given
@@ -425,6 +426,7 @@ public class OrderSerivceTest {
 
         @Test
         void 성공_전체_상태_조회() {
+            OrderHistoryRequestDto dto = new OrderHistoryRequestDto();
             // given
             Order order = new Order(foodstore,
                     User.fromAuthUser(authUser),
@@ -432,21 +434,18 @@ public class OrderSerivceTest {
                     1,
                     "request"
             );
-            ReflectionTestUtils.setField(order, "createdAt", LocalDateTime.now());
-            ReflectionTestUtils.setField(order, "updatedAt", LocalDateTime.now());
+            ReflectionTestUtils.setField(dto, "foodstoreTitle", null);
 
-            ReflectionTestUtils.setField(order, "id", 1L);
-
-            Pageable pageable = PageRequest.of(0, 10);
             Page<Order> orders = new PageImpl<>(List.of(order));
             given(orderRepository.findAllByUserId(
-                    eq(pageable),
+                    any(Pageable.class),
                     eq(authUser.getId()),
-                    eq(null),
+                    eq(dto.getFoodstoreTitle()),
                     eq(List.of(Status.values())),
-                    eq(LocalDateTime.now().minusMonths(1)),
-                    eq(LocalDateTime.now().plusDays(1))
+                    any(LocalDateTime.class),
+                    any(LocalDateTime.class)
             )).willReturn(orders);
+            ReflectionTestUtils.setField(dto, "status", null);
 
             // when
             Page<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
@@ -465,6 +464,7 @@ public class OrderSerivceTest {
                     1,
                     "request"
             );
+            ReflectionTestUtils.setField(dto, "foodstoreTitle", "title");
             ReflectionTestUtils.setField(order, "status", Status.CANCELED);
             ReflectionTestUtils.setField(dto, "status", Status.CANCELED.name());
 
@@ -490,6 +490,7 @@ public class OrderSerivceTest {
     @Nested
     class 주문이력_단건_조회 {
         Long orderId = 1L;
+
         @Test
         void 주문이_존재하지_않는_경우_예외_발생() {
             // given
@@ -530,8 +531,10 @@ public class OrderSerivceTest {
                     1,
                     "request"
             );
+            OrderDetail orderDetail = new OrderDetail(order, menu, 1);
             ReflectionTestUtils.setField(order, "id", orderId);
             given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
+            given(orderDetailRepository.findAllByOrderId(order.getId())).willReturn(List.of(orderDetail));
 
             // when
             FindOrderByUserResponseDto response = orderService.findOrderByUser(authUser, orderId);
@@ -545,6 +548,7 @@ public class OrderSerivceTest {
     @Nested
     class 주문_취소 {
         Long orderId = 1L;
+
         @Test
         void 주문이_존재하지_않는_경우_예외_발생() {
             // given
