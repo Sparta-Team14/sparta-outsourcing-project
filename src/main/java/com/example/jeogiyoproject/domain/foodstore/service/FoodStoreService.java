@@ -6,6 +6,15 @@ import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreSearchRespon
 import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuBasicDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
+import com.example.jeogiyoproject.domain.menu.entity.Menu;
+import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
+import com.example.jeogiyoproject.domain.menu.repository.MenuCategoryRepository;
+import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
+import com.example.jeogiyoproject.domain.menu.service.MenuService;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
@@ -20,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +39,7 @@ import java.util.stream.Collectors;
 public class FoodStoreService {
     private final FoodStoreRepository foodStoreRepository;
     private final UserRepository userRepository;
+    private final MenuRepository menuRepository;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -115,16 +127,24 @@ public class FoodStoreService {
                 () -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND)
         );
 
+        List<MenuCategoryListResponseDto> categories = menuRepository.findCategoriesAndMenusByFoodStoreId(foodStoreId);
+
+        for (MenuCategoryListResponseDto categoryDto : categories) {
+            List<Menu> menus = menuRepository.findMenusByMenuCategoryIdAndDeletedAtIsNull(categoryDto.getCategoryId());
+            for (Menu menu : menus) {
+                MenuBasicDto menuDto = new MenuBasicDto(menu.getId(), menu.getName(), menu.getInfo(), menu.getPrice());
+                categoryDto.addMenu(menuDto);
+            }
+        }
+
         return new FoodStoreSearchResponseDto(
                 foodStore.getId(),
                 foodStore.getTitle(),
                 foodStore.getAddress(),
                 foodStore.getMinPrice(),
                 foodStore.getOpenAt(),
-                foodStore.getCloseAt()
-//                foodStore.getMenus().stream()
-//                        .map(MenuResponseDto::fromMenu)
-//                        .collect(Collectors.toList())
+                foodStore.getCloseAt(),
+                categories
         );
     }
 
