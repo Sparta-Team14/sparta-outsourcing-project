@@ -27,7 +27,7 @@ public class UserAdminService {
         UserRole userRole = UserRole.of(roleUpdateRequestDto.getRole());
         user.updateRole(userRole);
 
-        return new RoleUpdateResponseDto(user.getId(), user.getEmail(), user.getRole(), user.getUpdatedAt());
+        return new RoleUpdateResponseDto(user.getId(), user.getEmail(), user.getRole());
     }
 
 }
