@@ -23,6 +23,7 @@ import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import com.example.jeogiyoproject.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FoodStoreService {
@@ -41,16 +43,11 @@ public class FoodStoreService {
     private final UserRepository userRepository;
     private final MenuRepository menuRepository;
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
     private final PasswordEncoder passwordEncoder;
 
     //가게 생성
     @Transactional
-    public FoodStoreResponseDto create(FoodStoreRequestDto dto, String token) {
-        String jwt = jwtUtil.substringToken(token);
-        Long userId = Long.valueOf(jwtUtil.extractClaims(jwt).getSubject());
+    public FoodStoreResponseDto create(FoodStoreRequestDto dto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_IS_NOT_EXIST));
 
@@ -176,9 +173,7 @@ public class FoodStoreService {
 
     // 가게삭제
     @Transactional
-    public void delete(Long foodStoreId, String token, String password) {
-        String jwt = jwtUtil.substringToken(token);
-        Long userId = Long.valueOf(jwtUtil.extractClaims(jwt).getSubject());
+    public void delete(Long foodStoreId, Long userId, String password) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_IS_NOT_EXIST));
 
