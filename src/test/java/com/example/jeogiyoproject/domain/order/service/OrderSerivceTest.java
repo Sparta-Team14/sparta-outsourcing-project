@@ -5,11 +5,8 @@ import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepositor
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
 import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
 import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
-import com.example.jeogiyoproject.domain.order.dto.request.CreateOrderRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.FindOrdersRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.request.OrderMenuRequestDto;
-import com.example.jeogiyoproject.domain.order.dto.response.CreateOrderResponseDto;
-import com.example.jeogiyoproject.domain.order.dto.response.FindOrdersResponseDto;
+import com.example.jeogiyoproject.domain.order.dto.request.*;
+import com.example.jeogiyoproject.domain.order.dto.response.*;
 import com.example.jeogiyoproject.domain.order.entity.Order;
 import com.example.jeogiyoproject.domain.order.enums.Status;
 import com.example.jeogiyoproject.domain.order.repository.OrderDetailRepository;
@@ -26,10 +23,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -183,7 +182,33 @@ public class OrderSerivceTest {
         }
 
         @Test
-        void 성공() {
+        void 시작_일자가_종료_일자보다_느린_경우() {
+            // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            ReflectionTestUtils.setField(dto, "startAt", dto.getEndAt().plusDays(1));
+
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.DATE_BAD_REQUEST);
+        }
+
+        @Test
+        void 종료_일자가_오늘보다_미래인_경우() {
+            // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            ReflectionTestUtils.setField(dto, "endAt", LocalDate.now().plusDays(1));
+
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.DATE_BAD_REQUEST);
+        }
+
+        @Test
+        void 성공_전체_상태() {
             // given
             Order order = new Order(foodstore,
                     User.fromAuthUser(authUser),
@@ -200,6 +225,35 @@ public class OrderSerivceTest {
                     any(LocalDateTime.class),
                     any(LocalDateTime.class)
             )).willReturn(orders);
+            ReflectionTestUtils.setField(dto, "status", null);
+
+            // when
+            Page<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
+
+            // then
+            assertNotNull(response);
+            assertEquals(response.getTotalElements(), 1);
+        }
+
+        @Test
+        void 성공_특정_상태_조회() {
+            // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            Page<Order> orders = new PageImpl<>(List.of(order));
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            given(orderRepository.findAllByFoodstoreIdByCreatedAtDesc(
+                    any(Pageable.class),
+                    anyLong(),
+                    anyList(),
+                    any(LocalDateTime.class),
+                    any(LocalDateTime.class)
+            )).willReturn(orders);
+            ReflectionTestUtils.setField(dto, "status", "ACCEPTED");
 
             // when
             Page<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
@@ -227,138 +281,340 @@ public class OrderSerivceTest {
         @Test
         void 주문이_존재하지_않는_경우_예외_발생() {
             // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.findOrder(authOwner, foodstoreId, 1L)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.ORDER_NOT_FOUND);
         }
 
         @Test
         void 성공() {
             // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            Long orderId = 1L;
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
+            ReflectionTestUtils.setField(order, "id", orderId);
 
             // when
-
+            FindOrderResponseDto response = orderService.findOrder(authOwner, foodstoreId, orderId);
             // then
+            assertNotNull(response);
+            assertEquals(response.getOrderId(), orderId);
         }
     }
 
     @Nested
     class 주문_상태_변경 {
+        ChangeOrderStatusRequestDto dto = new ChangeOrderStatusRequestDto();
+        Order order = new Order(foodstore,
+                User.fromAuthUser(authUser),
+                1,
+                1,
+                "request"
+        );
+        Long orderId = 1L;
+
         @Test
         void 해당_가게의_사장이_아닌_경우_예외_발생() {
             // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.changeStatus(authUser, foodstoreId, orderId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.NOT_FOODSTORE_OWNER);
         }
 
         @Test
         void 주문이_존재하지_않는_경우_예외_발생() {
             // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.changeStatus(authOwner, foodstoreId, orderId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.ORDER_NOT_FOUND);
         }
 
         @Test
         void 취소_상태를_변경하는_경우_예외_발생() {
             // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
+            ReflectionTestUtils.setField(order, "status", Status.CANCELED);
+            ReflectionTestUtils.setField(dto, "status", Status.ACCEPTED.name());
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.changeStatus(authOwner, foodstoreId, orderId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.CHANGE_STATUS_ERROR);
         }
 
         @Test
         void 상태를_전_단계로_돌리는_경우_예외_발생() {
             // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
+            ReflectionTestUtils.setField(order, "status", Status.ACCEPTED);
+            ReflectionTestUtils.setField(dto, "status", Status.WAIT.name());
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.changeStatus(authOwner, foodstoreId, orderId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.CHANGE_STATUS_ERROR);
         }
 
         @Test
         void 성공() {
             // given
+            given(foodStoreRepository.findById(anyLong())).willReturn(Optional.of(foodstore));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
+            ReflectionTestUtils.setField(order, "status", Status.ACCEPTED);
+            ReflectionTestUtils.setField(dto, "status", Status.COMPLETED.name());
 
             // when
-
+            ChangeOrderStatusResponseDto response = orderService.changeStatus(authOwner, foodstoreId, orderId, dto);
             // then
+            assertNotNull(response);
+            assertEquals(response.getOrderId(), order.getId());
+            assertEquals(response.getStatus(), Status.COMPLETED.name());
         }
     }
 
     @Nested
     class 주문이력_목록_조회 {
+        OrderHistoryRequestDto dto = new OrderHistoryRequestDto();
         @Test
-        void 성공() {
+        void 시작_일자가_종료_일자보다_느린_경우() {
             // given
+            ReflectionTestUtils.setField(dto, "startAt", dto.getEndAt().plusDays(1));
+
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.findOrdersByUser(authUser, 1, 10, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.DATE_BAD_REQUEST);
+        }
+
+        @Test
+        void 종료_일자가_오늘보다_미래인_경우() {
+            // given
+            ReflectionTestUtils.setField(dto, "endAt", LocalDate.now().plusDays(1));
+
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.findOrdersByUser(authUser, 1, 10, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.DATE_BAD_REQUEST);
+        }
+
+        @Test
+        void 성공_전체_상태_조회() {
+            // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            ReflectionTestUtils.setField(order, "createdAt", LocalDateTime.now());
+            ReflectionTestUtils.setField(order, "updatedAt", LocalDateTime.now());
+
+            ReflectionTestUtils.setField(order, "id", 1L);
+
+            Pageable pageable = PageRequest.of(0, 10);
+            Page<Order> orders = new PageImpl<>(List.of(order));
+            given(orderRepository.findAllByUserId(
+                    eq(pageable),
+                    eq(authUser.getId()),
+                    eq(null),
+                    eq(List.of(Status.values())),
+                    eq(LocalDateTime.now().minusMonths(1)),
+                    eq(LocalDateTime.now().plusDays(1))
+            )).willReturn(orders);
 
             // when
+            Page<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
 
             // then
+            assertNotNull(response);
+            assertEquals(response.getTotalElements(), 1);
+        }
+
+        @Test
+        void 성공_특정_상태_조회() {
+            // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            ReflectionTestUtils.setField(order, "status", Status.CANCELED);
+            ReflectionTestUtils.setField(dto, "status", Status.CANCELED.name());
+
+            Page<Order> orders = new PageImpl<>(List.of(order));
+            given(orderRepository.findAllByUserId(
+                    any(Pageable.class),
+                    anyLong(),
+                    anyString(),
+                    anyList(),
+                    any(LocalDateTime.class),
+                    any(LocalDateTime.class)
+            )).willReturn(orders);
+
+            // when
+            Page<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
+
+            // then
+            assertNotNull(response);
+            assertEquals(response.getTotalElements(), 1);
         }
     }
 
     @Nested
     class 주문이력_단건_조회 {
+        Long orderId = 1L;
         @Test
         void 주문이_존재하지_않는_경우_예외_발생() {
             // given
+            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
-            // when
-
-            // then
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.findOrderByUser(authUser, orderId)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.ORDER_NOT_FOUND);
         }
 
         @Test
         void 해당_주문의_주문자가_아닌_경우_예외_발생() {
             // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            ReflectionTestUtils.setField(order, "user", User.fromAuthUser(authOwner));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
-            // when
-
-            // then
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.findOrderByUser(authUser, orderId)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.NOT_ORDER_USER_ID);
         }
 
         @Test
         void 성공() {
             // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            ReflectionTestUtils.setField(order, "id", orderId);
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
             // when
+            FindOrderByUserResponseDto response = orderService.findOrderByUser(authUser, orderId);
 
             // then
+            assertNotNull(response);
+            assertEquals(response.getOrderId(), order.getId());
         }
     }
 
     @Nested
     class 주문_취소 {
+        Long orderId = 1L;
         @Test
         void 주문이_존재하지_않는_경우_예외_발생() {
             // given
+            given(orderRepository.findById(anyLong())).willReturn(Optional.empty());
 
-            // when
-
-            // then
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.cancelOrder(authUser, orderId)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.ORDER_NOT_FOUND);
         }
 
         @Test
         void 해당_주문의_주문자가_아닌_경우_예외_발생() {
             // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            ReflectionTestUtils.setField(order, "user", User.fromAuthUser(authOwner));
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
-            // when
-
-            // then
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.cancelOrder(authUser, orderId)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.NOT_ORDER_USER_ID);
         }
 
         @Test
         void 주문_상태가_대기가_아닌_경우_예외_발생() {
             // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            ReflectionTestUtils.setField(order, "status", Status.ACCEPTED);
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
-            // when
-
-            // then
+            // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    orderService.cancelOrder(authUser, orderId)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.CHANGE_STATUS_ERROR);
         }
 
         @Test
         void 성공() {
             // given
+            Order order = new Order(foodstore,
+                    User.fromAuthUser(authUser),
+                    1,
+                    1,
+                    "request"
+            );
+            ReflectionTestUtils.setField(order, "id", orderId);
+            ReflectionTestUtils.setField(order, "status", Status.WAIT);
+            given(orderRepository.findById(anyLong())).willReturn(Optional.of(order));
 
             // when
+            ChangeOrderStatusResponseDto response = orderService.cancelOrder(authUser, orderId);
 
             // then
+            assertNotNull(response);
+            assertEquals(response.getOrderId(), order.getId());
+            assertEquals(response.getStatus(), Status.CANCELED.name());
         }
     }
 

@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    @EntityGraph(attributePaths = {"foodstore, user"})
+    @EntityGraph(attributePaths = {"foodstore", "user"}, type = EntityGraph.EntityGraphType.FETCH)
     @Query("""
             SELECT o
             FROM Order o
@@ -32,7 +32,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                                                     @Param("startAt") LocalDateTime startAt,
                                                     @Param("endAt") LocalDateTime endAt);
 
-    @EntityGraph(attributePaths = {"foodstore"}, type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = {"foodstore", "user"}, type = EntityGraph.EntityGraphType.FETCH)
     @Query("""
             SELECT o
             FROM Order o

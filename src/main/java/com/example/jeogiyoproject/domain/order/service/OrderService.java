@@ -179,7 +179,8 @@ public class OrderService implements OrderServiceInterface{
         LocalDateTime startAt = LocalDateTime.of(dto.getStartAt(), LocalTime.of(0, 0));
         LocalDateTime endAt = LocalDateTime.of(dto.getEndAt().plusDays(1), LocalTime.of(0, 0));
 
-        Page<Order> orders = orderRepository.findAllByUserId(pageable,
+        Page<Order> orders = orderRepository.findAllByUserId(
+                pageable,
                 user.getId(),
                 dto.getFoodstoreTitle(),
                 statusList,
