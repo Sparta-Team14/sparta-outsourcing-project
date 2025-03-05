@@ -11,7 +11,7 @@ public class OrderHistoryRequestDto {
     private String foodstoreTitle;
     private String status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate startAt = LocalDate.now();
+    private LocalDate startAt = LocalDate.now().minusMonths(1);
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate endAt = LocalDate.now().minusMonths(1);
+    private LocalDate endAt = LocalDate.now();
 }

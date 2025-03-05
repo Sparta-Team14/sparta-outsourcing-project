@@ -24,7 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,14 +99,22 @@ public class OrderService implements OrderServiceInterface{
 
         // e1: 해당 가게의 사장이 아닌 경우
         validFoodstoreOwner(foodstoreId, user);
+        // e2: 조회 기간을 입력한 경우 조회기간 검증
+        validDateTime(dto.getStartAt(), dto.getEndAt());
 
         Pageable pageable = PageRequest.of(page - 1, size);
-        Status status = Status.of(dto.getStatus());
-        LocalDate endAt = dto.getEndAt();
-        if (endAt != null) {
-            endAt = endAt.plusDays(1);
+
+        List<Status> statusList = new ArrayList<>();
+        if (dto.getStatus() == null) {
+            statusList = List.of(Status.values());
+        } else {
+            statusList.add(Status.of(dto.getStatus()));
         }
-        Page<Order> orders = orderRepository.findAllByFoodstoreIdByCreatedAtDesc(pageable, foodstoreId, status, dto.getStartAt(), endAt);
+
+        LocalDateTime startAt = LocalDateTime.of(dto.getStartAt(), LocalTime.of(0, 0));
+        LocalDateTime endAt = LocalDateTime.of(dto.getEndAt().plusDays(1), LocalTime.of(0, 0));
+
+        Page<Order> orders = orderRepository.findAllByFoodstoreIdByCreatedAtDesc(pageable, foodstoreId, statusList, startAt, endAt);
 
         return orders.map(FindOrdersResponseDto::fromOrder);
     }
@@ -155,18 +165,25 @@ public class OrderService implements OrderServiceInterface{
     public Page<OrderHistoryResponseDto> findOrdersByUser(AuthUser authUser, int page, int size, OrderHistoryRequestDto dto) {
         User user = User.fromAuthUser(authUser);
 
+        // 조회 기간을 입력한 경우 조회기간 검증
+        validDateTime(dto.getStartAt(), dto.getEndAt());
+
         Pageable pageable = PageRequest.of(page - 1, size);
-        Status status = Status.of(dto.getStatus());
-        LocalDate endAt = dto.getEndAt();
-        if (endAt != null) {
-            endAt = endAt.plusDays(1);
+        List<Status> statusList = new ArrayList<>();
+        if (dto.getStatus() == null) {
+            statusList = List.of(Status.values());
+        } else {
+            statusList.add(Status.of(dto.getStatus()));
         }
+
+        LocalDateTime startAt = LocalDateTime.of(dto.getStartAt(), LocalTime.of(0, 0));
+        LocalDateTime endAt = LocalDateTime.of(dto.getEndAt().plusDays(1), LocalTime.of(0, 0));
 
         Page<Order> orders = orderRepository.findAllByUserId(pageable,
                 user.getId(),
                 dto.getFoodstoreTitle(),
-                status,
-                dto.getStartAt(),
+                statusList,
+                startAt,
                 endAt
         );
 
@@ -240,6 +257,17 @@ public class OrderService implements OrderServiceInterface{
     private void validOrderUser(User user, Order order) {
         if (!user.getId().equals(order.getUser().getId())) {
             throw new CustomException(ErrorCode.NOT_ORDER_USER_ID, "회원번호: " + user.getId());
+        }
+    }
+
+    private void validDateTime(LocalDate startAt, LocalDate endAt) {
+        // 시작 일자가 종료 일자보다 느린 경우
+        if(startAt.isAfter(endAt)) {
+            throw new CustomException(ErrorCode.DATE_BAD_REQUEST, "조회 시작일은 조회 종료일 이후일 수 없습니다.");
+        }
+        // 종료 일자가 오늘보다 미래인 경우
+        if(endAt.isAfter(LocalDate.now())) {
+            throw new CustomException(ErrorCode.DATE_BAD_REQUEST, "조회 종료일은 오늘 이후일 수 없습니다.");
         }
     }
 }
