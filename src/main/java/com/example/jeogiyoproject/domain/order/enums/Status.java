@@ -18,4 +18,6 @@ public enum Status {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 상태입니다."));
     }
+
+
 }
