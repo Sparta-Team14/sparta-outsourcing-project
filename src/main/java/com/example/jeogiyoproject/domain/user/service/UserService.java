@@ -39,7 +39,7 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
-        return new UserResponseDto(user.getName(), user.getAddress(), user.getRole());
+        return new UserResponseDto(user.getId(), user.getName(), user.getAddress(), user.getRole());
     }
 
     @Transactional
