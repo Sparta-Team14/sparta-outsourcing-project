@@ -6,8 +6,10 @@ import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuRequestDto;
 import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
 import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuUpdateRequestDto;
 import com.example.jeogiyoproject.domain.menu.service.MenuService;
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.common.annotation.Auth;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
+import com.example.jeogiyoproject.web.aop.annotation.AuthCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,9 @@ public class MenuController {
      * @param authUser JWT 토큰에서 유저 반환
      * @return 생성된 메뉴 정보를 리턴
      */
+    @AuthCheck(UserRole.OWNER)
     @PostMapping
-    private ResponseEntity<MenuResponseDto> createMenu(@RequestBody MenuRequestDto requestDto,
+    public ResponseEntity<MenuResponseDto> createMenu(@RequestBody MenuRequestDto requestDto,
                                                        @Auth AuthUser authUser){
         return new ResponseEntity<>(menuService.createMenu(authUser.getId(), requestDto), HttpStatus.CREATED);
     }
@@ -40,8 +43,9 @@ public class MenuController {
      * @param authUser JWT 토큰에서 유저 정보 반환
      * @return 업데이트된 메뉴 정보 리턴
      */
+    @AuthCheck(UserRole.OWNER)
     @PutMapping("/{menuId}")
-    private ResponseEntity<MenuResponseDto> updateMenu(@RequestBody MenuUpdateRequestDto requestDto,
+    public ResponseEntity<MenuResponseDto> updateMenu(@RequestBody MenuUpdateRequestDto requestDto,
                                                        @PathVariable Long menuId,
                                                        @Auth AuthUser authUser){
         return ResponseEntity.ok(menuService.updateMenu(authUser.getId(), menuId,requestDto));
@@ -53,8 +57,9 @@ public class MenuController {
      * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 삭제된 메뉴의 정보 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @DeleteMapping("/{menuId}")
-    private ResponseEntity<MenuResponseDto> deleteMenu(@PathVariable Long menuId,
+    public ResponseEntity<MenuResponseDto> deleteMenu(@PathVariable Long menuId,
                                                        @Auth AuthUser authUser){
         return ResponseEntity.ok(menuService.deleteMenu(authUser.getId(), menuId));
     }
@@ -65,8 +70,9 @@ public class MenuController {
      * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 복구된 메뉴의 정보 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @PutMapping("/{menuId}/restore")
-    private ResponseEntity<MenuResponseDto> restoreMenu(@PathVariable Long menuId,
+    public ResponseEntity<MenuResponseDto> restoreMenu(@PathVariable Long menuId,
                                                         @Auth AuthUser authUser){
         return ResponseEntity.ok(menuService.restoreMenu(authUser.getId(), menuId));
     }
@@ -77,7 +83,7 @@ public class MenuController {
      * @return 조회된 메뉴의 상세정보 반환
      */
     @GetMapping("/{menuId}")
-    private ResponseEntity<MenuResponseDto> findMenu(@PathVariable Long menuId){
+    public ResponseEntity<MenuResponseDto> findMenu(@PathVariable Long menuId){
         return ResponseEntity.ok(menuService.findMenu(menuId));
     }
 
@@ -87,7 +93,7 @@ public class MenuController {
      * @return 해당 가게의 메뉴리스트 반환
      */
     @GetMapping
-    private ResponseEntity<List<MenuCategoryListResponseDto>> findMenuList(@RequestBody MenuListRequestDto requestDto){
+    public ResponseEntity<List<MenuCategoryListResponseDto>> findMenuList(@RequestBody MenuListRequestDto requestDto){
         return ResponseEntity.ok(menuService.findMenuList(requestDto.getFoodstoreId()));
     }
 
@@ -96,8 +102,9 @@ public class MenuController {
      * @param requestDto 가게의 ID를 포함하는 DTO
      * @return 해당 가게의 삭제된 메뉴리스트 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @GetMapping("/deleted")
-    private ResponseEntity<List<MenuCategoryListResponseDto>> findDeletedMenuList(@RequestBody MenuListRequestDto requestDto){
+    public ResponseEntity<List<MenuCategoryListResponseDto>> findDeletedMenuList(@RequestBody MenuListRequestDto requestDto){
         return ResponseEntity.ok(menuService.findDeletedMenuList(requestDto.getFoodstoreId()));
     }
 }

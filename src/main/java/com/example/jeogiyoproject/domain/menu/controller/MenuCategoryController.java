@@ -5,8 +5,10 @@ import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategory
 import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryDeletedBasicDto;
 import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryResponseDto;
 import com.example.jeogiyoproject.domain.menu.service.MenuCategoryService;
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.common.annotation.Auth;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
+import com.example.jeogiyoproject.web.aop.annotation.AuthCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,8 +29,9 @@ public class MenuCategoryController {
      * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 생성된 카테고리의 정보 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @PostMapping("/foodstore/{foodstoreId}/categories")
-    private ResponseEntity<MenuCategoryResponseDto> createCategory(@RequestBody MenuCategoryRequestDto requestDto,
+    public ResponseEntity<MenuCategoryResponseDto> createCategory(@RequestBody MenuCategoryRequestDto requestDto,
                                                                    @PathVariable Long foodstoreId,
                                                                    @Auth AuthUser authUser){
         return new ResponseEntity<>(menuCategoryService.createCategory(authUser.getId(), foodstoreId,requestDto.getName()),HttpStatus.CREATED);
@@ -41,8 +44,9 @@ public class MenuCategoryController {
      * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 수정된 카테고리 정보 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @PutMapping("/menu-categories/{categoryId}")
-    private ResponseEntity<MenuCategoryResponseDto> updateCategory(@RequestBody MenuCategoryRequestDto requestDto,
+    public ResponseEntity<MenuCategoryResponseDto> updateCategory(@RequestBody MenuCategoryRequestDto requestDto,
                                                                    @PathVariable Long categoryId,
                                                                    @Auth AuthUser authUser){
         return ResponseEntity.ok(menuCategoryService.updateCategory(authUser.getId(),categoryId,requestDto.getName()));
@@ -54,8 +58,9 @@ public class MenuCategoryController {
      * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 삭제된 카테고리 정보 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @DeleteMapping("/menu-categories/{categoryId}")
-    private ResponseEntity<MenuCategoryResponseDto> deleteCategory(@PathVariable Long categoryId,
+    public ResponseEntity<MenuCategoryResponseDto> deleteCategory(@PathVariable Long categoryId,
                                                                    @Auth AuthUser authUser){
         return ResponseEntity.ok(menuCategoryService.deleteCategory(authUser.getId(), categoryId));
     }
@@ -66,8 +71,9 @@ public class MenuCategoryController {
      * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 복구한 카테고리 정보 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @PutMapping("/menu-categories/{categoryId}/restore")
-    private ResponseEntity<MenuCategoryResponseDto> restoreCategory(@PathVariable Long categoryId,
+    public ResponseEntity<MenuCategoryResponseDto> restoreCategory(@PathVariable Long categoryId,
                                                                     @Auth AuthUser authUser){
         return ResponseEntity.ok(menuCategoryService.restoreCategory(authUser.getId(), categoryId));
     }
@@ -78,7 +84,7 @@ public class MenuCategoryController {
      * @return 해당 가게의 카테고리 리스트 반환
      */
     @GetMapping("/foodstores/{foodstoreId}/menu-categories")
-    private ResponseEntity<List<MenuCategoryBasicDto>> findCategoryList(@PathVariable Long foodstoreId){
+    public ResponseEntity<List<MenuCategoryBasicDto>> findCategoryList(@PathVariable Long foodstoreId){
         return ResponseEntity.ok(menuCategoryService.findCategoryList(foodstoreId));
     }
 
@@ -88,8 +94,9 @@ public class MenuCategoryController {
      * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 해당 가게의 삭제된 카테고리 리스트 반환
      */
+    @AuthCheck(UserRole.OWNER)
     @GetMapping("/foodstores/{foodstoreId}/menu-categories/deleted")
-    private ResponseEntity<List<MenuCategoryDeletedBasicDto>> findDeletedCategoryList(@PathVariable Long foodstoreId,
+    public ResponseEntity<List<MenuCategoryDeletedBasicDto>> findDeletedCategoryList(@PathVariable Long foodstoreId,
                                                                                       @Auth AuthUser authUser){
         return ResponseEntity.ok(menuCategoryService.findDeletedCategoryList(authUser.getId(), foodstoreId));
     }
