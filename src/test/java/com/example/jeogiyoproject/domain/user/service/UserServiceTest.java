@@ -150,4 +150,17 @@ public class UserServiceTest {
         // then
         assertThat(responseDto.getEmail()).isEqualTo(user.getEmail());
     }
+
+    @Test
+    void 에러를_발생시켜보자() {
+        long id = 1L;
+        String password = "1234";
+
+        UserDeleteRequestDto requestDto = new UserDeleteRequestDto();
+        ReflectionTestUtils.setField(requestDto, "password", password);
+
+        User user = new User("test@gmail.com", password, "test", "seoul", UserRole.USER);
+
+        assertThrows(CustomException.class, () -> userService.deleteUser(-1L, null), "사용자가 없습니다.");
+    }
 }
