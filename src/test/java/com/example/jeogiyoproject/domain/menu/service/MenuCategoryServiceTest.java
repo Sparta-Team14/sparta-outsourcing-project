@@ -244,7 +244,6 @@ class MenuCategoryServiceTest {
         }
     }
 
-
     @Nested
     class DeleteMenuCategoryTest{
         @Test
@@ -348,9 +347,8 @@ class MenuCategoryServiceTest {
         }
     }
 
-
     @Nested
-    class RestoreMenuCategory{
+    class RestoreMenuCategoryTest{
         @Test
         void 메뉴카테고리_복구_성공() {
             // given
@@ -453,7 +451,7 @@ class MenuCategoryServiceTest {
     }
 
     @Nested
-    class FindCategoryList{
+    class FindCategoryListTest{
         @Test
         void 메뉴카테고리_리스트_조회() {
             // given
@@ -480,7 +478,7 @@ class MenuCategoryServiceTest {
     }
 
     @Nested
-    class FindDeletedCategoryList{
+    class FindDeletedCategoryListTest{
         @Test
         void 메뉴카테고리_삭제된_리스트_조회() {
             Long userId = 1L;
@@ -516,7 +514,5 @@ class MenuCategoryServiceTest {
             assertThat(list.get(0).getDeletedAt()).isNotNull();
         }
     }
-
-
 
 }

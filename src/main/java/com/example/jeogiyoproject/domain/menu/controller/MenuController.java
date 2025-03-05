@@ -100,11 +100,13 @@ public class MenuController {
     /***
      * 해당 가게의 삭제된 메뉴리스트 조회
      * @param requestDto 가게의 ID를 포함하는 DTO
+     * @param authUser JWT 토큰에서 로그인 정보 반환
      * @return 해당 가게의 삭제된 메뉴리스트 반환
      */
     @AuthCheck(UserRole.OWNER)
     @GetMapping("/deleted")
-    public ResponseEntity<List<MenuCategoryListResponseDto>> findDeletedMenuList(@RequestBody MenuListRequestDto requestDto){
-        return ResponseEntity.ok(menuService.findDeletedMenuList(requestDto.getFoodstoreId()));
+    public ResponseEntity<List<MenuCategoryListResponseDto>> findDeletedMenuList(@RequestBody MenuListRequestDto requestDto,
+                                                                                 @Auth AuthUser authUser){
+        return ResponseEntity.ok(menuService.findDeletedMenuList(authUser.getId(), requestDto.getFoodstoreId()));
     }
 }
