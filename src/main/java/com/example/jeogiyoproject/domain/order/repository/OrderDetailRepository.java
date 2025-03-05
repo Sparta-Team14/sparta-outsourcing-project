@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
 
-    @EntityGraph(attributePaths = {"order"}, type = EntityGraph.EntityGraphType.FETCH)
+    @EntityGraph(attributePaths = {"order","menu"}, type = EntityGraph.EntityGraphType.FETCH)
     List<OrderDetail> findAllByOrderId(Long orderId);
 }
