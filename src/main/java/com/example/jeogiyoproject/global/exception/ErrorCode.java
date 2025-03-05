@@ -42,6 +42,7 @@ public enum ErrorCode {
     NOT_FOODSTORE_OWNER(HttpStatus.FORBIDDEN, "해당 매장의 사장이 아닙니다."),
     CHANGE_STATUS_ERROR(HttpStatus.BAD_REQUEST, "상태를 변경할 수 없습니다."),
     NOT_ORDER_USER_ID(HttpStatus.FORBIDDEN, "주문한 회원번호가 아닙니다."),
+    DATE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "날짜 입력이 잘못되었습니다."),
 
     UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 

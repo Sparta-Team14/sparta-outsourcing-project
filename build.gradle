@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.googlecode.json-simple:json-simple:1.1'
     // aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // AWS
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter:3.1.1'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.767'
 }
 
 tasks.named('test') {

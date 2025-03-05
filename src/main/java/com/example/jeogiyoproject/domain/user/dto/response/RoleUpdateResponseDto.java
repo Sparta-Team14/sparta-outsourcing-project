@@ -10,12 +10,10 @@ public class RoleUpdateResponseDto {
     private final Long id;
     private final String email;
     private final UserRole userRole;
-    private final LocalDateTime updatedAt;
 
-    public RoleUpdateResponseDto(Long id, String email, UserRole userRole, LocalDateTime updatedAt) {
+    public RoleUpdateResponseDto(Long id, String email, UserRole userRole) {
         this.id = id;
         this.email = email;
         this.userRole = userRole;
-        this.updatedAt = updatedAt;
     }
 }
