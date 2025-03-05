@@ -28,7 +28,6 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -66,10 +65,11 @@ public class OrderService implements OrderServiceInterface{
                             "메뉴번호:" + menuRequest.getMenuId()));
 
             // e3-2: 주문 메뉴가 해당 가게의 메뉴가 아닌 경우
-            /*if (!foodstoreId.equals(menu.getFoodStore().getId())) {
+            if (!foodstoreId.equals(menu.getMenuCategory().getFoodStore().getId())) {
                 throw new CustomException(ErrorCode.ORDER_BAD_REQUEST,
                         "해당 가게의 메뉴가 아닙니다. 메뉴번호: " + menuRequest.getMenuId());
-            }*/
+            }
+
             totalPrice += menu.getPrice() * menuRequest.getQuantity();
             totalQuantity += menuRequest.getQuantity();
             menuMap.put(menu, menuRequest.getQuantity());
@@ -226,7 +226,7 @@ public class OrderService implements OrderServiceInterface{
     private void validFoodstoreOwner(Long foodstoreId, User user) {
         FoodStore foodStore = findFoodStore(foodstoreId);
         if (!user.getId().equals(foodStore.getUser().getId())) {
-           throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "회원번호: " + user.getId());
+           throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "userId: " + user.getId());
         }
 
     }
