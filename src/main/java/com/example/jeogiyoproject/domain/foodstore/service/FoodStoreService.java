@@ -6,6 +6,15 @@ import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreSearchRespon
 import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuBasicDto;
+import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
+import com.example.jeogiyoproject.domain.menu.entity.Menu;
+import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
+import com.example.jeogiyoproject.domain.menu.repository.MenuCategoryRepository;
+import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
+import com.example.jeogiyoproject.domain.menu.service.MenuService;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
@@ -14,31 +23,31 @@ import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import com.example.jeogiyoproject.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FoodStoreService {
     private final FoodStoreRepository foodStoreRepository;
     private final UserRepository userRepository;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final MenuRepository menuRepository;
 
     private final PasswordEncoder passwordEncoder;
 
     //가게 생성
     @Transactional
-    public FoodStoreResponseDto create(FoodStoreRequestDto dto, String token) {
-        String jwt = jwtUtil.substringToken(token);
-        Long userId = Long.valueOf(jwtUtil.extractClaims(jwt).getSubject());
+    public FoodStoreResponseDto create(FoodStoreRequestDto dto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_IS_NOT_EXIST));
 
@@ -115,16 +124,24 @@ public class FoodStoreService {
                 () -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND)
         );
 
+        List<MenuCategoryListResponseDto> categories = menuRepository.findCategoriesAndMenusByFoodStoreId(foodStoreId);
+
+        for (MenuCategoryListResponseDto categoryDto : categories) {
+            List<Menu> menus = menuRepository.findMenusByMenuCategoryIdAndDeletedAtIsNull(categoryDto.getCategoryId());
+            for (Menu menu : menus) {
+                MenuBasicDto menuDto = new MenuBasicDto(menu.getId(), menu.getName(), menu.getInfo(), menu.getPrice());
+                categoryDto.addMenu(menuDto);
+            }
+        }
+
         return new FoodStoreSearchResponseDto(
                 foodStore.getId(),
                 foodStore.getTitle(),
                 foodStore.getAddress(),
                 foodStore.getMinPrice(),
                 foodStore.getOpenAt(),
-                foodStore.getCloseAt()
-//                foodStore.getMenus().stream()
-//                        .map(MenuResponseDto::fromMenu)
-//                        .collect(Collectors.toList())
+                foodStore.getCloseAt(),
+                categories
         );
     }
 
@@ -156,9 +173,7 @@ public class FoodStoreService {
 
     // 가게삭제
     @Transactional
-    public void delete(Long foodStoreId, String token, String password) {
-        String jwt = jwtUtil.substringToken(token);
-        Long userId = Long.valueOf(jwtUtil.extractClaims(jwt).getSubject());
+    public void delete(Long foodStoreId, Long userId, String password) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_IS_NOT_EXIST));
 
