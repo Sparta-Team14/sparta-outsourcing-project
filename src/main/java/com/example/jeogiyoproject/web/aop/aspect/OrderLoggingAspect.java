@@ -1,4 +1,4 @@
-package com.example.jeogiyoproject.web.aop;
+package com.example.jeogiyoproject.web.aop.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
