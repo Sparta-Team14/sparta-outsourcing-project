@@ -1,6 +1,6 @@
 package com.example.jeogiyoproject.domain.foodstore.entity;
-
 import com.example.jeogiyoproject.domain.base.BaseEntity;
+import com.example.jeogiyoproject.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,13 +21,12 @@ public class FoodStore extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    private User user;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "menu_id")
-//    private Menu menu;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+//    @OneToMany(mappedBy = "foodStore", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<Menu> menus = new ArrayList<>();
 
     @Column(nullable = false)
     private String title;
@@ -46,12 +47,14 @@ public class FoodStore extends BaseEntity {
     private LocalDateTime deletedAt;
 
     public FoodStore(
+            User user,
             String title,
             String address,
             Integer minPrice,
             LocalTime openAt,
             LocalTime closeAt
     ) {
+        this.user = user;
         this.title = title;
         this.address = address;
         this.minPrice = minPrice;
@@ -81,5 +84,9 @@ public class FoodStore extends BaseEntity {
         if (closeAt != null) {
             this.closeAt = closeAt;
         }
+    }
+
+    public Long getUserId() {
+        return user.getId();
     }
 }

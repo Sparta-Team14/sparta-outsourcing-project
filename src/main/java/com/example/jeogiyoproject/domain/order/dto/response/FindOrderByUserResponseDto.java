@@ -2,9 +2,11 @@ package com.example.jeogiyoproject.domain.order.dto.response;
 
 import com.example.jeogiyoproject.domain.order.entity.Order;
 import com.example.jeogiyoproject.domain.order.entity.OrderDetail;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,17 +19,9 @@ public class FindOrderByUserResponseDto {
     private final Integer totalPrice;
     private final Integer totalQuantity;
     private final String request;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private final LocalDateTime orderedAt;
     private final List<OrderMenuResponseDto> items;
-
-    public FindOrderByUserResponseDto(Long orderId, Long foodstoreId, String foodstoreTitle, Integer totalPrice, Integer totalQuantity, String request, List<OrderMenuResponseDto> items) {
-        this.orderId = orderId;
-        this.foodstoreId = foodstoreId;
-        this.foodstoreTitle = foodstoreTitle;
-        this.totalPrice = totalPrice;
-        this.totalQuantity = totalQuantity;
-        this.request = request;
-        this.items = items;
-    }
 
     public static FindOrderByUserResponseDto fromOrderAndOrderDetail(Order order, List<OrderDetail> orderDetails) {
         List<OrderMenuResponseDto> items = new ArrayList<>();
@@ -41,11 +35,12 @@ public class FindOrderByUserResponseDto {
         }
         return FindOrderByUserResponseDto.builder()
                 .orderId(order.getId())
-                .foodstoreId(order.getFoodStore().getId())
-                .foodstoreTitle(order.getFoodStore().getTitle())
+                .foodstoreId(order.getFoodstore().getId())
+                .foodstoreTitle(order.getFoodstore().getTitle())
                 .totalPrice(order.getTotalPrice())
                 .totalQuantity(order.getTotalQuantity())
                 .request(order.getRequest())
+                .orderedAt(order.getCreatedAt())
                 .items(items)
                 .build();
     }
