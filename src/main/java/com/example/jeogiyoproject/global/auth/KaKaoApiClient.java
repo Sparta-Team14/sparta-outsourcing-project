@@ -91,7 +91,10 @@ public class KaKaoApiClient implements OAuthApiClient{
         String email = (String) kakao_account.get("email");
         String userName = (String) properties.get("nickname");
 
-        return new KakaoInfoResponse();
+        KakaoInfoResponse.KakaoProfile kakaoProfile = new KakaoInfoResponse.KakaoProfile(userName);
+        KakaoInfoResponse.KakaoAccount kakaoAccount = new KakaoInfoResponse.KakaoAccount(kakaoProfile, email);
+
+        return new KakaoInfoResponse(kakaoAccount);
     }
 
     private static String get(String apiUrl, Map<String, String> requestHeaders) {
