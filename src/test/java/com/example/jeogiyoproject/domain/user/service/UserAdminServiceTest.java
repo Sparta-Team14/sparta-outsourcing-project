@@ -1,5 +1,6 @@
 package com.example.jeogiyoproject.domain.user.service;
 
+import com.example.jeogiyoproject.domain.admin.service.AdminService;
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.entity.User;
@@ -12,16 +13,12 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.awaitility.Awaitility.given;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -33,7 +30,7 @@ public class UserAdminServiceTest {
     private UserRepository userRepository;
 
     @InjectMocks
-    private UserAdminService userAdminService;
+    private AdminService userAdminService;
 
     @Test
     void 유저_권한이_성공적으로_변경이_되는지_확인한다() {

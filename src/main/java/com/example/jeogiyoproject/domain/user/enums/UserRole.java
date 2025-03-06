@@ -6,7 +6,7 @@ import com.example.jeogiyoproject.global.exception.ErrorCode;
 import java.util.Arrays;
 
 public enum UserRole {
-    OWNER, USER;
+    OWNER, USER, ADMIN;
 
     public static UserRole of(String role) {
         return Arrays.stream(UserRole.values())
