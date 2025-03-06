@@ -68,7 +68,8 @@ public class UserService {
         if (userPasswordUpdateRequestDto.getNewPassword().equals(userPasswordUpdateRequestDto.getPassword())) {
             throw new CustomException(ErrorCode.PASSWORD_CANNOT_SAME);
         }
-        user.updatePassword(userPasswordUpdateRequestDto.getNewPassword());
+        String encodeNewPassword = passwordEncoder.encode(userPasswordUpdateRequestDto.getNewPassword());
+        user.updatePassword(encodeNewPassword);
 
         return new UserPasswordUpdateResponseDto(user.getId(), user.getEmail(), user.getName(), user.getAddress(), user.getUpdatedAt());
     }
