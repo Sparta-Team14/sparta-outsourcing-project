@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "users")
-@SQLDelete(sql = "UPDATE users SET deleted_at = now() WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id = ?")
+@Where(clause = "is_deleted = false")
 @NoArgsConstructor
 public class User extends BaseEntity {
 
@@ -34,7 +34,8 @@ public class User extends BaseEntity {
     @Column(length = 5, nullable = false)
     private UserRole role; // 역할
 
-    private LocalDateTime deletedAt; // deleted_at
+    @Column(name = "is_deleted", columnDefinition = "BOOLEAN DEFAULT false")
+    private boolean isDeleted; // deleted_at
 
     public User(String email, String password, String name, String address, UserRole role) {
         this.email = email;

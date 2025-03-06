@@ -5,6 +5,8 @@ import com.example.jeogiyoproject.domain.order.dto.response.CreateReviewResponse
 import com.example.jeogiyoproject.domain.review.dto.response.ReviewPageResponseDto;
 import com.example.jeogiyoproject.domain.review.dto.response.ReviewResponseDto;
 import com.example.jeogiyoproject.domain.review.service.ReviewService;
+import com.example.jeogiyoproject.global.common.annotation.Auth;
+import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,15 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
+    // 리뷰 생성 ( 사용자 )
+    @PostMapping("/orders/{orderId}/reviews")
+    public ResponseEntity<CreateReviewResponseDto> createReview(@Auth AuthUser authUser,
+                                                                @PathVariable Long orderId,
+                                                                @RequestBody CreateReviewRequestDto dto) {
+        return ResponseEntity.ok(reviewService.createReview(authUser, orderId, dto));
+    }
+
+    // 리뷰 조회
     @GetMapping("/reviews")
     public ResponseEntity<ReviewPageResponseDto> findAllReviews(
             @RequestParam(name = "startDate", required = false) String startDate,
@@ -33,13 +44,6 @@ public class ReviewController {
         ReviewPageResponseDto responseDto = reviewService.findAll(startDateTime, endDateTime, page, size, rating);
         return ResponseEntity.ok(responseDto);
     }
-    // 리뷰 생성 ( 사용자 )
-    @PostMapping("/orders/{orderId}/reviews")
-    public ResponseEntity<CreateReviewResponseDto> createReview(@PathVariable Long orderId,
-                                                                @RequestBody CreateReviewRequestDto dto) {
-        return ResponseEntity.ok(reviewService.createReview(orderId, dto));
-    }
-
 
 }
 

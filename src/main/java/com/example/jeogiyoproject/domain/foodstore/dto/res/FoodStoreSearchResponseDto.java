@@ -1,11 +1,14 @@
 package com.example.jeogiyoproject.domain.foodstore.dto.res;
 
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
+import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryResponseDto;
 import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
 import lombok.Getter;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 public class FoodStoreSearchResponseDto {
@@ -15,7 +18,7 @@ public class FoodStoreSearchResponseDto {
     private final Integer minPrice;
     private final LocalTime openAt;
     private final LocalTime closeAt;
-//    private final List<MenuResponseDto> menus;
+    private List<MenuCategoryListResponseDto> menuCategories;
 
     public FoodStoreSearchResponseDto(
             Long id,
@@ -23,8 +26,8 @@ public class FoodStoreSearchResponseDto {
             String address,
             Integer minPrice,
             LocalTime openAt,
-            LocalTime closeAt
-//            List<MenuResponseDto> menus
+            LocalTime closeAt,
+            List<MenuCategoryListResponseDto> menuCategories
     ) {
         this.id = id;
         this.title = title;
@@ -32,6 +35,6 @@ public class FoodStoreSearchResponseDto {
         this.minPrice = minPrice;
         this.openAt = openAt;
         this.closeAt = closeAt;
-//        this.menus = menus;
+        this.menuCategories = menuCategories;
     }
 }
