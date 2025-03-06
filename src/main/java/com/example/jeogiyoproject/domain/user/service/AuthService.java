@@ -11,6 +11,7 @@ import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
 import com.example.jeogiyoproject.global.util.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,4 +53,5 @@ public class AuthService {
 
         return new LoginResponseDto(bearerToken);
     }
+
 }

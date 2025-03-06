@@ -30,6 +30,10 @@ public class JwtFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
+        if (url.startsWith("/auth/login/kakao")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         String baererJwt = request.getHeader("Authorization");
 
