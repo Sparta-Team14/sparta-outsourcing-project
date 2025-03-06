@@ -28,8 +28,8 @@ public class UserController {
     }
 
     @PatchMapping("/users/{id}/profiles/address")
-    public ResponseEntity<UserAddressUpdateResponseDto> update(@PathVariable Long id, @RequestBody UserAddressUpdateRequestDto userUpdateRequestDto) { // 주소 변경
-        return ResponseEntity.ok(userService.update(id, userUpdateRequestDto));
+    public ResponseEntity<UserAddressUpdateResponseDto> updateAdress(@PathVariable Long id, @RequestBody UserAddressUpdateRequestDto userUpdateRequestDto) { // 주소 변경
+        return ResponseEntity.ok(userService.updateAdress(id, userUpdateRequestDto));
     }
 
     @PatchMapping("/users/{id}/profiles/password")

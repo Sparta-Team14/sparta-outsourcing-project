@@ -15,6 +15,7 @@ public enum ErrorCode {
     ROLE_IS_WRONG(HttpStatus.BAD_REQUEST, "권한을 잘못 입력하셨습니다."),
     USER_IS_NOT_EXIST(HttpStatus.NOT_FOUND, "사용자가 없습니다."),
     PASSWORD_IS_WRONG(HttpStatus.NOT_FOUND, "비밀번호가 일치하지않습니다."),
+    PASSWORD_CANNOT_SAME(HttpStatus.BAD_REQUEST, "새 비밀번호는 똑같이할 수 없습니다."),
     TOKEN_IS_NOT_FOUND(HttpStatus.NOT_FOUND, "토큰을 찾을 수 없습니다."),
     EMAIL_IS_EXIST(HttpStatus.BAD_REQUEST, "이미 존재하는 이메일입니다."),
     USE_AUTH_AUTHUSER_REQUIRED(HttpStatus.BAD_REQUEST, "@Auth와 AuthUser 타입은 함께 사용해야합니다."),

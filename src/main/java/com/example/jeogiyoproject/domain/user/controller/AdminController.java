@@ -2,8 +2,10 @@ package com.example.jeogiyoproject.domain.user.controller;
 
 import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.domain.user.service.UserAdminService;
 import com.example.jeogiyoproject.global.common.annotation.Admin;
+import com.example.jeogiyoproject.web.aop.annotation.AuthCheck;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,7 +19,7 @@ public class AdminController {
 
     private final UserAdminService adminService;
 
-    @Admin
+    @AuthCheck(UserRole.OWNER)
     @PatchMapping("/admin/users/{id}")
     public ResponseEntity<RoleUpdateResponseDto> changeUserRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) { // 관리자인 사람이 권한 변경
         return ResponseEntity.ok(adminService.updateRole(id, roleUpdateRequestDto));

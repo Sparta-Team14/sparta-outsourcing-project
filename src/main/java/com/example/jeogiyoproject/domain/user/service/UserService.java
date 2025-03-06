@@ -44,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserAddressUpdateResponseDto update(Long id, UserAddressUpdateRequestDto userUpdateRequestDto) { // 주소 변경
+    public UserAddressUpdateResponseDto updateAdress(Long id, UserAddressUpdateRequestDto userUpdateRequestDto) { // 주소 변경
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
@@ -60,8 +60,13 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_IS_NOT_EXIST)
         );
+
         if (!passwordEncoder.matches(userPasswordUpdateRequestDto.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
+        }
+
+        if (userPasswordUpdateRequestDto.getNewPassword().equals(userPasswordUpdateRequestDto.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_CANNOT_SAME);
         }
         user.updatePassword(userPasswordUpdateRequestDto.getNewPassword());
 
