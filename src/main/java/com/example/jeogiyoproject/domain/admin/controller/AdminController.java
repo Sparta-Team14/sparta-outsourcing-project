@@ -9,6 +9,7 @@ import com.example.jeogiyoproject.domain.user.dto.request.RoleUpdateRequestDto;
 import com.example.jeogiyoproject.domain.user.dto.response.RoleUpdateResponseDto;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.web.aop.annotation.AuthCheck;
+import com.example.jeogiyoproject.web.aop.annotation.Timer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,23 +28,27 @@ public class AdminController {
     public ResponseEntity<RoleUpdateResponseDto> changeUserRole(@PathVariable Long id, @RequestBody RoleUpdateRequestDto roleUpdateRequestDto) { // 관리자인 사람이 권한 변경
         return ResponseEntity.ok(adminService.updateRole(id, roleUpdateRequestDto));
     }
+    @Timer
     @AuthCheck(UserRole.ADMIN)
     @GetMapping("/admin/order-count/daily")
     public ResponseEntity<List<DailyOrderCountDto>> dailyOrderCount(@RequestParam int year,
                                                                     @RequestParam int month){
         return ResponseEntity.ok(adminService.dailyOrderCount(year,month));
     }
+    @Timer
     @AuthCheck(UserRole.ADMIN)
     @GetMapping("/admin/order-count/monthly")
     public ResponseEntity<List<MonthlyOrderCountDto>> monthlyOrderCount(@RequestParam int year){
         return ResponseEntity.ok(adminService.monthlyOrderCount(year));
     }
+    @Timer
     @AuthCheck(UserRole.ADMIN)
     @GetMapping("/admin/order-total/daily")
     public ResponseEntity<List<DailyOrderTotalDto>> dailyOrderTotal(@RequestParam int year,
                                                                     @RequestParam int month){
         return ResponseEntity.ok(adminService.dailyOrderTotal(year, month));
     }
+    @Timer
     @AuthCheck(UserRole.ADMIN)
     @GetMapping("/admin/order-total/monthly")
     public ResponseEntity<List<MonthlyOrderTotalDto>> monthlyOrderTotal(@RequestParam int year){

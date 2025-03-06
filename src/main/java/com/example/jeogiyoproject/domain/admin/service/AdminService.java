@@ -50,7 +50,7 @@ public class AdminService {
     public List<MonthlyOrderCountDto> monthlyOrderCount(int year) {
         return orderRepository.findMonthlyOrderCountByYear(year);
     }
-
+    @Transactional(readOnly = true)
     public List<MonthlyOrderTotalDto> monthlyOrderTotal(int year) {
         return orderRepository.findMonthlyOrderTotalByYear(year);
     }
