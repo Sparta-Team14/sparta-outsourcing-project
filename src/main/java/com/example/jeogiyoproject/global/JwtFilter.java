@@ -53,13 +53,6 @@ public class JwtFilter extends OncePerRequestFilter {
             request.setAttribute("email", claims.get("email"));
             request.setAttribute("userRole", claims.get("userRole"));
 
-            if (url.startsWith("/admin")) {
-                if (!UserRole.OWNER.equals(userRole)) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "접근 권한이 없습니다.");
-                }
-                chain.doFilter(request, response);
-                return;
-            }
             chain.doFilter(request, response);
         } catch (ServletException | MalformedInputException e) {
             log.error("유효하지 않는 JWT 서명입니다.", e);
