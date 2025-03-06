@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartRequestDto {
+public class UpdateCartItemsRequestDto {
     @NotNull(message = "메뉴번호는 필수값입니다.")
     private Long menuId;
     @Min(value = 1L, message = "주문수량은 최소 1개 이상입니다.")

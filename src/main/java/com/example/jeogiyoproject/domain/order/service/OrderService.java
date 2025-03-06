@@ -12,7 +12,6 @@ import com.example.jeogiyoproject.domain.order.enums.Status;
 import com.example.jeogiyoproject.domain.order.repository.OrderDetailRepository;
 import com.example.jeogiyoproject.domain.order.repository.OrderRepository;
 import com.example.jeogiyoproject.domain.user.entity.User;
-import com.example.jeogiyoproject.global.common.annotation.Auth;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
@@ -33,14 +32,13 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService implements OrderServiceInterface{
+public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final FoodStoreRepository foodStoreRepository;
     private final MenuRepository menuRepository;
 
-    @Override
     @Transactional
     public CreateOrderResponseDto createOrder(AuthUser authUser, Long foodstoreId, CreateOrderRequestDto dto) {
         User user = User.fromAuthUser(authUser);
@@ -94,7 +92,7 @@ public class OrderService implements OrderServiceInterface{
     }
 
     @Transactional(readOnly = true)
-    public Page<FindOrdersResponseDto> findAllOrders(AuthUser authUser, Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
+    public PaginationResponse<FindOrdersResponseDto> findAllOrders(AuthUser authUser, Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
         User user = User.fromAuthUser(authUser);
 
         // e1: 해당 가게의 사장이 아닌 경우
@@ -116,7 +114,7 @@ public class OrderService implements OrderServiceInterface{
 
         Page<Order> orders = orderRepository.findAllByFoodstoreIdByCreatedAtDesc(pageable, foodstoreId, statusList, startAt, endAt);
 
-        return orders.map(FindOrdersResponseDto::fromOrder);
+        return new PaginationResponse<>(orders.map(FindOrdersResponseDto::fromOrder));
     }
 
     @Transactional(readOnly = true)
@@ -157,12 +155,11 @@ public class OrderService implements OrderServiceInterface{
         }
 
         order.updateStatus(status);
-        orderRepository.flush();
         return ChangeOrderStatusResponseDto.fromOrder(order);
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderHistoryResponseDto> findOrdersByUser(AuthUser authUser, int page, int size, OrderHistoryRequestDto dto) {
+    public PaginationResponse<OrderHistoryResponseDto> findOrdersByUser(AuthUser authUser, int page, int size, OrderHistoryRequestDto dto) {
         User user = User.fromAuthUser(authUser);
 
         // 조회 기간을 입력한 경우 조회기간 검증
@@ -188,7 +185,7 @@ public class OrderService implements OrderServiceInterface{
                 endAt
         );
 
-        return orders.map(OrderHistoryResponseDto::fromOrder);
+        return new PaginationResponse<>(orders.map(OrderHistoryResponseDto::fromOrder));
     }
 
     @Transactional(readOnly = true)
@@ -225,7 +222,6 @@ public class OrderService implements OrderServiceInterface{
         order.updateStatus(Status.CANCELED);
         // 주문 삭제
         orderRepository.deleteById(orderId);
-        orderRepository.flush();
 
         return ChangeOrderStatusResponseDto.fromOrder(order);
     }
@@ -244,7 +240,7 @@ public class OrderService implements OrderServiceInterface{
     private void validFoodstoreOwner(Long foodstoreId, User user) {
         FoodStore foodStore = findFoodStore(foodstoreId);
         if (!user.getId().equals(foodStore.getUser().getId())) {
-           throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "userId: " + user.getId());
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "userId: " + user.getId());
         }
 
     }
@@ -263,11 +259,11 @@ public class OrderService implements OrderServiceInterface{
 
     private void validDateTime(LocalDate startAt, LocalDate endAt) {
         // 시작 일자가 종료 일자보다 느린 경우
-        if(startAt.isAfter(endAt)) {
+        if (startAt.isAfter(endAt)) {
             throw new CustomException(ErrorCode.DATE_BAD_REQUEST, "조회 시작일은 조회 종료일 이후일 수 없습니다.");
         }
         // 종료 일자가 오늘보다 미래인 경우
-        if(endAt.isAfter(LocalDate.now())) {
+        if (endAt.isAfter(LocalDate.now())) {
             throw new CustomException(ErrorCode.DATE_BAD_REQUEST, "조회 종료일은 오늘 이후일 수 없습니다.");
         }
     }
