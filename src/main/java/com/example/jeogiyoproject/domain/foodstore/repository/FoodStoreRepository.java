@@ -10,7 +10,6 @@ import java.util.Optional;
 public interface FoodStoreRepository extends JpaRepository<FoodStore, Long> {
     List<FoodStore> findByTitleContaining(String title);
 
-//    @EntityGraph(attributePaths = {"menus"})
     Optional<FoodStore> findById(Long foodStoreId);
     boolean existsByTitleAndAddress(String title, String address);
     long countByUser(User user);

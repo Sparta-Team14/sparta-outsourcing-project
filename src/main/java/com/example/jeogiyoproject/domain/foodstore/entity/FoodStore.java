@@ -25,9 +25,6 @@ public class FoodStore extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @OneToMany(mappedBy = "foodStore", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<Menu> menus = new ArrayList<>();
-
     @Column(nullable = false)
     private String title;
 

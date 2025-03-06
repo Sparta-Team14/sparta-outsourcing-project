@@ -1,5 +1,7 @@
 package com.example.jeogiyoproject.domain.menu.service;
 
+import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
+import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
 import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
 import com.example.jeogiyoproject.domain.menu.dto.menu.request.MenuRequestDto;
 import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuBasicDto;
@@ -24,7 +26,7 @@ import java.util.List;
 public class MenuService {
     private final MenuRepository menuRepository;
     private final MenuCategoryRepository categoryRepository;
-
+    private final FoodStoreRepository foodStoreRepository;
     @Transactional
     public MenuResponseDto createMenu(Long userId, MenuRequestDto requestDto) {
         MenuCategory category = categoryRepository.findById(requestDto.getCategoryId())
@@ -41,7 +43,6 @@ public class MenuService {
         menuRepository.save(menu);
         return MenuResponseDto.fromMenu(menu);
     }
-
     @Transactional
     public MenuResponseDto updateMenu(Long userId, Long menuId, MenuUpdateRequestDto requestDto) {
         Menu menu = menuRepository.findById(menuId)
@@ -120,7 +121,13 @@ public class MenuService {
     }
 
     @Transactional(readOnly = true)
-    public List<MenuCategoryListResponseDto> findDeletedMenuList(Long foodstoreId) {
+    public List<MenuCategoryListResponseDto> findDeletedMenuList(Long userId,Long foodstoreId) {
+        FoodStore foodStore = foodStoreRepository.findById(foodstoreId)
+                .orElseThrow(() -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND));
+        if(!foodStore.getUser().getId().equals(userId)){
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
+        }
+
         List<MenuCategoryListResponseDto> categories = menuRepository.findCategoriesByFoodStoreId(foodstoreId);
 
         for (MenuCategoryListResponseDto categoryDto : categories) {
