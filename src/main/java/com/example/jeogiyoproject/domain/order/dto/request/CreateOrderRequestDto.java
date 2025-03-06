@@ -3,14 +3,14 @@ package com.example.jeogiyoproject.domain.order.dto.request;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class CreateOrderRequestDto {
 
     @Column(name = "주문메뉴", nullable = false)

@@ -1,9 +1,14 @@
 package com.example.jeogiyoproject.domain.cart.entity;
 
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
+import com.example.jeogiyoproject.domain.order.dto.request.CreateOrderRequestDto;
+import com.example.jeogiyoproject.domain.order.dto.request.OrderMenuRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -24,4 +29,14 @@ public class CartItems {
 
     @Column
     private Integer quantity; // 수량
+
+    public CartItems(Cart cart, Menu menu, Integer quantity) {
+        this.cart = cart;
+        this.menu = menu;
+        this.quantity = quantity;
+    }
+
+    public void updateQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
 }

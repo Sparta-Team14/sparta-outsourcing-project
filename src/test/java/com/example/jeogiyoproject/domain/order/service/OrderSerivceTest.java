@@ -74,7 +74,10 @@ public class OrderSerivceTest {
 
         String request = "request";
 
-        CreateOrderRequestDto dto = new CreateOrderRequestDto(items, request);
+        CreateOrderRequestDto dto = CreateOrderRequestDto.builder()
+                .items(items)
+                .request(request)
+                .build();
 
         @Test
         void 존재하지_않는_가게_조회_시_예외_발생() {

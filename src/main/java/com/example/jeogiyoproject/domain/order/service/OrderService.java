@@ -157,7 +157,6 @@ public class OrderService implements OrderServiceInterface{
         }
 
         order.updateStatus(status);
-        orderRepository.flush();
         return ChangeOrderStatusResponseDto.fromOrder(order);
     }
 
@@ -225,7 +224,6 @@ public class OrderService implements OrderServiceInterface{
         order.updateStatus(Status.CANCELED);
         // 주문 삭제
         orderRepository.deleteById(orderId);
-        orderRepository.flush();
 
         return ChangeOrderStatusResponseDto.fromOrder(order);
     }

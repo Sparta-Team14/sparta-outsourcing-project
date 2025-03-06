@@ -6,8 +6,10 @@ import com.example.jeogiyoproject.domain.order.dto.request.FindOrdersRequestDto;
 import com.example.jeogiyoproject.domain.order.dto.request.OrderHistoryRequestDto;
 import com.example.jeogiyoproject.domain.order.dto.response.*;
 import com.example.jeogiyoproject.domain.order.service.OrderService;
+import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.common.annotation.Auth;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
+import com.example.jeogiyoproject.web.aop.annotation.AuthCheck;
 import com.example.jeogiyoproject.web.aop.annotation.OrderLogging;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ public class OrderController {
     private final OrderService orderService;
 
     // 주문 생성
-    // @AuthCheck(UserRole.USER)
+    @AuthCheck(UserRole.USER)
     @OrderLogging
     @PostMapping("/foodstores/{foodstoreId}/orders")
     public ResponseEntity<CreateOrderResponseDto> createOrder(@Auth AuthUser authUser,
@@ -32,7 +34,7 @@ public class OrderController {
     }
 
     // 주문 목록 조회
-    // @AuthCheck(UserRole.OWNER)
+    @AuthCheck(UserRole.OWNER)
     @GetMapping("/foodstores/{foodstoreId}/orders")
     public ResponseEntity<Page<FindOrdersResponseDto>> findAllOrders(@Auth AuthUser authUser,
                                                                      @PathVariable Long foodstoreId,
@@ -43,7 +45,7 @@ public class OrderController {
     }
 
     // 주문 조회
-    // @AuthCheck(UserRole.OWNER)
+    @AuthCheck(UserRole.OWNER)
     @GetMapping("/foodstores/{foodstoreId}/orders/{orderId}")
     public ResponseEntity<FindOrderResponseDto> findOrder(@Auth AuthUser authUser,
                                                           @PathVariable Long foodstoreId,
@@ -52,7 +54,7 @@ public class OrderController {
     }
 
     // 주문 상태 변경
-    // @AuthCheck(UserRole.OWNER)
+    @AuthCheck(UserRole.OWNER)
     @OrderLogging
     @PatchMapping("/foodstores/{foodstoreId}/orders/{orderId}")
     public ResponseEntity<ChangeOrderStatusResponseDto> changeStatus(@Auth AuthUser authUser,
@@ -63,7 +65,7 @@ public class OrderController {
     }
 
     // 주문이력 확인(사용자)
-    // @AuthCheck(UserRole.USER)
+    @AuthCheck(UserRole.USER)
     @GetMapping("/orders")
     public ResponseEntity<Page<OrderHistoryResponseDto>> findOrdersByUser(@Auth AuthUser authUser,
                                                                           @RequestParam(defaultValue = "1") int page,
@@ -73,7 +75,7 @@ public class OrderController {
     }
 
     // 주문이력 단건 조회(사용자)
-    // @AuthCheck(UserRole.USER)
+    @AuthCheck(UserRole.USER)
     @GetMapping("/orders/{orderId}")
     public ResponseEntity<FindOrderByUserResponseDto> findOrderByUser(@Auth AuthUser authUser,
                                                                       @PathVariable Long orderId) {
@@ -81,7 +83,7 @@ public class OrderController {
     }
 
     // 주문 취소(사용자)
-    // @AuthCheck(UserRole.USER)
+    @AuthCheck(UserRole.USER)
     @OrderLogging
     @DeleteMapping("/orders/{orderId}")
     public ResponseEntity<ChangeOrderStatusResponseDto> cancelOrder(@Auth AuthUser authUser,
