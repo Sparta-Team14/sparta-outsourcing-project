@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "orders")
 @SQLDelete(sql = "UPDATE orders SET deleted_at = now() WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
 public class Order extends BaseEntity {
 
     @Id

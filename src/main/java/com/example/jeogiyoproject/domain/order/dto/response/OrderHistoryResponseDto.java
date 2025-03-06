@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderHistoryResponseDto {
     private final Long orderId;
+    private final String status;
     private final Long foodstoreId;
     private final String foodStoreTitle;
     private final Integer totalPrice;
@@ -22,6 +23,7 @@ public class OrderHistoryResponseDto {
     public static OrderHistoryResponseDto fromOrder(Order order) {
         return OrderHistoryResponseDto.builder()
                 .orderId(order.getId())
+                .status(order.getStatus().name())
                 .foodstoreId(order.getFoodstore().getId())
                 .foodStoreTitle(order.getFoodstore().getTitle())
                 .totalPrice(order.getTotalPrice())

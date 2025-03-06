@@ -6,26 +6,29 @@ import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreSearchResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateResponseDto;
 import com.example.jeogiyoproject.domain.foodstore.service.FoodStoreService;
-import jakarta.validation.Valid;
+import com.example.jeogiyoproject.global.common.annotation.Auth;
+import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class FoodStoreController {
     private final FoodStoreService foodStoreService;
 
     // 가게생성
-    @PostMapping("/foodstores")
+    @PostMapping("/foodstores/users/{userId}")
     public ResponseEntity<FoodStoreResponseDto> create(
             @RequestBody FoodStoreRequestDto dto,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String token
+            @PathVariable Long userId,
+            @Auth AuthUser authUser
     ) {
-        return ResponseEntity.ok(foodStoreService.create(dto,token));
+        return ResponseEntity.ok(foodStoreService.create(dto,userId));
     }
 
     // 가게수정
@@ -50,13 +53,14 @@ public class FoodStoreController {
     }
 
     // 가게 폐업
-    @DeleteMapping("/foodstores/{foodStoreId}")
+    @DeleteMapping("/foodstores/{foodStoreId}/users/{userId}")
     public ResponseEntity<String> delete(
             @PathVariable Long foodStoreId,
-            @RequestHeader("Authorization") String token,
+            @PathVariable Long userId,
+            @Auth AuthUser authUser,
             @RequestBody FoodStoreDeleteRequestDto dto
     ) {
-        foodStoreService.delete(foodStoreId, token, dto.getPassword());
+        foodStoreService.delete(foodStoreId, userId, dto.getPassword());
         return ResponseEntity.ok("성공적으로 삭제되었습니다");
     }
 }

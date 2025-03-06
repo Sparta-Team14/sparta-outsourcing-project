@@ -43,12 +43,17 @@ dependencies {
 
     // Test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
     // H2
     testRuntimeOnly 'com.h2database:h2'
     // json-simple
     implementation 'com.googlecode.json-simple:json-simple:1.1'
     // aop
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // AWS
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter:3.1.1'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.767'
 }
 
 tasks.named('test') {

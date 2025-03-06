@@ -63,7 +63,7 @@ public class OrderRepositoryTest {
         orderRepository.save(order);
 
         // when
-        Page<Order> findOrders = orderRepository.findAllByFoodstoreIdByCreatedAtDesc(pageable, foodstoreId, Status.WAIT, null, null);
+        Page<Order> findOrders = orderRepository.findAllByFoodstoreIdByCreatedAtDesc(pageable, foodstoreId, null, null, null);
 
         // then
         assertNotNull(findOrders);
@@ -102,7 +102,7 @@ public class OrderRepositoryTest {
         orderRepository.save(order);
 
         // when
-        Page<Order> orders = orderRepository.findAllByUserId(pageable, savedUser.getId(), null, Status.WAIT, null, null);
+        Page<Order> orders = orderRepository.findAllByUserId(pageable, savedUser.getId(), null, null, null, null);
 
         // then
         assertNotNull(orders);
