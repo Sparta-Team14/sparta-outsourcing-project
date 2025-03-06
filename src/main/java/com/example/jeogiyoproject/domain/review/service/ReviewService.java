@@ -32,6 +32,9 @@ public class ReviewService {
     public CreateReviewResponseDto createReview(Long orderId, CreateReviewRequestDto dto) {
 
         Order order = findOrder(orderId);
+        // 오더가 status 값을 갖는다.
+        // status = 값을 가져와서 상태값이 컴플릿이 아니면 던진다
+
         Review review = new Review(dto.getRating(), dto.getContents(), order);
         Review savedOrder = reviewRepository.save(review);
         return new CreateReviewResponseDto(savedOrder.getOrder().getId(), savedOrder.getId(), savedOrder.getRating(),
