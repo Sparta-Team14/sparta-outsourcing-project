@@ -1,4 +1,5 @@
 package com.example.jeogiyoproject.global.auth;
 
-public class sample {
+public enum OAuthProvider {
+    KAKAO
 }
