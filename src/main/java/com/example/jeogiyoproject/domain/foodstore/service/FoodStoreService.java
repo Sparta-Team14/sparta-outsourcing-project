@@ -53,11 +53,13 @@ public class FoodStoreService {
             throw new CustomException(ErrorCode.MAXIMUM_STORE);
         }
 
-        String imgUrl;
-        try {
-            imgUrl = s3Service.uploadImage(dto.getImage());
-        } catch (IOException e) {
-            throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
+        String imgUrl = null;
+        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            try {
+                imgUrl = s3Service.uploadImage(dto.getImage());
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
+            }
         }
 
         FoodStore foodStore = new FoodStore(

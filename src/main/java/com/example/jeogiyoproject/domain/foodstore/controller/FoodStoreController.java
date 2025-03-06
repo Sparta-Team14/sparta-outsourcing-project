@@ -47,7 +47,7 @@ public class FoodStoreController {
                 closeAt,
                 image
         );
-        return new ResponseEntity<>(foodStoreService.create(dto,authUser.getId()), HttpStatus.CREATED);
+        return new ResponseEntity<>(foodStoreService.create(dto, authUser.getId()), HttpStatus.CREATED);
     }
 
     // 가게수정
@@ -60,7 +60,7 @@ public class FoodStoreController {
             @RequestParam(value = "closeAt", required = false) LocalTime closeAt,
             @RequestParam(value = "image", required = false) MultipartFile image,
             @PathVariable Long foodStoreId
-            ) {
+    ) {
         FoodStoreRequestDto dto = new FoodStoreRequestDto(
                 title,
                 address,
