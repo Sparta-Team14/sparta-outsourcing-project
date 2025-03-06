@@ -28,7 +28,7 @@ public class CartRepositoryTest {
     private FoodStoreRepository foodStoreRepository;
 
     @Test
-    void 유저번호_기준_장바구니_조회 () {
+    void 유저번호_기준_장바구니_조회() {
         // given
         User user = new User(
                 "email",
@@ -45,7 +45,8 @@ public class CartRepositoryTest {
                 "store_address",
                 1,
                 LocalTime.of(9, 0),
-                LocalTime.of(21, 0)
+                LocalTime.of(21, 0),
+                null
         );
         FoodStore savedFoodStore = foodStoreRepository.save(foodStore);
 
@@ -62,7 +63,7 @@ public class CartRepositoryTest {
     }
 
     @Test
-    void 만료기간이_남은_장바구니는_조회되지_않음 () {
+    void 만료기간이_남은_장바구니는_조회되지_않음() {
         // given
         User user = new User(
                 "email",
@@ -79,7 +80,8 @@ public class CartRepositoryTest {
                 "store_address",
                 1,
                 LocalTime.of(9, 0),
-                LocalTime.of(21, 0)
+                LocalTime.of(21, 0),
+                null
         );
         FoodStore savedFoodStore = foodStoreRepository.save(foodStore);
         long foodstoreId = savedFoodStore.getId();
