@@ -1,9 +1,9 @@
 package com.example.jeogiyoproject.domain.order.entity;
 
+import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.base.BaseEntity;
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.order.enums.Status;
-import com.example.jeogiyoproject.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "foodstore_id")
-    private FoodStore foodStore;
+    private FoodStore foodstore;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -43,8 +43,8 @@ public class Order extends BaseEntity {
 
     private LocalDateTime deletedAt;
 
-    public Order(FoodStore foodStore, User user, Integer totalPrice, Integer totalQuantity, String request) {
-        this.foodStore = foodStore;
+    public Order(FoodStore foodstore, User user, Integer totalPrice, Integer totalQuantity, String request) {
+        this.foodstore = foodstore;
         this.user = user;
         this.totalPrice = totalPrice;
         this.totalQuantity = totalQuantity;

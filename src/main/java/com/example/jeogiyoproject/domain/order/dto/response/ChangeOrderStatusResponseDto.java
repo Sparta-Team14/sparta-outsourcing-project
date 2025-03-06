@@ -9,19 +9,19 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class CreateOrderResponseDto {
+public class ChangeOrderStatusResponseDto {
     private final Long orderId;
     private final Long foodstoreId;
     private final String status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private final LocalDateTime orderedAt;
+    private final LocalDateTime updatedAt;
 
-    public static CreateOrderResponseDto fromOrder(Order order) {
-        return CreateOrderResponseDto.builder()
+    public static ChangeOrderStatusResponseDto fromOrder(Order order) {
+        return ChangeOrderStatusResponseDto.builder()
                 .orderId(order.getId())
                 .foodstoreId(order.getFoodstore().getId())
                 .status(order.getStatus().name())
-                .orderedAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
                 .build();
     }
 }

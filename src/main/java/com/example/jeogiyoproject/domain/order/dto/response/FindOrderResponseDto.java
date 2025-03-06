@@ -2,9 +2,11 @@ package com.example.jeogiyoproject.domain.order.dto.response;
 
 import com.example.jeogiyoproject.domain.order.entity.Order;
 import com.example.jeogiyoproject.domain.order.entity.OrderDetail;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,15 +17,9 @@ public class FindOrderResponseDto {
     private final String address;
     private final Integer totalPrice;
     private final Integer totalQuantity;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private final LocalDateTime orderedAt;
     private final List<OrderMenuResponseDto> items;
-
-    private FindOrderResponseDto(Long orderId, String address, Integer totalPrice, Integer totalQuantity, List<OrderMenuResponseDto> items) {
-        this.orderId = orderId;
-        this.address = address;
-        this.totalPrice = totalPrice;
-        this.totalQuantity = totalQuantity;
-        this.items = items;
-    }
 
     public static FindOrderResponseDto fromOrderAndOrderDetail(Order order, List<OrderDetail> orderDetails) {
         List<OrderMenuResponseDto> items = new ArrayList<>();
@@ -40,6 +36,7 @@ public class FindOrderResponseDto {
                 .address(order.getUser().getAddress())
                 .totalPrice(order.getTotalPrice())
                 .totalQuantity(order.getTotalQuantity())
+                .orderedAt(order.getCreatedAt())
                 .items(items)
                 .build();
     }
