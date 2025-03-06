@@ -52,6 +52,7 @@ public class UserService {
             throw new CustomException(ErrorCode.PASSWORD_IS_WRONG);
         }
         user.update(userUpdateRequestDto.getAddress()); // 주소만 업데이트 가능하게 추가
+        userRepository.save(user);
         return new UserAddressUpdateResponseDto(user.getId(), user.getName(), user.getEmail(), user.getAddress(), user.getUpdatedAt());
     }
 
@@ -70,6 +71,7 @@ public class UserService {
         }
         String encodeNewPassword = passwordEncoder.encode(userPasswordUpdateRequestDto.getNewPassword());
         user.updatePassword(encodeNewPassword);
+        userRepository.save(user);
 
         return new UserPasswordUpdateResponseDto(user.getId(), user.getEmail(), user.getName(), user.getAddress(), user.getUpdatedAt());
     }
