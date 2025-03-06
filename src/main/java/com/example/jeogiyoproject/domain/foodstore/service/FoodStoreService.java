@@ -48,7 +48,7 @@ public class FoodStoreService {
             throw new CustomException(ErrorCode.SAME_NAME_AND_ADDRESS);
         }
 
-        long count = foodStoreRepository.countByUser(user);
+        long count = foodStoreRepository.countActiveStoresByUser(user);
         if (count >= 3) {
             throw new CustomException(ErrorCode.MAXIMUM_STORE);
         }
