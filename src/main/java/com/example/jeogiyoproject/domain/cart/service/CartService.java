@@ -66,11 +66,11 @@ public class CartService {
         Cart cart;
         if (findCart.isPresent()) {
             cart = findCart.get();
-            cart.updateUser(user);
+            cart.setUpdatedAt(LocalDateTime.now());
         } else {
             cart = new Cart(user, foodStore);
         }
-        cartRepository.saveAndFlush(cart);
+        cartRepository.save(cart);
 
         CartItems cartItem = cartItemsRepository.findByCartIdAndMenuId(cart.getId(), menu.getId())
                 .map(item -> {
@@ -79,7 +79,7 @@ public class CartService {
                 })
                 .orElse(new CartItems(cart, menu, quantity));
 
-        cartItemsRepository.saveAndFlush(cartItem);
+        cartItemsRepository.save(cartItem);
 
         List<CartItems> cartItems = cartItemsRepository.findByCartId(cart.getId());
         return CartResponseDto.fromCartAndCartItems(cart, cartItems);
@@ -169,14 +169,19 @@ public class CartService {
     public void deleteExpiredCartItems() {
         LocalDateTime cutOffTime = LocalDateTime.now().minusDays(1);
         List<Cart> findExpiredCart = cartRepository.findByUpdatedAtBefore(cutOffTime);
+        if (findExpiredCart.isEmpty()) {
+            // 삭제 대상이 없을 경우 만료 장바구니 삭제 스케줄 종료
+            return;
+        }
         List<Long> cartIds = findExpiredCart.stream().map(Cart::getId).toList();
+        List<CartItems> cartItems = cartItemsRepository.findByCartIdIn(cartIds);
 
         // 장바구니 만료 품목 삭제
-        int deletedItemCount = cartItemsRepository.deleteByCartIdIn(cartIds);
+        cartItemsRepository.deleteAllInBatch(cartItems);
         // 장바구니에 남은 품목이 없는 경우 장바구니 삭제
         cartRepository.deleteAllByIdInBatch(cartIds);
 
-        log.info("장바구니 만료 품목 삭제 스케줄 실행: {}", deletedItemCount);
+        log.info("장바구니 만료 품목 삭제 수: {}", cartItems.size());
     }
 
     private Cart findByCartId(Long cartId, User user, String message) {

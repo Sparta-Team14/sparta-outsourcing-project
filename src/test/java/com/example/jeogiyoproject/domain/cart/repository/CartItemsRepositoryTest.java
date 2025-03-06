@@ -134,7 +134,7 @@ public class CartItemsRepositoryTest {
     }
 
     @Test
-    void 장바구니_번호로_장바구니_품목을_일괄_삭제할_수_있다() {
+    void 장바구니_번호_목록으로_장바구니_품목을_일괄_조회할_수_있다() {
         // given
         User user = new User(
                 "email",
@@ -176,11 +176,11 @@ public class CartItemsRepositoryTest {
         cartIds.add(cart.getId());
 
         // when
-        int deletedCount = cartItemsRepository.deleteByCartIdIn(cartIds);
+        List<CartItems> findCartItems = cartItemsRepository.findByCartIdIn(cartIds);
 
         // then
-        assertTrue(deletedCount > 0);
-        assertEquals(size, deletedCount);
+        assertNotNull(findCartItems);
+        assertEquals(size, findCartItems.size());
     }
 
 }

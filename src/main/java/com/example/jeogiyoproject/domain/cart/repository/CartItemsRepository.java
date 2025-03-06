@@ -18,5 +18,5 @@ public interface CartItemsRepository extends JpaRepository<CartItems, Long> {
     @EntityGraph(attributePaths = {"cart", "menu"}, type = EntityGraph.EntityGraphType.FETCH)
     Optional<CartItems> findByCartIdAndMenuId(Long cartId, Long menuId);
 
-    int deleteByCartIdIn(List<Long> cartIds);
+    List<CartItems> findByCartIdIn(List<Long> cartIds);
 }

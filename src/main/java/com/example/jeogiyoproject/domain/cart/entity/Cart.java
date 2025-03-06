@@ -29,8 +29,4 @@ public class Cart extends BaseEntity {
         this.foodstore = foodstore;
     }
 
-    public void updateUser(User user) {
-        this.user = user;
-    }
-
 }
