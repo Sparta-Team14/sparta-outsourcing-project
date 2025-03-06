@@ -1,6 +1,7 @@
 package com.example.jeogiyoproject.domain.cart.service;
 
 import com.example.jeogiyoproject.domain.cart.dto.request.CartRequestDto;
+import com.example.jeogiyoproject.domain.cart.dto.request.CreateOrderByCartRequestDto;
 import com.example.jeogiyoproject.domain.cart.dto.request.UpdateCartItemsRequestDto;
 import com.example.jeogiyoproject.domain.cart.dto.request.UpdateCartRequestDto;
 import com.example.jeogiyoproject.domain.cart.dto.response.CartResponseDto;
@@ -13,6 +14,8 @@ import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepositor
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
 import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
 import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
+import com.example.jeogiyoproject.domain.order.dto.response.CreateOrderResponseDto;
+import com.example.jeogiyoproject.domain.order.service.OrderService;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
@@ -27,12 +30,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
@@ -46,6 +49,8 @@ public class CartServiceTest {
     private FoodStoreRepository foodStoreRepository;
     @Mock
     private MenuRepository menuRepository;
+    @Mock
+    private OrderService orderService;
     @InjectMocks
     private CartService cartService;
 
@@ -70,6 +75,7 @@ public class CartServiceTest {
         Integer quantity = 1;
 
         CartRequestDto dto = new CartRequestDto(menuId, quantity);
+
         @Test
         void 존재하지_않는_가게_조회_시_예외처리() {
             // given
@@ -172,11 +178,12 @@ public class CartServiceTest {
 
         List<UpdateCartItemsRequestDto> updateCartItems = List.of(new UpdateCartItemsRequestDto(menuId, 1));
         UpdateCartRequestDto dto = new UpdateCartRequestDto(updateCartItems);
+
         @Test
         void 장바구니가_존재하지_않는_경우_예외처리() {
             // given
             ReflectionTestUtils.setField(cart, "id", cartId);
-            given(cartRepository.findByUserId(anyLong())).willReturn(Optional.empty());
+            given(cartRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when & then
             CustomException exception = assertThrows(CustomException.class, () ->
@@ -188,69 +195,110 @@ public class CartServiceTest {
         @Test
         void 장바구니_유저와_조회_유저가_일치하지_않는_경우_예외처리() {
             // given
+            ReflectionTestUtils.setField(cart, "user", User.fromAuthUser(authOwner));
+            given(cartRepository.findById(anyLong())).willReturn(Optional.of(cart));
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    cartService.updateCart(authUser, cartId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.FORBIDDEN);
         }
 
         @Test
         void 존재하지_않는_메뉴_요청_시_예외처리() {
             // given
+            given(cartRepository.findById(anyLong())).willReturn(Optional.of(cart));
+            given(menuRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    cartService.updateCart(authUser, cartId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.MENU_NOT_FOUND);
         }
 
         @Test
         void 성공() {
             // given
+            given(cartRepository.findById(anyLong())).willReturn(Optional.of(cart));
+            given(menuRepository.findById(anyLong())).willReturn(Optional.of(menu));
+            given(cartItemsRepository.saveAll(anyList())).willAnswer(invocation -> invocation.getArgument(0));
 
             // when
-
+            CartResponseDto response = cartService.updateCart(authUser, cartId, dto);
             // then
+            assertNotNull(response);
+            assertEquals(response.getFoodstoreId(), foodstore.getId());
+            assertEquals(response.getCartId(), cart.getId());
+            assertEquals(response.getItems().size(), updateCartItems.size());
         }
     }
 
     @Nested
     class 장바구니_주문 {
+        Cart cart = new Cart(User.fromAuthUser(authUser), foodstore);
+        Long cartId = 1L;
+        CartItems cartItems = new CartItems(cart, menu, 1);
+
+        CreateOrderByCartRequestDto dto = new CreateOrderByCartRequestDto();
+
         @Test
         void 장바구니가_존재하지_않는_경우_예외처리() {
             // given
+            ReflectionTestUtils.setField(cart, "id", cartId);
+            given(cartRepository.findById(anyLong())).willReturn(Optional.empty());
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    cartService.createOrderByCart(authUser, cartId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.CART_NOT_FOUND);
         }
 
         @Test
         void 장바구니_유저와_조회_유저가_일치하지_않는_경우_예외처리() {
             // given
+            ReflectionTestUtils.setField(cart, "user", User.fromAuthUser(authOwner));
+            given(cartRepository.findById(anyLong())).willReturn(Optional.of(cart));
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    cartService.createOrderByCart(authUser, cartId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.FORBIDDEN);
         }
 
         @Test
-        void 존재하지_않는_메뉴_요청_시_예외처리() {
+        void 장바구니_품목이_존재하지_않는_경우_예외처리() {
             // given
+            given(cartRepository.findById(anyLong())).willReturn(Optional.of(cart));
+            given(cartItemsRepository.findByCartId(anyLong())).willReturn(Collections.emptyList());
 
             // when & then
+            CustomException exception = assertThrows(CustomException.class, () ->
+                    cartService.createOrderByCart(authUser, cartId, dto)
+            );
+            assertEquals(exception.getErrorCode(), ErrorCode.CART_ITEMS_NOT_FOUND);
         }
 
         @Test
         void 성공() {
             // given
+            ReflectionTestUtils.setField(cart, "id", cartId);
+            ReflectionTestUtils.setField(menu, "id", menuId);
+            ReflectionTestUtils.setField(cartItems, "menu", menu);
+            ReflectionTestUtils.setField(authUser, "id", 2L);
+
+            CreateOrderResponseDto response = CreateOrderResponseDto.builder()
+                    .foodstoreId(foodstoreId)
+                    .build();
+
+            given(cartRepository.findById(anyLong())).willReturn(Optional.of(cart));
+            given(cartItemsRepository.findByCartId(anyLong())).willReturn(List.of(cartItems));
 
             // when
-
-            // then
-        }
-    }
-
-    @Nested
-    class 만료_장바구니_삭제 {
-        @Test
-        void 성공() {
-            // given
-
-            // when
-
-            // then
+            CreateOrderResponseDto orderByCart = cartService.createOrderByCart(authUser, cartId, dto);
         }
     }
 }

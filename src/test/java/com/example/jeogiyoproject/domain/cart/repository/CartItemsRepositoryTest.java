@@ -116,7 +116,7 @@ public class CartItemsRepositoryTest {
         List<Menu> menuList = new ArrayList<>();
         List<CartItems> cartItemsList = new ArrayList<>();
 
-        int size = (int) (Math.random() * 5) + 1;
+        int size = 5;
         for (int i = 0; i < size; i++) {
             Menu menu = new Menu(savedMenuCategory, "name" + i, "info", i);
             menuList.add(menu);
@@ -126,11 +126,11 @@ public class CartItemsRepositoryTest {
         cartItemsRepository.saveAll(cartItemsList);
 
         // when
-        Optional<CartItems> findCartItem = cartItemsRepository.findByCartIdAndMenuId(cart.getId(), 1L);
+        Optional<CartItems> findCartItem = cartItemsRepository.findByCartIdAndMenuId(cart.getId(), menuList.get(0).getId());
 
         // then
         assertTrue(findCartItem.isPresent());
-        assertEquals(1L, findCartItem.get().getMenu().getId());
+        assertEquals(menuList.get(0).getId(), findCartItem.get().getMenu().getId());
     }
 
     @Test

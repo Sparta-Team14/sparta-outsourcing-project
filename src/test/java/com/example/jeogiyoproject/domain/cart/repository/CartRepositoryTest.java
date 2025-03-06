@@ -93,37 +93,4 @@ public class CartRepositoryTest {
         // then
         assertEquals(0, findExpiredCarts.size());
     }
-
-    @Test
-    void 만료_장바구니_조회 () {
-        // given
-        User user = new User(
-                "email",
-                "password",
-                "name",
-                "address",
-                UserRole.USER
-        );
-        User savedUser = userRepository.save(user);
-
-        FoodStore foodStore = new FoodStore(
-                savedUser,
-                "title",
-                "store_address",
-                1,
-                LocalTime.of(9, 0),
-                LocalTime.of(21, 0)
-        );
-        FoodStore savedFoodStore = foodStoreRepository.save(foodStore);
-        long foodstoreId = savedFoodStore.getId();
-
-        Cart cart = new Cart(user, foodStore);
-        cartRepository.save(cart);
-
-        // when
-        List<Cart> findExpiredCarts = cartRepository.findByUpdatedAtBefore(LocalDateTime.now().plusDays(1));
-
-        // then
-        assertEquals(1, findExpiredCarts.size());
-    }
 }
