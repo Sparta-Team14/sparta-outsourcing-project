@@ -26,11 +26,11 @@ public class AuthService {
 
     @Transactional
     public SignUpResponseDto save(SignUpRequestDto requestDto) { // 회원가입
-        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@");
-        if (userRepository.existsByEmail(requestDto.getEmail())) { // 이미 탈퇴한 이메일은 가입 불가능, 리턴 타입 boolean으로 변경
+
+        if (userRepository.existsByEmail(requestDto.getEmail()) > 0) { // 이미 탈퇴한 이메일은 가입 불가능
             throw new CustomException(ErrorCode.EMAIL_IS_EXIST);
         }
-        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@");
+
         String password = passwordEncoder.encode(requestDto.getPassword());
         UserRole userRole = UserRole.valueOf("USER"); // 기본 유저 설정값은 USER로 고정
         User user = new User(requestDto.getEmail(), password, requestDto.getName(), requestDto.getAddress(), userRole);

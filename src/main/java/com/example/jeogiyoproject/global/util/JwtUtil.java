@@ -41,10 +41,10 @@ public class JwtUtil {
 
         return BEARER_PREFIX + // Bearer
                 Jwts.builder()
-                        .setSubject(String.valueOf(userId)) // userid 추가
+                        .setSubject(String.valueOf(userId)) // userid 추가, 사용자 식별 값 추가
                         .claim("email", email) // 이메일 추가
                         .claim("userRole", userRole) // 역할 추가
-                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) //유효 시간
+                        .setExpiration(new Date(date.getTime() + TOKEN_TIME)) //유효 시간, 만료 시간 지정(1시간)
                         .setIssuedAt(date) //만료시간
                         .signWith(key, signatureAlgorithm) // hs256으로 서명한다.
                         .compact(); // builder
