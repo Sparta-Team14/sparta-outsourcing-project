@@ -16,7 +16,7 @@ import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
 import com.example.jeogiyoproject.domain.order.dto.request.CreateOrderRequestDto;
 import com.example.jeogiyoproject.domain.order.dto.request.OrderMenuRequestDto;
 import com.example.jeogiyoproject.domain.order.dto.response.CreateOrderResponseDto;
-import com.example.jeogiyoproject.domain.order.service.OrderServiceInterface;
+import com.example.jeogiyoproject.domain.order.service.OrderService;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import com.example.jeogiyoproject.global.exception.CustomException;
@@ -40,7 +40,7 @@ public class CartService {
     private final CartItemsRepository cartItemsRepository;
     private final FoodStoreRepository foodStoreRepository;
     private final MenuRepository menuRepository;
-    private final OrderServiceInterface orderServiceInterface;
+    private final OrderService orderService;
 
 
     @Transactional
@@ -156,7 +156,7 @@ public class CartService {
                 .request(dto.getRequest())
                 .build();
 
-        CreateOrderResponseDto order = orderServiceInterface.createOrder(authUser, cart.getFoodstore().getId(), orderRequestDto);
+        CreateOrderResponseDto order = orderService.createOrder(authUser, cart.getFoodstore().getId(), orderRequestDto);
 
         cartItemsRepository.deleteAll(cartItems);
         cartRepository.deleteById(cartId);

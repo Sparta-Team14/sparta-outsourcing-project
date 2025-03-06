@@ -12,7 +12,6 @@ import com.example.jeogiyoproject.domain.order.enums.Status;
 import com.example.jeogiyoproject.domain.order.repository.OrderDetailRepository;
 import com.example.jeogiyoproject.domain.order.repository.OrderRepository;
 import com.example.jeogiyoproject.domain.user.entity.User;
-import com.example.jeogiyoproject.global.common.annotation.Auth;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
@@ -33,14 +32,13 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService implements OrderServiceInterface{
+public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final FoodStoreRepository foodStoreRepository;
     private final MenuRepository menuRepository;
 
-    @Override
     @Transactional
     public CreateOrderResponseDto createOrder(AuthUser authUser, Long foodstoreId, CreateOrderRequestDto dto) {
         User user = User.fromAuthUser(authUser);
@@ -242,7 +240,7 @@ public class OrderService implements OrderServiceInterface{
     private void validFoodstoreOwner(Long foodstoreId, User user) {
         FoodStore foodStore = findFoodStore(foodstoreId);
         if (!user.getId().equals(foodStore.getUser().getId())) {
-           throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "userId: " + user.getId());
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER, "userId: " + user.getId());
         }
 
     }
@@ -261,11 +259,11 @@ public class OrderService implements OrderServiceInterface{
 
     private void validDateTime(LocalDate startAt, LocalDate endAt) {
         // 시작 일자가 종료 일자보다 느린 경우
-        if(startAt.isAfter(endAt)) {
+        if (startAt.isAfter(endAt)) {
             throw new CustomException(ErrorCode.DATE_BAD_REQUEST, "조회 시작일은 조회 종료일 이후일 수 없습니다.");
         }
         // 종료 일자가 오늘보다 미래인 경우
-        if(endAt.isAfter(LocalDate.now())) {
+        if (endAt.isAfter(LocalDate.now())) {
             throw new CustomException(ErrorCode.DATE_BAD_REQUEST, "조회 종료일은 오늘 이후일 수 없습니다.");
         }
     }

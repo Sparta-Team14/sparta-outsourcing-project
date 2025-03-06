@@ -13,7 +13,6 @@ import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepositor
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
 import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
 import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
-import com.example.jeogiyoproject.domain.order.service.OrderServiceInterface;
 import com.example.jeogiyoproject.domain.user.entity.User;
 import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.global.common.dto.AuthUser;
@@ -28,7 +27,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +46,6 @@ public class CartServiceTest {
     private FoodStoreRepository foodStoreRepository;
     @Mock
     private MenuRepository menuRepository;
-    @Mock
-    private OrderServiceInterface orderServiceInterface;
     @InjectMocks
     private CartService cartService;
 
