@@ -162,6 +162,22 @@ public class FoodStoreService {
             }
         }
 
+        if (dto.getTitle() != null) {
+            foodStore.setTitle(dto.getTitle());
+        }
+        if (dto.getAddress() != null) {
+            foodStore.setAddress(dto.getAddress());
+        }
+        if (dto.getMinPrice() != null) {
+            foodStore.setMinPrice(dto.getMinPrice());
+        }
+        if (dto.getOpenAt() != null) {
+            foodStore.setOpenAt(dto.getOpenAt());
+        }
+        if (dto.getCloseAt() != null) {
+            foodStore.setCloseAt(dto.getCloseAt());
+        }
+
         foodStoreRepository.save(foodStore);
 
         return new FoodStoreUpdateResponseDto(
