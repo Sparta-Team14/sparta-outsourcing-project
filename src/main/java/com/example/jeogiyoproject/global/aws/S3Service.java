@@ -3,11 +3,15 @@ package com.example.jeogiyoproject.global.aws;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.jeogiyoproject.global.exception.CustomException;
+import com.example.jeogiyoproject.global.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,7 +29,29 @@ public class S3Service {
      * S3에 이미지 업로드 하기
      */
     public String uploadImage(MultipartFile image) throws IOException {
-        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename(); // 고유한 파일 이름 생성
+        if (image == null || image.isEmpty()) {
+            throw new CustomException(ErrorCode.IMG_NULL);
+        }
+
+        List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png");
+        String fileName = image.getOriginalFilename();
+
+        if (fileName != null) {
+            String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+            if (!allowedExtensions.contains(fileExtension)) {
+                throw new CustomException(ErrorCode.FILE_TYPES_NOT_ALLOWE);
+            }
+        } else {
+            throw new CustomException(ErrorCode.UNABLE_RESOLVE_FILENAME);
+        }
+
+        long maxSize = 5 * 1024 * 1024;
+        if (image.getSize() > maxSize) {
+            throw new CustomException(ErrorCode.FILE_EXCEEDED_LIMIT);
+        }
+
+        // 고유한 파일 이름 생성
+        String newFileName = UUID.randomUUID() + "_" + fileName;
 
         // 메타데이터 설정
         ObjectMetadata metadata = new ObjectMetadata();
@@ -33,12 +59,12 @@ public class S3Service {
         metadata.setContentLength(image.getSize());
 
         // S3에 파일 업로드 요청 생성
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, fileName, image.getInputStream(), metadata);
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, newFileName, image.getInputStream(), metadata);
 
         // S3에 파일 업로드
         amazonS3.putObject(putObjectRequest);
 
-        return getPublicUrl(fileName);
+        return getPublicUrl(newFileName);
     }
 
     private String getPublicUrl(String fileName) {

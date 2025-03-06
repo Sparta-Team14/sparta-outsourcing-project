@@ -7,33 +7,24 @@ import com.example.jeogiyoproject.domain.foodstore.dto.res.FoodStoreUpdateRespon
 import com.example.jeogiyoproject.domain.foodstore.entity.FoodStore;
 import com.example.jeogiyoproject.domain.foodstore.repository.FoodStoreRepository;
 import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryListResponseDto;
-import com.example.jeogiyoproject.domain.menu.dto.category.response.MenuCategoryResponseDto;
 import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuBasicDto;
-import com.example.jeogiyoproject.domain.menu.dto.menu.response.MenuResponseDto;
 import com.example.jeogiyoproject.domain.menu.entity.Menu;
-import com.example.jeogiyoproject.domain.menu.entity.MenuCategory;
-import com.example.jeogiyoproject.domain.menu.repository.MenuCategoryRepository;
 import com.example.jeogiyoproject.domain.menu.repository.MenuRepository;
-import com.example.jeogiyoproject.domain.menu.service.MenuService;
 import com.example.jeogiyoproject.domain.user.entity.User;
-import com.example.jeogiyoproject.domain.user.enums.UserRole;
 import com.example.jeogiyoproject.domain.user.repository.UserRepository;
+import com.example.jeogiyoproject.global.aws.S3Service;
 import com.example.jeogiyoproject.global.config.PasswordEncoder;
 import com.example.jeogiyoproject.global.exception.CustomException;
 import com.example.jeogiyoproject.global.exception.ErrorCode;
-import com.example.jeogiyoproject.global.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,6 +35,7 @@ public class FoodStoreService {
     private final MenuRepository menuRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
     //가게 생성
     @Transactional
@@ -51,19 +43,21 @@ public class FoodStoreService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_IS_NOT_EXIST));
 
-        // es.1 유저 role이 OWNER가 아닐때 생성불가
-        if (!UserRole.OWNER.equals(user.getRole())) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        }
-        // es.2 이름과 주소가 동일하면 생성불가
         boolean exists = foodStoreRepository.existsByTitleAndAddress(dto.getTitle(), dto.getAddress());
         if (exists) {
             throw new CustomException(ErrorCode.SAME_NAME_AND_ADDRESS);
         }
-        // es.3 한개의 아이디에 3개의 가게를 생성할수없다
+
         long count = foodStoreRepository.countByUser(user);
         if (count >= 3) {
             throw new CustomException(ErrorCode.MAXIMUM_STORE);
+        }
+
+        String imgUrl;
+        try {
+            imgUrl = s3Service.uploadImage(dto.getImage());
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
         }
 
         FoodStore foodStore = new FoodStore(
@@ -72,7 +66,8 @@ public class FoodStoreService {
                 dto.getAddress(),
                 dto.getMinPrice(),
                 dto.getOpenAt(),
-                dto.getCloseAt()
+                dto.getCloseAt(),
+                imgUrl
         );
 
         foodStoreRepository.save(foodStore);
@@ -85,7 +80,8 @@ public class FoodStoreService {
                 foodStore.getOpenAt(),
                 foodStore.getCloseAt(),
                 foodStore.getCreatedAt(),
-                foodStore.getUpdatedAt()
+                foodStore.getUpdatedAt(),
+                foodStore.getImageUrl()
         );
     }
 
@@ -109,7 +105,8 @@ public class FoodStoreService {
                     foodStore.getOpenAt(),
                     foodStore.getCloseAt(),
                     foodStore.getCreatedAt(),
-                    foodStore.getUpdatedAt()
+                    foodStore.getUpdatedAt(),
+                    foodStore.getImageUrl()
             );
             responseDto.add(dto);
         }
@@ -141,6 +138,7 @@ public class FoodStoreService {
                 foodStore.getMinPrice(),
                 foodStore.getOpenAt(),
                 foodStore.getCloseAt(),
+                foodStore.getImageUrl(),
                 categories
         );
     }
@@ -152,13 +150,17 @@ public class FoodStoreService {
                 () -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND)
         );
 
-        foodStore.update(
-                dto.getTitle(),
-                dto.getAddress(),
-                dto.getMinPrice(),
-                dto.getOpenAt(),
-                dto.getCloseAt()
-        );
+        if (dto.getImage() != null && !dto.getImage().isEmpty()) {
+            String imgUrl;
+            try {
+                imgUrl = s3Service.uploadImage(dto.getImage());
+                foodStore.setImgUrl(imgUrl);
+            } catch (IOException e) {
+                throw new CustomException(ErrorCode.FILE_UPLOAD_FAILED);
+            }
+        }
+
+        foodStoreRepository.save(foodStore);
 
         return new FoodStoreUpdateResponseDto(
                 foodStore.getId(),
@@ -167,6 +169,7 @@ public class FoodStoreService {
                 foodStore.getMinPrice(),
                 foodStore.getOpenAt(),
                 foodStore.getCloseAt(),
+                foodStore.getImageUrl(),
                 foodStore.getUpdatedAt()
         );
     }
@@ -184,6 +187,10 @@ public class FoodStoreService {
 
         FoodStore foodStore = foodStoreRepository.findById(foodStoreId)
                 .orElseThrow(() -> new CustomException(ErrorCode.FOODSTORE_NOT_FOUND));
+
+        if(!foodStore.getUser().getId().equals(userId)){
+            throw new CustomException(ErrorCode.NOT_FOODSTORE_OWNER);
+        }
 
         foodStore.setDeletedAt(LocalDateTime.now());
         foodStoreRepository.save(foodStore);
