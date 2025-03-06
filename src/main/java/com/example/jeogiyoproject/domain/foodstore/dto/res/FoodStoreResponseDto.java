@@ -16,6 +16,7 @@ public class FoodStoreResponseDto {
     private final LocalTime closeAt;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final String imgUrl;
 
     public FoodStoreResponseDto(
             Long id,
@@ -26,7 +27,8 @@ public class FoodStoreResponseDto {
             LocalTime openAt,
             LocalTime closeAt,
             LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime updatedAt,
+            String imgUrl
     ) {
         this.id = id;
         this.userId = userId;
@@ -37,5 +39,6 @@ public class FoodStoreResponseDto {
         this.closeAt = closeAt;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.imgUrl = imgUrl;
     }
 }

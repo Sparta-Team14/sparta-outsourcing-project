@@ -13,15 +13,26 @@ public class FoodStoreUpdateResponseDto {
     private final Integer minPrice;
     private final LocalTime openAt;
     private final LocalTime closeAt;
+    private final String imgUrl;
     private final LocalDateTime updatedAt;
 
-    public FoodStoreUpdateResponseDto(Long id, String title, String address, Integer minPrice, LocalTime openAt, LocalTime closeAt, LocalDateTime updatedAt) {
+    public FoodStoreUpdateResponseDto(
+            Long id,
+            String title,
+            String address,
+            Integer minPrice,
+            LocalTime openAt,
+            LocalTime closeAt,
+            String imgUrl,
+            LocalDateTime updatedAt
+    ) {
         this.id = id;
         this.title = title;
         this.address = address;
         this.minPrice = minPrice;
         this.openAt = openAt;
         this.closeAt = closeAt;
+        this.imgUrl = imgUrl;
         this.updatedAt = updatedAt;
     }
 }

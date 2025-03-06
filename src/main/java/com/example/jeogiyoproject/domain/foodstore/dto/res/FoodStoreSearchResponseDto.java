@@ -18,6 +18,7 @@ public class FoodStoreSearchResponseDto {
     private final Integer minPrice;
     private final LocalTime openAt;
     private final LocalTime closeAt;
+    private final String imgUrl;
     private List<MenuCategoryListResponseDto> menuCategories;
 
     public FoodStoreSearchResponseDto(
@@ -27,6 +28,7 @@ public class FoodStoreSearchResponseDto {
             Integer minPrice,
             LocalTime openAt,
             LocalTime closeAt,
+            String imgUrl,
             List<MenuCategoryListResponseDto> menuCategories
     ) {
         this.id = id;
@@ -35,6 +37,7 @@ public class FoodStoreSearchResponseDto {
         this.minPrice = minPrice;
         this.openAt = openAt;
         this.closeAt = closeAt;
+        this.imgUrl = imgUrl;
         this.menuCategories = menuCategories;
     }
 }

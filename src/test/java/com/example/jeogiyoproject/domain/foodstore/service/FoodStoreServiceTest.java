@@ -16,7 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,13 +52,15 @@ class FoodStoreServiceTest {
         ReflectionTestUtils.setField(user, "id", userId);
         ReflectionTestUtils.setField(user, "role", UserRole.OWNER);
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[0]);
 
         FoodStoreRequestDto requestDto = new FoodStoreRequestDto(
                 "식당1",
                 "식당주소",
                 15000,
                 LocalTime.parse("09:00:00"),
-                LocalTime.parse("20:00:00")
+                LocalTime.parse("20:00:00"),
+                imageFile
         );
 
         // when
@@ -79,13 +83,15 @@ class FoodStoreServiceTest {
         ReflectionTestUtils.setField(user, "role", UserRole.USER);
 
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[0]);
 
         FoodStoreRequestDto requestDto = new FoodStoreRequestDto(
                 "식당1",
                 "식당주소",
                 15000,
                 LocalTime.parse("09:00:00"),
-                LocalTime.parse("20:00:00")
+                LocalTime.parse("20:00:00"),
+                imageFile
         );
 
         // when & then
@@ -109,13 +115,15 @@ class FoodStoreServiceTest {
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
 
         given(foodStoreRepository.existsByTitleAndAddress(title, address)).willReturn(true);
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[0]);
 
         FoodStoreRequestDto requestDto = new FoodStoreRequestDto(
                 "식당1",
                 "식당주소",
                 15000,
                 LocalTime.parse("09:00:00"),
-                LocalTime.parse("20:00:00")
+                LocalTime.parse("20:00:00"),
+                imageFile
         );
 
         // when & then
@@ -136,13 +144,15 @@ class FoodStoreServiceTest {
 
         given(userRepository.findById(userId)).willReturn(Optional.of(user));
         given(foodStoreRepository.countByUser(user)).willReturn(3L);
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", new byte[0]);
 
         FoodStoreRequestDto requestDto = new FoodStoreRequestDto(
                 "식당1",
                 "식당주소",
                 15000,
                 LocalTime.parse("09:00:00"),
-                LocalTime.parse("20:00:00")
+                LocalTime.parse("20:00:00"),
+                imageFile
         );
 
         // when & then

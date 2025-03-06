@@ -35,9 +35,9 @@ public enum ErrorCode {
     MENU_NOT_DELETED(HttpStatus.BAD_REQUEST,"삭제되어 있는 메뉴만 복구할 수 있습니다."),
     // FoodStore
     FOODSTORE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 가게번호 입니다."),
-    SAME_NAME_AND_ADDRESS(HttpStatus.NOT_FOUND, "동일한 가게가 존재합니다."),
-    MAXIMUM_STORE(HttpStatus.NOT_FOUND, "등록가능한 가게를 초과하였습니다."),
-
+    SAME_NAME_AND_ADDRESS(HttpStatus.BAD_REQUEST, "동일한 가게가 존재합니다."),
+    MAXIMUM_STORE(HttpStatus.BAD_REQUEST, "등록가능한 가게를 초과하였습니다."),
+    FILE_UPLOAD_FAILED(HttpStatus.BAD_REQUEST, "이미지 업로드에 실패하였습니다."),
     // Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 주문번호 입니다."),
     ORDER_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 주문 요청입니다."),
@@ -45,6 +45,12 @@ public enum ErrorCode {
     CHANGE_STATUS_ERROR(HttpStatus.BAD_REQUEST, "상태를 변경할 수 없습니다."),
     NOT_ORDER_USER_ID(HttpStatus.FORBIDDEN, "주문한 회원번호가 아닙니다."),
     DATE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "날짜 입력이 잘못되었습니다."),
+
+    // AWS
+    IMG_NULL(HttpStatus.NOT_FOUND, "이미지 파일이 없습니다."),
+    FILE_TYPES_NOT_ALLOWE(HttpStatus.BAD_REQUEST, "허용되지 않는 파일 형식입니다."),
+    UNABLE_RESOLVE_FILENAME(HttpStatus.BAD_REQUEST, "파일 이름을 확인할 수 없습니다."),
+    FILE_EXCEEDED_LIMIT(HttpStatus.BAD_REQUEST, "파일 크기가 제한을 초과했습니다."),
 
     // Cart
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니가 비어있습니다."),

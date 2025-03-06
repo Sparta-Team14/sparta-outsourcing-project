@@ -5,11 +5,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -41,6 +40,9 @@ public class FoodStore extends BaseEntity {
     private LocalTime closeAt;
 
     @Column
+    private String imageUrl;
+
+    @Column
     private LocalDateTime deletedAt;
 
     public FoodStore(
@@ -49,7 +51,8 @@ public class FoodStore extends BaseEntity {
             String address,
             Integer minPrice,
             LocalTime openAt,
-            LocalTime closeAt
+            LocalTime closeAt,
+            String imgUrl
     ) {
         this.user = user;
         this.title = title;
@@ -57,6 +60,7 @@ public class FoodStore extends BaseEntity {
         this.minPrice = minPrice;
         this.openAt = openAt;
         this.closeAt = closeAt;
+        this.imageUrl = imgUrl;
     }
 
     public void update(
@@ -64,8 +68,8 @@ public class FoodStore extends BaseEntity {
             String address,
             Integer minPrice,
             LocalTime openAt,
-            LocalTime closeAt
-    ) {
+            LocalTime closeAt,
+            MultipartFile image) {
         if (title != null) {
             this.title = title;
         }
@@ -80,10 +84,16 @@ public class FoodStore extends BaseEntity {
         }
         if (closeAt != null) {
             this.closeAt = closeAt;
+        } if (image != null) {
+            this.imageUrl = image.getOriginalFilename();
         }
     }
 
     public Long getUserId() {
         return user.getId();
+    }
+
+    public String setImgUrl(String imgUrl) {
+        return this.imageUrl = imgUrl;
     }
 }
