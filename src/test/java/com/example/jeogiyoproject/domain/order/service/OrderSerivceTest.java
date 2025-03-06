@@ -74,7 +74,10 @@ public class OrderSerivceTest {
 
         String request = "request";
 
-        CreateOrderRequestDto dto = new CreateOrderRequestDto(items, request);
+        CreateOrderRequestDto dto = CreateOrderRequestDto.builder()
+                .items(items)
+                .request(request)
+                .build();
 
         @Test
         void 존재하지_않는_가게_조회_시_예외_발생() {
@@ -228,7 +231,7 @@ public class OrderSerivceTest {
             ReflectionTestUtils.setField(dto, "status", null);
 
             // when
-            Page<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
+            PaginationResponse<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
 
             // then
             assertNotNull(response);
@@ -256,7 +259,7 @@ public class OrderSerivceTest {
             ReflectionTestUtils.setField(dto, "status", "ACCEPTED");
 
             // when
-            Page<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
+            PaginationResponse<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
 
             // then
             assertNotNull(response);
@@ -448,7 +451,7 @@ public class OrderSerivceTest {
             ReflectionTestUtils.setField(dto, "status", null);
 
             // when
-            Page<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
+            PaginationResponse<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
 
             // then
             assertNotNull(response);
@@ -479,7 +482,7 @@ public class OrderSerivceTest {
             )).willReturn(orders);
 
             // when
-            Page<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
+            PaginationResponse<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
 
             // then
             assertNotNull(response);

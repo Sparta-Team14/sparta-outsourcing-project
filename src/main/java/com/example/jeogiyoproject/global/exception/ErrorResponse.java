@@ -17,7 +17,7 @@ public class ErrorResponse {
                 .body(ErrorResponse.builder()
                         .status(errorCode.getStatus().getReasonPhrase())
                         .code(errorCode.getStatus().value())
-                        .message(errorCode.getMessage())
+                        .message(e.getMessage())
                         .build());
     }
 }

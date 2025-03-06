@@ -10,6 +10,7 @@ public enum ErrorCode {
     INVALID_PARAMETER(HttpStatus.BAD_REQUEST, "파라미터 값을 확인해주세요."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "요청이 거부되었습니다."),
 
     // Auth
     ROLE_IS_WRONG(HttpStatus.BAD_REQUEST, "권한을 잘못 입력하셨습니다."),
@@ -50,6 +51,10 @@ public enum ErrorCode {
     FILE_TYPES_NOT_ALLOWE(HttpStatus.BAD_REQUEST, "허용되지 않는 파일 형식입니다."),
     UNABLE_RESOLVE_FILENAME(HttpStatus.BAD_REQUEST, "파일 이름을 확인할 수 없습니다."),
     FILE_EXCEEDED_LIMIT(HttpStatus.BAD_REQUEST, "파일 크기가 제한을 초과했습니다."),
+
+    // Cart
+    CART_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니가 비어있습니다."),
+    CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니 품목이 비어있습니다."),
 
     UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 
