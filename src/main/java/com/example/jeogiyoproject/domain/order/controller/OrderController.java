@@ -36,7 +36,7 @@ public class OrderController {
     // 주문 목록 조회
     @AuthCheck(UserRole.OWNER)
     @GetMapping("/foodstores/{foodstoreId}/orders")
-    public ResponseEntity<Page<FindOrdersResponseDto>> findAllOrders(@Auth AuthUser authUser,
+    public ResponseEntity<PaginationResponse<FindOrdersResponseDto>> findAllOrders(@Auth AuthUser authUser,
                                                                      @PathVariable Long foodstoreId,
                                                                      @RequestParam(defaultValue = "1") int page,
                                                                      @RequestParam(defaultValue = "10") int size,
@@ -67,7 +67,7 @@ public class OrderController {
     // 주문이력 확인(사용자)
     @AuthCheck(UserRole.USER)
     @GetMapping("/orders")
-    public ResponseEntity<Page<OrderHistoryResponseDto>> findOrdersByUser(@Auth AuthUser authUser,
+    public ResponseEntity<PaginationResponse<OrderHistoryResponseDto>> findOrdersByUser(@Auth AuthUser authUser,
                                                                           @RequestParam(defaultValue = "1") int page,
                                                                           @RequestParam(defaultValue = "10") int size,
                                                                           @Valid @RequestBody OrderHistoryRequestDto dto) {

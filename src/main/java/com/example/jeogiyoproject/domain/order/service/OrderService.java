@@ -94,7 +94,7 @@ public class OrderService implements OrderServiceInterface{
     }
 
     @Transactional(readOnly = true)
-    public Page<FindOrdersResponseDto> findAllOrders(AuthUser authUser, Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
+    public PaginationResponse<FindOrdersResponseDto> findAllOrders(AuthUser authUser, Long foodstoreId, int page, int size, FindOrdersRequestDto dto) {
         User user = User.fromAuthUser(authUser);
 
         // e1: 해당 가게의 사장이 아닌 경우
@@ -116,7 +116,7 @@ public class OrderService implements OrderServiceInterface{
 
         Page<Order> orders = orderRepository.findAllByFoodstoreIdByCreatedAtDesc(pageable, foodstoreId, statusList, startAt, endAt);
 
-        return orders.map(FindOrdersResponseDto::fromOrder);
+        return new PaginationResponse<>(orders.map(FindOrdersResponseDto::fromOrder));
     }
 
     @Transactional(readOnly = true)
@@ -161,7 +161,7 @@ public class OrderService implements OrderServiceInterface{
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderHistoryResponseDto> findOrdersByUser(AuthUser authUser, int page, int size, OrderHistoryRequestDto dto) {
+    public PaginationResponse<OrderHistoryResponseDto> findOrdersByUser(AuthUser authUser, int page, int size, OrderHistoryRequestDto dto) {
         User user = User.fromAuthUser(authUser);
 
         // 조회 기간을 입력한 경우 조회기간 검증
@@ -187,7 +187,7 @@ public class OrderService implements OrderServiceInterface{
                 endAt
         );
 
-        return orders.map(OrderHistoryResponseDto::fromOrder);
+        return new PaginationResponse<>(orders.map(OrderHistoryResponseDto::fromOrder));
     }
 
     @Transactional(readOnly = true)

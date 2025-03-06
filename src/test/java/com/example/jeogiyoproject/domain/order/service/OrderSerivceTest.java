@@ -231,7 +231,7 @@ public class OrderSerivceTest {
             ReflectionTestUtils.setField(dto, "status", null);
 
             // when
-            Page<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
+            PaginationResponse<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
 
             // then
             assertNotNull(response);
@@ -259,7 +259,7 @@ public class OrderSerivceTest {
             ReflectionTestUtils.setField(dto, "status", "ACCEPTED");
 
             // when
-            Page<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
+            PaginationResponse<FindOrdersResponseDto> response = orderService.findAllOrders(authOwner, foodstoreId, 1, 10, dto);
 
             // then
             assertNotNull(response);
@@ -451,7 +451,7 @@ public class OrderSerivceTest {
             ReflectionTestUtils.setField(dto, "status", null);
 
             // when
-            Page<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
+            PaginationResponse<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
 
             // then
             assertNotNull(response);
@@ -482,7 +482,7 @@ public class OrderSerivceTest {
             )).willReturn(orders);
 
             // when
-            Page<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
+            PaginationResponse<OrderHistoryResponseDto> response = orderService.findOrdersByUser(authUser, 1, 10, dto);
 
             // then
             assertNotNull(response);
