@@ -60,7 +60,9 @@ public class OrderSerivceTest {
             "title", "address",
             1,
             LocalTime.of(0, 0),
-            LocalTime.of(23, 59));
+            LocalTime.of(23, 59),
+            null
+    );
     Long foodstoreId = 1L;
 
     MenuCategory menuCategory = new MenuCategory("name", foodstore);

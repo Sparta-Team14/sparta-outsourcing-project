@@ -57,7 +57,8 @@ public class OrderDetailRepositoryTest {
                 "store_address",
                 1,
                 LocalTime.of(9, 0),
-                LocalTime.of(21, 0)
+                LocalTime.of(21, 0),
+                null
         );
         FoodStore savedFoodStore = foodStoreRepository.save(foodstore);
 

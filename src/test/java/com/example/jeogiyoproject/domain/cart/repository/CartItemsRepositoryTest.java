@@ -56,7 +56,8 @@ public class CartItemsRepositoryTest {
                 "store_address",
                 1,
                 LocalTime.of(9, 0),
-                LocalTime.of(21, 0)
+                LocalTime.of(21, 0),
+                null
         );
         FoodStore savedFoodStore = foodStoreRepository.save(foodStore);
 
@@ -103,7 +104,8 @@ public class CartItemsRepositoryTest {
                 "store_address",
                 1,
                 LocalTime.of(9, 0),
-                LocalTime.of(21, 0)
+                LocalTime.of(21, 0),
+                null
         );
         FoodStore savedFoodStore = foodStoreRepository.save(foodStore);
 
@@ -151,7 +153,8 @@ public class CartItemsRepositoryTest {
                 "store_address",
                 1,
                 LocalTime.of(9, 0),
-                LocalTime.of(21, 0)
+                LocalTime.of(21, 0),
+                null
         );
         FoodStore savedFoodStore = foodStoreRepository.save(foodStore);
 
