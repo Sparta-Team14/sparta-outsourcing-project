@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FoodStoreRepository extends JpaRepository<FoodStore, Long> {
-    List<FoodStore> findByTitleContaining(String title);
+    @Query("SELECT fs FROM FoodStore fs WHERE fs.title LIKE %:title% AND fs.deletedAt IS NULL")
+    List<FoodStore> findByTitleContaining(@Param("title") String title);
 
     Optional<FoodStore> findById(Long foodStoreId);
     boolean existsByTitleAndAddress(String title, String address);
