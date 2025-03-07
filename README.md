@@ -26,16 +26,20 @@
 <br/><br/>
 
 ## 와이어 프레임
-- <b>로그인 시퀀스</b>
-<img width="80%" alt="로그인 시퀀스" src="https://github.com/user-attachments/assets/7e27e066-c988-4e48-aea3-4b87cb5be10f" />
 
-- <b>메인 시퀀스</b>
-<img width="80%" alt="메인 시퀀스" src="https://github.com/user-attachments/assets/987db3be-0dc4-4ed2-b10f-262951824b9b" />
-
+![1.jpg](/image/1.jpg)
+![2.jpg](/image/2.jpg)
+![3.jpg](/image/3.jpg)
+![4.jpg](/image/4.jpg)
+![5.jpg](/image/5.jpg)
+![6.jpg](/image/6.jpg)
+![7.jpg](/image/7.jpg)
+![8.jpg](/image/8.jpg)
+![9.jpg](/image/9.jpg)
 <br/><br/>
 
 ## ERD
-<image src="https://github.com/user-attachments/assets/491dc48a-4427-4b05-98c1-7483276d023e" width="80%"></image>
+![10.png](image/10.png)
 
 <br/><br/>
 
