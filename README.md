@@ -43,48 +43,52 @@
 <br/>
 
 <details>
-  <summary><b>유저</b></summary>
+  <summary><b>회원, 소셜로그인</b></summary>
   <br/>
   <div>
-    ![image](https://github.com/user-attachments/assets/b67b75d3-7ba9-4f51-8026-695cf8288aee)
+    <image src="https://github.com/user-attachments/assets/b67b75d3-7ba9-4f51-8026-695cf8288aee" width=80%></image>
   </div>
 </details>
 
 <details>
-  <summary><b>프로필</b></summary>
+  <summary><b>메뉴,메뉴 카테고리,관리자 대시보드</b></summary>
   <br/>
   <div>
-    <image src="https://github.com/user-attachments/assets/01e060bd-c048-4b8a-9dd5-bb4e23c92f46" width="80%"></image>
-    <image src="https://github.com/user-attachments/assets/9024f15e-9142-4adc-a216-a28d53e98c03" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/bbfff505-e57b-4928-a846-ab996e99296c" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/59f35a63-158d-41fc-8ddb-933687afdaf9" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/0451a1cb-35ba-4222-8129-89617c299da6" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/60106b54-8068-4567-a2b4-b8fdd5104e19" width="80%"></image>
+
   </div>
 </details>
 
 <details>
-  <summary><b>친구</b></summary>
+  <summary><b>가게</b></summary>
   <br/>
   <div>
-    <image src="https://github.com/user-attachments/assets/b3c2d168-5048-40d0-9d4f-1e34eae83b83" width="80%"></image>
-    <image src="https://github.com/user-attachments/assets/ad0d85eb-a96b-4871-a064-b91e094b9a1d" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/6078b9af-fd67-4b53-9b2c-c9f4efdfa1de" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/3f733269-191d-4aeb-945b-88e7a14659e4" width="80%"></image>
+    
   </div>
 </details>
 
 <details>
-  <summary><b>게시글</b></summary>
+  <summary><b>주문, 장바구니</b></summary>
   <br/>
   <div>
-    <image src="https://github.com/user-attachments/assets/e9eea4c5-ec36-4cf0-8717-a6548a84fd08" width="80%"></image>
-    <image src="https://github.com/user-attachments/assets/c98d24e0-b232-47c3-ae26-a34bdd589435" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/99016396-8f21-472b-8d75-91a625b64839" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/7c58efc1-5eb0-4a9b-870e-9dc2b7b78fbb" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/6f1c254d-6ff1-46b6-9937-702253bb8b26" width="80%"></image>
     <image src="https://github.com/user-attachments/assets/53329fee-57f4-4b91-b055-897f80d533c2" width="80%"></image>
-    <image src="https://github.com/user-attachments/assets/e9fefa3b-788d-4539-9f58-c6e3a59ae877" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/e7bd3edd-f5bc-40c4-b1f2-40df58ba4ba1" width="80%"></image>
   </div>
 </details>
 
 <details>
-  <summary><b>댓글</b></summary>
+  <summary><b>리뷰</b></summary>
   <br/>
   <div>
-    <image src="https://github.com/user-attachments/assets/0087623e-3770-47f5-878c-06c9b9d4827d" width="80%"></image>
-    <image src="https://github.com/user-attachments/assets/dab37dcc-6661-4cb1-87d5-e20096843723" width="80%"></image>
+    <image src="https://github.com/user-attachments/assets/b5e5349e-9fe9-430e-96e4-ed39f4c66ca3" width="80%"></image>
   </div>
 </details>
 
