@@ -66,6 +66,9 @@ public class CartService {
         Cart cart;
         if (findCart.isPresent()) {
             cart = findCart.get();
+            if (!cart.getFoodstore().getId().equals(foodstoreId)) {
+                throw new CustomException(ErrorCode.FULL_CART);
+            }
             cart.setUpdatedAt(LocalDateTime.now());
         } else {
             cart = new Cart(user, foodStore);
@@ -109,22 +112,33 @@ public class CartService {
         Set<Long> cartItemIds = cartItems.stream()
                 .map(CartItems::getId)
                 .collect(Collectors.toSet());
-        cartItemsRepository.deleteAllByIdInBatch(cartItemIds);
 
+        for (CartItems cartItem : cartItems) {
+            cartItem.setCart(null);
+        }
+
+        cartItemsRepository.deleteAllByIdInBatch(cartItemIds);
         List<CartItems> updateItems = new ArrayList<>();
         if (dto.getItems().isEmpty()) {
             cartRepository.deleteById(cartId);
-        } else {
-            for (UpdateCartItemsRequestDto item : dto.getItems()) {
-                // e2: 요청 메뉴가 존재하지 않는 경우
-                Menu menu = menuRepository.findById(item.getMenuId())
-                        .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND,
-                                "메뉴번호:" + item.getMenuId()));
-                CartItems cartItem = new CartItems(cart, menu, item.getQuantity());
-                updateItems.add(cartItem);
-            }
-            cartItemsRepository.saveAll(updateItems);
+            return CartResponseDto.builder()
+                    .cartId(-1L)
+                    .foodstoreId(-1L)
+                    .items(Collections.emptyList())
+                    .updatedAt(LocalDateTime.now())
+                    .build();
         }
+
+        for (UpdateCartItemsRequestDto item : dto.getItems()) {
+            // e2: 요청 메뉴가 존재하지 않는 경우
+            Menu menu = menuRepository.findById(item.getMenuId())
+                    .orElseThrow(() -> new CustomException(ErrorCode.MENU_NOT_FOUND,
+                            "메뉴번호:" + item.getMenuId()));
+            CartItems cartItem = new CartItems(cart, menu, item.getQuantity());
+            updateItems.add(cartItem);
+        }
+        cartItemsRepository.saveAll(updateItems);
+
         return CartResponseDto.fromCartAndCartItems(cart, updateItems);
     }
 

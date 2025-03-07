@@ -6,6 +6,7 @@ import com.example.jeogiyoproject.domain.order.dto.request.OrderMenuRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class CartItems {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 장바구니 아이템 번호
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
