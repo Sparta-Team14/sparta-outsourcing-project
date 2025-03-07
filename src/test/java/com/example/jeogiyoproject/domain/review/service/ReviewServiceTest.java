@@ -28,10 +28,6 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(SpringExtension.class)
 class ReviewServiceTest {
 
-    // 한 메서드에서 다 따로 값주고 검증하지 말고 값 한번에 주고 한 메서드 이어서 검증하기.
-    // 방법 , 언제, 결과
-    // given(구문정의) 내가할것 같은데), when, then
-    // 준비 - 실행 - 검증
     @InjectMocks
     private ReviewService reviewService;
 

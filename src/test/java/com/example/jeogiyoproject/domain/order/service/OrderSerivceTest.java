@@ -67,7 +67,7 @@ public class OrderSerivceTest {
     Menu menu = new Menu(menuCategory, "name", "info", 1);
 
     @Nested
-    class 주문_생성 { // 주문생성관련 데이터들.
+    class 주문_생성 {
         List<OrderMenuRequestDto> items = List.of(
                 new OrderMenuRequestDto(1L, 1),
                 new OrderMenuRequestDto(2L, 2));
