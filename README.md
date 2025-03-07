@@ -1,11 +1,14 @@
 # 아웃소싱 프로젝트 (14조)
 
+<image src="https://github.com/user-attachments/assets/84d1f977-f87f-4914-8dce-bb50e6a6d50b" width="80%"></image>
+
+
 ## 프로젝트 정보
 | 구분     | 내용                                                           |
 |--------|--------------------------------------------------------------|
 | 기간     | 2025.02.28 ~ 2025.03.07 (7일)                                 |
 | 팀원     | 최다원(팀장), 최유리, 김성찬, 박상부, 정청원                                  |
-| 설명     | User, Foodstore, Category, Review, Cart, Menu로 구성된 아웃소싱 프로젝트 |
+| 설명     | 여기요를 뛰어넘는 우리들만의 배달앱 |
 | 사용 기술  | Java, Spring MVC, JPA, Spring Data JPA, MySQL                |
 | JDK    | Amazon Corretto 17.0.14                                      |
 | Spring | Boot 3.4.2, Core 6.2.2                                       |
