@@ -55,6 +55,7 @@ public enum ErrorCode {
     // Cart
     CART_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니가 비어있습니다."),
     CART_ITEMS_NOT_FOUND(HttpStatus.NOT_FOUND, "장바구니 품목이 비어있습니다."),
+    FULL_CART(HttpStatus.BAD_REQUEST, "장바구니에 다른 가게의 품목이 들어있습니다."),
 
     UNKNOWN(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 오류가 발생했습니다.");
 
