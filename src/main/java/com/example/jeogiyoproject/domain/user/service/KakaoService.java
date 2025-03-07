@@ -35,6 +35,6 @@ public class KakaoService {
             user = kakaoRepository.save(new KakaoMember(oAuthInfoResponse.getEmail(), oAuthInfoResponse.getNickname(), OAuthProvider.KAKAO));
         }
         String token = jwtUtil.createToken(user.getId(), oAuthInfoResponse.getEmail(), UserRole.USER);
-        return new KakaoLoginResponseDto(token);
+        return new KakaoLoginResponseDto(token, oAuthInfoResponse.getNickname(), oAuthInfoResponse.getEmail());
     }
 }
