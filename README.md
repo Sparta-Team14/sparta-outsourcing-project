@@ -46,7 +46,7 @@
   <summary><b>유저</b></summary>
   <br/>
   <div>
-    <image src="https://github.com/user-attachments/assets/f7f3576e-29c0-4619-bf19-29c650626205" width="80%"></image>
+    ![image](https://github.com/user-attachments/assets/b67b75d3-7ba9-4f51-8026-695cf8288aee)
   </div>
 </details>
 
