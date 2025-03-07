@@ -24,13 +24,36 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'at.favre.lib:bcrypt:0.10.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // bcrypt
+    implementation 'at.favre.lib:bcrypt:0.10.2'
+
+    // jwt
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    // H2
+    testRuntimeOnly 'com.h2database:h2'
+    // json-simple
+    implementation 'com.googlecode.json-simple:json-simple:1.1'
+    // aop
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    // AWS
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter:3.1.1'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.767'
 }
 
 tasks.named('test') {
