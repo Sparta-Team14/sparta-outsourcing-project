@@ -86,7 +86,9 @@ public class OrderService implements OrderServiceInterface{
 
         Order order = new Order(foodStore, user, totalPrice, totalQuantity, dto.getRequest());
         Order saveOrder = orderRepository.save(order);
-        menuMap.forEach((menu, quantity) -> {
+        menuMap.forEach((menu, quantity) -> { //주문1번 생성시 상세로 품목 1,2에대한 각 개수
+            // 주문상세로 a1개 b2개가 주문됨.
+            // 주문상세쪽에도 저장을 해주고
             orderDetailRepository.save(new OrderDetail(saveOrder, menu, quantity));
         });
 
